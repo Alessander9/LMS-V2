@@ -1,0 +1,785 @@
+<div class="-m-4 md:-m-8 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] flex flex-col bg-slate-950 text-slate-100 font-sans antialiased overflow-hidden select-none print:m-0 print:h-auto print:bg-white print:text-black">
+
+  <!-- ================= TOP HEADER BAR ================= -->
+  <header class="h-14 md:h-16 shrink-0 bg-gradient-to-r from-slate-900 via-slate-900/95 to-slate-950 border-b border-slate-800/80 px-4 md:px-6 flex items-center justify-between backdrop-blur-2xl z-10 shadow-lg print:hidden">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-400 text-white border border-blue-400/40 shadow-lg shadow-blue-600/25 flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-xl md:text-2xl font-bold">forum</span>
+      </div>
+      <div>
+        <h1 class="text-base md:text-lg font-black tracking-tight text-white flex items-center gap-2.5">
+          <span>Buzón Académico & Mensajería</span>
+          <span *ngIf="resumen.totalNoLeidos > 0" class="px-2 py-0.5 text-[10px] font-black bg-gradient-to-r from-rose-600 to-red-500 text-white rounded-full shadow-md shadow-rose-600/30 animate-pulse border border-rose-400/40">
+            {{ resumen.totalNoLeidos }} no leídos
+          </span>
+        </h1>
+        <p class="text-[11px] md:text-xs text-slate-400 font-medium truncate max-w-xs md:max-w-xl">Canal oficial y seguro de comunicación institucional entre Alumnos, Docentes y Administración</p>
+      </div>
+    </div>
+
+    <!-- Actions Header -->
+    <div class="flex items-center gap-3">
+      <button 
+        (click)="abrirModalRedactar()" 
+        class="flex items-center gap-2 px-3.5 md:px-4 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-md shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer border border-blue-400/30">
+        <span class="material-symbols-outlined text-base font-bold">edit_square</span>
+        <span class="hidden sm:inline">Redactar Mensaje</span>
+        <span class="sm:hidden">Redactar</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN 3-COLUMN LAYOUT ================= -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- ── COLUMN 1: FOLDERS / NAVIGATION (Desktop sidebar) ── -->
+    <aside class="w-56 lg:w-60 shrink-0 bg-slate-900/90 border-r border-slate-800/80 p-3.5 flex flex-col justify-between hidden lg:flex print:hidden shadow-md">
+      <div class="space-y-4">
+        
+        <!-- Compact New Message Button -->
+        <button 
+          (click)="abrirModalRedactar()"
+          class="w-full flex items-center justify-center gap-2 py-2.5 px-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-600/25 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer group border border-blue-400/30">
+          <span class="material-symbols-outlined text-lg transition-transform group-hover:rotate-12">send</span>
+          <span>Nuevo Mensaje</span>
+        </button>
+
+        <!-- Folders Menu -->
+        <div class="space-y-1">
+          <p class="px-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-xs text-blue-400">folder_open</span>
+            <span>Bandejas</span>
+          </p>
+          
+          <!-- Recibidos -->
+          <button 
+            (click)="cambiarFiltro('RECIBIDOS')"
+            [ngClass]="filtroActual === 'RECIBIDOS' 
+              ? 'bg-gradient-to-r from-emerald-600/25 via-teal-600/15 to-slate-900 text-white font-bold border-l-3 border-emerald-500 shadow-sm' 
+              : 'text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium'"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all cursor-pointer group">
+            <div class="flex items-center gap-2.5">
+              <div class="w-6 h-6 rounded-md flex items-center justify-center transition-colors" [ngClass]="filtroActual === 'RECIBIDOS' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800/80 text-slate-400 group-hover:bg-emerald-500/20 group-hover:text-emerald-400'">
+                <span class="material-symbols-outlined text-base">inbox</span>
+              </div>
+              <span>Recibidos</span>
+            </div>
+            <span *ngIf="resumen.totalRecibidos > 0" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-emerald-400 border border-emerald-500/20">
+              {{ resumen.totalRecibidos }}
+            </span>
+          </button>
+
+          <!-- No Leídos -->
+          <button 
+            (click)="cambiarFiltro('NO_LEIDOS')"
+            [ngClass]="filtroActual === 'NO_LEIDOS' 
+              ? 'bg-gradient-to-r from-rose-600/25 via-pink-600/15 to-slate-900 text-white font-bold border-l-3 border-rose-500 shadow-sm' 
+              : 'text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium'"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all cursor-pointer group">
+            <div class="flex items-center gap-2.5">
+              <div class="w-6 h-6 rounded-md flex items-center justify-center transition-colors" [ngClass]="filtroActual === 'NO_LEIDOS' ? 'bg-rose-500/20 text-rose-400' : 'bg-slate-800/80 text-slate-400 group-hover:bg-rose-500/20 group-hover:text-rose-400'">
+                <span class="material-symbols-outlined text-base">mark_email_unread</span>
+              </div>
+              <span>No Leídos</span>
+            </div>
+            <span *ngIf="resumen.totalNoLeidos > 0" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-rose-600 to-red-500 text-white shadow-xs animate-pulse">
+              {{ resumen.totalNoLeidos }}
+            </span>
+          </button>
+
+          <!-- Destacados -->
+          <button 
+            (click)="cambiarFiltro('DESTACADOS')"
+            [ngClass]="filtroActual === 'DESTACADOS' 
+              ? 'bg-gradient-to-r from-amber-600/25 via-orange-600/15 to-slate-900 text-white font-bold border-l-3 border-amber-500 shadow-sm' 
+              : 'text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium'"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all cursor-pointer group">
+            <div class="flex items-center gap-2.5">
+              <div class="w-6 h-6 rounded-md flex items-center justify-center transition-colors" [ngClass]="filtroActual === 'DESTACADOS' ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-800/80 text-slate-400 group-hover:bg-amber-500/20 group-hover:text-amber-400'">
+                <span class="material-symbols-outlined text-base text-amber-400">star</span>
+              </div>
+              <span>Destacados</span>
+            </div>
+            <span *ngIf="resumen.totalDestacados > 0" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-amber-400 border border-amber-500/20">
+              {{ resumen.totalDestacados }}
+            </span>
+          </button>
+
+          <!-- Enviados -->
+          <button 
+            (click)="cambiarFiltro('ENVIADOS')"
+            [ngClass]="filtroActual === 'ENVIADOS' 
+              ? 'bg-gradient-to-r from-sky-600/25 via-blue-600/15 to-slate-900 text-white font-bold border-l-3 border-sky-500 shadow-sm' 
+              : 'text-slate-300 hover:text-white hover:bg-slate-800/70 font-medium'"
+            class="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all cursor-pointer group">
+            <div class="flex items-center gap-2.5">
+              <div class="w-6 h-6 rounded-md flex items-center justify-center transition-colors" [ngClass]="filtroActual === 'ENVIADOS' ? 'bg-sky-500/20 text-sky-400' : 'bg-slate-800/80 text-slate-400 group-hover:bg-sky-500/20 group-hover:text-sky-400'">
+                <span class="material-symbols-outlined text-base">outbox</span>
+              </div>
+              <span>Enviados</span>
+            </div>
+            <span *ngIf="resumen.totalEnviados > 0" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-sky-400 border border-sky-500/20">
+              {{ resumen.totalEnviados }}
+            </span>
+          </button>
+        </div>
+
+        <!-- Filter by Course (Dropdown) -->
+        <div *ngIf="cursosDisponibles.length > 0" class="pt-3 border-t border-slate-800 space-y-1.5">
+          <p class="px-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-indigo-400">auto_stories</span>
+            <span>Filtrar por Curso</span>
+          </p>
+          <select 
+            [(ngModel)]="cursoFiltroId"
+            (change)="onCursoFilterChange()"
+            class="w-full bg-slate-950 border border-slate-700 hover:border-indigo-500 text-slate-200 text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer shadow-xs transition-all">
+            <option [ngValue]="null">Todos los cursos</option>
+            <option *ngFor="let c of cursosDisponibles" [ngValue]="c.id">{{ c.titulo }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick status indicator -->
+      <div class="p-2.5 bg-emerald-950/20 rounded-xl border border-emerald-500/20 flex items-center gap-2.5 shadow-xs">
+        <div class="relative flex items-center justify-center">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+          <div class="absolute w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping opacity-75"></div>
+        </div>
+        <div class="text-[11px] min-w-0">
+          <p class="font-bold text-emerald-300 flex items-center gap-1 leading-tight">
+            <span>Buzón en Línea</span>
+            <span class="material-symbols-outlined text-xs text-emerald-400">verified</span>
+          </p>
+          <p class="text-[10px] text-slate-400 font-medium truncate">Sincronización activa</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── COLUMN 2: CONVERSATION LIST ── -->
+    <section 
+      [ngClass]="selectedConversacion ? 'hidden md:flex' : 'flex'"
+      class="w-full md:w-80 lg:w-84 shrink-0 bg-slate-900/80 border-r border-slate-800 flex flex-col overflow-hidden print:hidden shadow-inner">
+      
+      <!-- Search & Mobile Filters Bar -->
+      <div class="p-3 border-b border-slate-800 space-y-2 bg-slate-950/70">
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-2.5 text-blue-400 text-lg font-bold">search</span>
+          <input 
+            type="text" 
+            [(ngModel)]="busqueda"
+            (input)="aplicarFiltroLocal()"
+            placeholder="Buscar por asunto, contacto, mensaje..." 
+            class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500/50 focus:border-blue-500 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-100 placeholder-slate-400 focus:outline-hidden focus:ring-1 focus:ring-blue-500 transition-all font-medium shadow-inner">
+          <button 
+            *ngIf="busqueda" 
+            (click)="busqueda = ''; aplicarFiltroLocal()" 
+            class="absolute right-2.5 top-2.5 text-slate-400 hover:text-white cursor-pointer">
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        </div>
+
+        <!-- Mobile Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 lg:hidden">
+          <button 
+            (click)="cambiarFiltro('RECIBIDOS')" 
+            [ngClass]="filtroActual === 'RECIBIDOS' ? 'bg-emerald-600 text-white font-bold shadow-xs' : 'bg-slate-800 text-slate-300'"
+            class="px-2.5 py-1 rounded-full text-[11px] shrink-0 cursor-pointer transition-all">
+            Recibidos ({{ resumen.totalRecibidos }})
+          </button>
+          <button 
+            (click)="cambiarFiltro('NO_LEIDOS')" 
+            [ngClass]="filtroActual === 'NO_LEIDOS' ? 'bg-rose-600 text-white font-bold shadow-xs' : 'bg-slate-800 text-slate-300'"
+            class="px-2.5 py-1 rounded-full text-[11px] shrink-0 cursor-pointer transition-all">
+            No leídos ({{ resumen.totalNoLeidos }})
+          </button>
+          <button 
+            (click)="cambiarFiltro('DESTACADOS')" 
+            [ngClass]="filtroActual === 'DESTACADOS' ? 'bg-amber-600 text-white font-bold shadow-xs' : 'bg-slate-800 text-slate-300'"
+            class="px-2.5 py-1 rounded-full text-[11px] shrink-0 cursor-pointer transition-all">
+            Destacados
+          </button>
+          <button 
+            (click)="cambiarFiltro('ENVIADOS')" 
+            [ngClass]="filtroActual === 'ENVIADOS' ? 'bg-sky-600 text-white font-bold shadow-xs' : 'bg-slate-800 text-slate-300'"
+            class="px-2.5 py-1 rounded-full text-[11px] shrink-0 cursor-pointer transition-all">
+            Enviados
+          </button>
+        </div>
+      </div>
+
+      <!-- List Items Container -->
+      <div class="flex-1 overflow-y-auto divide-y divide-slate-800/50">
+        
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="p-8 text-center text-slate-400 space-y-3">
+          <div class="inline-block w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <p class="text-xs font-bold text-slate-300">Cargando conversaciones...</p>
+        </div>
+
+        <!-- Empty State in List -->
+        <div *ngIf="!isLoading && conversacionesFiltradas.length === 0" class="p-6 text-center space-y-3">
+          <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 text-blue-400 flex items-center justify-center mx-auto shadow-xs">
+            <span class="material-symbols-outlined text-2xl font-bold">drafts</span>
+          </div>
+          <div class="space-y-1">
+            <p class="text-xs font-bold text-white">No hay mensajes en esta bandeja</p>
+            <p class="text-[11px] text-slate-400 leading-tight">Puedes iniciar una nueva comunicación haciendo clic en "Redactar".</p>
+          </div>
+          <button 
+            (click)="abrirModalRedactar()"
+            class="px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-xs cursor-pointer">
+            Redactar Mensaje
+          </button>
+        </div>
+
+        <!-- Conversation Item -->
+        <div 
+          *ngFor="let c of conversacionesFiltradas"
+          (click)="seleccionarConversacion(c)"
+          [ngClass]="{
+            'bg-gradient-to-r from-slate-800 via-slate-800/90 to-slate-900 border-l-3 border-blue-500 shadow-md ring-1 ring-blue-500/30': selectedConversacion?.id === c.id,
+            'bg-slate-900/40 hover:bg-slate-800/60': selectedConversacion?.id !== c.id,
+            'font-bold': (c.noLeidosCount || 0) > 0
+          }"
+          class="p-3 transition-all duration-150 cursor-pointer relative group">
+          
+          <div class="flex items-start justify-between gap-2.5 mb-1">
+            <!-- Sender Avatar & Name -->
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div 
+                [ngClass]="{
+                  'bg-gradient-to-tr from-purple-600 to-indigo-600 border-purple-400/40': c.contactoRol === 'ADMINISTRADOR',
+                  'bg-gradient-to-tr from-blue-600 to-sky-500 border-blue-400/40': c.contactoRol === 'DOCENTE',
+                  'bg-gradient-to-tr from-emerald-600 to-teal-500 border-emerald-400/40': c.contactoRol === 'ALUMNO'
+                }"
+                class="w-8 h-8 rounded-lg text-white flex items-center justify-center font-black text-xs shrink-0 shadow-xs border">
+                {{ (c.contactoNombre || 'U').charAt(0).toUpperCase() }}
+              </div>
+              <div class="truncate">
+                <span class="text-xs text-slate-100 group-hover:text-blue-400 transition-colors block truncate font-bold" [ngClass]="{'text-white font-black': (c.noLeidosCount || 0) > 0}">
+                  {{ c.contactoNombre || 'Usuario Institucional' }}
+                </span>
+                <span class="block text-[10px] text-slate-400 font-semibold leading-tight">{{ c.contactoRol }}</span>
+              </div>
+            </div>
+
+            <!-- Date -->
+            <div class="flex items-center gap-1 shrink-0">
+              <span class="text-[10px] text-slate-400 font-mono">
+                {{ c.fechaUltimoMensaje | date:'dd/MM, HH:mm' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Subject & Priority Badges -->
+          <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+            <!-- Priority Badge -->
+            <span *ngIf="c.prioridad === 'URGENTE'" class="px-1.5 py-0.5 text-[9px] font-black bg-rose-600/30 text-rose-300 border border-rose-500/50 rounded shrink-0">
+              🔴 URGENTE
+            </span>
+            <span *ngIf="c.prioridad === 'IMPORTANTE'" class="px-1.5 py-0.5 text-[9px] font-black bg-amber-500/30 text-amber-300 border border-amber-500/50 rounded shrink-0">
+              🟡 IMPORTANTE
+            </span>
+
+            <!-- Course Tag if available -->
+            <span *ngIf="c.cursoNombre" class="px-1.5 py-0.5 text-[9px] font-semibold bg-indigo-600/20 text-indigo-300 border border-indigo-400/30 rounded truncate max-w-[130px]">
+              📚 {{ c.cursoNombre }}
+            </span>
+
+            <p class="text-xs text-slate-200 truncate flex-1 font-semibold" [ngClass]="{'text-white font-bold': (c.noLeidosCount || 0) > 0}">
+              {{ c.asunto }}
+            </p>
+          </div>
+
+          <!-- Snippet -->
+          <p class="text-[11px] text-slate-400 truncate line-clamp-1 leading-normal">
+            {{ c.ultimoMensaje || 'Sin mensajes previos' }}
+          </p>
+
+          <!-- Unread Counter Badge -->
+          <div *ngIf="(c.noLeidosCount || 0) > 0" class="absolute right-3 bottom-3 flex items-center justify-center bg-gradient-to-r from-rose-600 to-red-500 text-white text-[10px] font-black w-5 h-5 rounded-full shadow-md shadow-rose-600/50 animate-bounce">
+            <span>{{ c.noLeidosCount }}</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── COLUMN 3: THREAD DETAIL & REPLY PANE ── -->
+    <main 
+      [ngClass]="selectedConversacion ? 'flex' : 'hidden md:flex'"
+      class="flex-1 bg-slate-950 flex flex-col overflow-hidden relative print:block print:bg-white">
+      
+      <!-- ================= COMPACT, ELEGANT EMPTY STATE ================= -->
+      <div *ngIf="!selectedConversacion" class="flex-1 flex flex-col items-center justify-center p-6 text-center">
+        
+        <div class="max-w-md w-full bg-slate-900/60 border border-slate-800/80 rounded-3xl p-6 md:p-8 flex flex-col items-center space-y-4 shadow-xl backdrop-blur-xl">
+          <!-- Sleek Icon Badge -->
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600/25 via-indigo-600/20 to-sky-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-md">
+            <span class="material-symbols-outlined text-3xl font-bold">mark_email_read</span>
+          </div>
+
+          <!-- Title & Subtitle (Compact & Beautiful) -->
+          <div class="space-y-1.5 text-center">
+            <h2 class="text-base md:text-lg font-bold text-white tracking-tight">Centro de Mensajería Institucional</h2>
+            <p class="text-xs text-slate-400 leading-relaxed max-w-sm">
+              Selecciona una conversación del listado izquierdo para revisar el historial completo o inicia una nueva comunicación rápida.
+            </p>
+          </div>
+
+          <!-- Action Button -->
+          <button 
+            (click)="abrirModalRedactar()"
+            class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer border border-blue-400/30">
+            <span class="material-symbols-outlined text-lg">edit_note</span>
+            <span>Redactar Nuevo Mensaje</span>
+          </button>
+
+          <!-- Feature Highlights / Tips (3-grid subtle pills) -->
+          <div class="w-full pt-4 border-t border-slate-800/60 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-left">
+            <div class="p-2.5 bg-slate-950/70 border border-slate-800 rounded-xl flex items-center gap-2">
+              <span class="material-symbols-outlined text-blue-400 text-lg shrink-0">verified_user</span>
+              <span class="text-[11px] text-slate-300 font-medium leading-tight">Canal 100% oficial y seguro</span>
+            </div>
+            <div class="p-2.5 bg-slate-950/70 border border-slate-800 rounded-xl flex items-center gap-2">
+              <span class="material-symbols-outlined text-emerald-400 text-lg shrink-0">attach_file</span>
+              <span class="text-[11px] text-slate-300 font-medium leading-tight">Adjuntos y notas de voz</span>
+            </div>
+            <div class="p-2.5 bg-slate-950/70 border border-slate-800 rounded-xl flex items-center gap-2">
+              <span class="material-symbols-outlined text-amber-400 text-lg shrink-0">done_all</span>
+              <span class="text-[11px] text-slate-300 font-medium leading-tight">Confirmación de lectura</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= ACTIVE THREAD SELECTED ================= -->
+      <ng-container *ngIf="selectedConversacion">
+
+        <!-- Thread Header (Compact & Organized) -->
+        <div class="px-4 py-3 md:px-6 border-b border-slate-800 bg-slate-900/95 flex items-center justify-between shrink-0 backdrop-blur-2xl shadow-sm print:border-b-2 print:border-black print:pb-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <!-- Back button on mobile -->
+            <button 
+              (click)="selectedConversacion = null" 
+              class="md:hidden text-slate-300 hover:text-white p-1.5 rounded-lg bg-slate-800 border border-slate-700 cursor-pointer">
+              <span class="material-symbols-outlined text-xl">arrow_back</span>
+            </button>
+
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 class="text-sm md:text-base font-black text-white truncate max-w-lg print:text-black">
+                  {{ selectedConversacion.asunto }}
+                </h2>
+                <!-- Priority Tag -->
+                <span *ngIf="selectedConversacion.prioridad === 'URGENTE'" class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs">
+                  🔴 URGENTE
+                </span>
+                <span *ngIf="selectedConversacion.prioridad === 'IMPORTANTE'" class="px-2 py-0.5 text-[10px] font-black bg-amber-500 text-slate-950 rounded-full shadow-xs">
+                  🟡 IMPORTANTE
+                </span>
+                <!-- Course Tag -->
+                <span *ngIf="selectedConversacion.cursoNombre" class="px-2 py-0.5 text-[10px] font-semibold bg-indigo-600/30 text-indigo-200 border border-indigo-400/30 rounded-full">
+                  📚 {{ selectedConversacion.cursoNombre }}
+                </span>
+              </div>
+              <p class="text-[11px] md:text-xs text-slate-300 truncate mt-0.5 print:text-slate-700">
+                Interlocutor: <strong class="text-white print:text-black font-bold">{{ selectedConversacion.contactoNombre }}</strong> 
+                <span class="text-blue-400 font-semibold ml-1">({{ selectedConversacion.contactoRol }})</span>
+                <span *ngIf="selectedConversacion.contactoCorreo" class="text-slate-400 font-mono ml-1.5">— {{ selectedConversacion.contactoCorreo }}</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Thread Actions (Print) -->
+          <div class="flex items-center gap-2 shrink-0 print:hidden">
+            <button 
+              (click)="imprimirConversacion()" 
+              title="Exportar a PDF / Imprimir"
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 hover:border-slate-600 rounded-lg text-xs font-bold transition-all shadow-xs cursor-pointer">
+              <span class="material-symbols-outlined text-base text-blue-400">print</span>
+              <span class="hidden sm:inline">Imprimir / PDF</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages Chat Chronology Container -->
+        <div id="threadChatContainer" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 print:space-y-4 print:overflow-visible">
+          
+          <div *ngIf="isLoadingThread" class="p-8 text-center text-slate-400 space-y-3">
+            <div class="inline-block w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-xs font-bold text-slate-300">Cargando historial de mensajes...</p>
+          </div>
+
+          <!-- Message Bubbles -->
+          <ng-container *ngIf="!isLoadingThread">
+            <div 
+              *ngFor="let msg of selectedConversacion.mensajes"
+              [ngClass]="esMio(msg) ? 'items-end' : 'items-start'"
+              class="flex flex-col max-w-[90%] md:max-w-[80%]"
+              [class.ml-auto]="esMio(msg)">
+              
+              <!-- Sender Header Label -->
+              <div class="flex items-center gap-2 mb-1 px-2 text-[11px] text-slate-400 font-mono">
+                <span class="font-bold" [ngClass]="esMio(msg) ? 'text-blue-400' : 'text-emerald-400'">
+                  {{ esMio(msg) ? 'Tú (Yo)' : msg.remitenteNombre }}
+                </span>
+                <span>•</span>
+                <span>{{ msg.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+
+              <!-- Bubble Box -->
+              <div 
+                [ngClass]="esMio(msg) 
+                  ? 'bg-gradient-to-br from-blue-600/30 via-indigo-900/35 to-slate-900 border border-blue-500/40 text-white rounded-2xl rounded-tr-xs shadow-md' 
+                  : 'bg-slate-900 border border-slate-800 text-slate-100 rounded-2xl rounded-tl-xs shadow-sm print:bg-slate-100 print:text-black print:border-slate-400'"
+                class="p-4 space-y-3 w-full">
+                
+                <!-- Text Body -->
+                <p class="text-xs md:text-sm whitespace-pre-wrap leading-relaxed font-normal">
+                  {{ msg.contenido }}
+                </p>
+
+                <!-- Attached File / Audio Box -->
+                <div *ngIf="msg.adjuntoUrl" class="pt-2.5 border-t border-slate-800/80 print:border-slate-400">
+                  
+                  <!-- Audio Player if voice note -->
+                  <div *ngIf="isAudio(null, msg.adjuntoNombre)" class="space-y-1.5 p-2.5 bg-slate-950/90 rounded-xl border border-rose-500/30 shadow-inner">
+                    <div class="flex items-center gap-2 text-[11px] font-bold text-rose-400 uppercase tracking-wider">
+                      <span class="material-symbols-outlined text-base">mic</span>
+                      <span>Nota de Voz</span>
+                      <span *ngIf="msg.adjuntoTamano" class="text-[10px] text-slate-400 font-mono font-normal">({{ msg.adjuntoTamano }})</span>
+                    </div>
+                    <audio controls [src]="msg.adjuntoUrl" class="w-full h-8 rounded-lg"></audio>
+                  </div>
+
+                  <!-- File Download Card -->
+                  <div *ngIf="!isAudio(null, msg.adjuntoNombre)" class="flex items-center justify-between p-2.5 bg-slate-950/90 rounded-xl border border-slate-800 hover:border-emerald-500/40 transition-colors shadow-inner">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-emerald-600/25 to-teal-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-xl">{{ getIconForFile(null, msg.adjuntoNombre) }}</span>
+                      </div>
+                      <div class="min-w-0">
+                        <p class="text-xs font-bold text-white truncate">{{ msg.adjuntoNombre || 'Documento adjunto' }}</p>
+                        <p class="text-[10px] text-slate-400 font-mono">{{ msg.adjuntoTamano || '' }}</p>
+                      </div>
+                    </div>
+                    <a 
+                      [href]="msg.adjuntoUrl" 
+                      [download]="msg.adjuntoNombre || 'descarga'"
+                      target="_blank"
+                      class="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 transition-all shadow-xs cursor-pointer shrink-0 ml-2">
+                      <span class="material-symbols-outlined text-sm">download</span>
+                      <span>Descargar</span>
+                    </a>
+                  </div>
+
+                </div>
+
+                <!-- Read Receipt (Double check & Star) -->
+                <div class="flex items-center justify-between gap-2 pt-1.5 text-[11px] text-slate-400 font-mono border-t border-slate-800/40">
+                  <button 
+                    (click)="toggleDestacado(msg, $event)" 
+                    class="text-slate-400 hover:text-amber-400 transition-colors p-0.5 cursor-pointer flex items-center gap-1 text-[11px]">
+                    <span class="material-symbols-outlined text-base" [ngClass]="msg.destacado ? 'text-amber-400 fill-current' : 'text-slate-400'">
+                      star
+                    </span>
+                    <span [ngClass]="{'text-amber-300 font-bold': msg.destacado}">{{ msg.destacado ? 'Destacado' : 'Destacar' }}</span>
+                  </button>
+
+                  <ng-container *ngIf="esMio(msg)">
+                    <span *ngIf="msg.leido" class="flex items-center gap-1 text-emerald-400 font-bold" title="Visto: {{ msg.fechaLeido | date:'dd/MM/yyyy HH:mm' }}">
+                      <span class="material-symbols-outlined text-sm">done_all</span>
+                      <span>Visto {{ msg.fechaLeido | date:'HH:mm' }}</span>
+                    </span>
+                    <span *ngIf="!msg.leido" class="flex items-center gap-1 text-slate-400 font-medium" title="Enviado">
+                      <span class="material-symbols-outlined text-sm">done</span>
+                      <span>Enviado</span>
+                    </span>
+                  </ng-container>
+                </div>
+
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
+
+        <!-- ── REPLY COMPOSER FOOTER ── -->
+        <div class="p-3.5 md:p-4 border-t border-slate-800 bg-slate-900/95 shrink-0 backdrop-blur-2xl space-y-2.5 shadow-xl print:hidden">
+          
+          <!-- Canned Responses (Quick Replies) -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-amber-400 shrink-0 flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">lightbulb</span>
+              <span>Respuestas Rápidas:</span>
+            </span>
+            <button 
+              *ngFor="let p of plantillasRapidas" 
+              (click)="insertarPlantilla(p)"
+              class="px-2.5 py-1 bg-slate-950 hover:bg-slate-800 hover:text-amber-300 border border-slate-800 hover:border-amber-500/40 text-slate-300 rounded-full text-[11px] font-medium whitespace-nowrap transition-all shadow-xs cursor-pointer">
+              {{ p }}
+            </button>
+          </div>
+
+          <!-- Attachment / Voice Note Preview if present -->
+          <div *ngIf="adjuntoRespuestaBase64" class="p-2.5 bg-slate-950 rounded-xl border border-blue-500/30 flex items-center justify-between shadow-inner">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="material-symbols-outlined text-blue-400 text-xl">{{ getIconForFile(adjuntoRespuestaTipo, adjuntoRespuestaNombre) }}</span>
+              <span class="text-xs font-bold text-white truncate">{{ adjuntoRespuestaNombre }}</span>
+              <span class="text-[10px] text-slate-400 font-mono">({{ adjuntoRespuestaTamano }})</span>
+            </div>
+            <button (click)="eliminarAdjunto('RESPUESTA')" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+          </div>
+
+          <!-- Voice Recording Bar if Active -->
+          <div *ngIf="isRecording && recordingTarget === 'RESPUESTA'" class="p-3 bg-gradient-to-r from-rose-950/80 via-red-950/60 to-slate-950 border border-rose-500/60 rounded-xl flex items-center justify-between animate-pulse shadow-md">
+            <div class="flex items-center gap-2.5">
+              <div class="w-3 h-3 rounded-full bg-rose-500 animate-ping"></div>
+              <span class="text-xs font-bold text-rose-200">Grabando nota de voz ({{ formatDuration(recordingDurationSeconds) }})</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button (click)="cancelarGrabacion()" class="px-3 py-1 bg-slate-800 text-slate-200 hover:bg-slate-700 text-xs font-bold rounded-lg cursor-pointer">
+                Cancelar
+              </button>
+              <button (click)="detenerGrabacion()" class="px-3 py-1 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-xs cursor-pointer">
+                Listo / Guardar
+              </button>
+            </div>
+          </div>
+
+          <!-- Input Textarea & Toolbar -->
+          <div class="relative flex flex-col bg-slate-950 border border-slate-800 focus-within:border-blue-500 rounded-xl shadow-inner transition-all">
+            <textarea 
+              [(ngModel)]="respuestaTexto"
+              (input)="guardarBorradorRespuesta()"
+              (keydown.control.enter)="enviarRespuesta()"
+              rows="2"
+              placeholder="Escribe tu respuesta institucional aquí... (Presiona Ctrl + Enter para enviar)"
+              class="w-full bg-transparent p-3 text-xs md:text-sm text-slate-100 placeholder-slate-400 resize-none focus:outline-hidden font-medium">
+            </textarea>
+
+            <!-- Bottom Toolbar -->
+            <div class="p-2 border-t border-slate-800/80 flex items-center justify-between bg-slate-900/60 rounded-b-xl">
+              
+              <!-- Left tools (File, Voice Note) -->
+              <div class="flex items-center gap-2">
+                <!-- File upload button -->
+                <label class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-emerald-950/40 text-slate-200 hover:text-emerald-300 border border-slate-700 hover:border-emerald-500/40 rounded-lg text-xs font-medium transition-all shadow-xs cursor-pointer" title="Adjuntar documento o imagen">
+                  <span class="material-symbols-outlined text-base text-emerald-400">attach_file</span>
+                  <span>Adjuntar Archivo</span>
+                  <input type="file" (change)="onFileSelected($event, 'RESPUESTA')" class="hidden">
+                </label>
+
+                <!-- Voice Note Button -->
+                <button 
+                  (click)="iniciarGrabacion('RESPUESTA')" 
+                  title="Grabar nota de voz"
+                  class="flex items-center gap-1.5 px-3 py-1.5 bg-rose-950/30 hover:bg-rose-900/50 text-rose-300 hover:text-white border border-rose-500/30 rounded-lg text-xs font-medium transition-all shadow-xs cursor-pointer">
+                  <span class="material-symbols-outlined text-base text-rose-400">mic</span>
+                  <span>Grabar Audio</span>
+                </button>
+              </div>
+
+              <!-- Send Button -->
+              <button 
+                (click)="enviarRespuesta()"
+                [disabled]="isSending || (!respuestaTexto.trim() && !adjuntoRespuestaBase64)"
+                class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-md shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer border border-blue-400/30">
+                <span *ngIf="isSending" class="inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                <span class="material-symbols-outlined text-base font-bold">send</span>
+                <span>Enviar Respuesta</span>
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+
+      </ng-container>
+
+    </main>
+
+  </div>
+
+  <!-- ================= MODAL REDACTAR NUEVO MENSAJE ================= -->
+  <div *ngIf="modalRedactarOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-slate-950/85 backdrop-blur-md animate-fade-in print:hidden">
+    <div class="w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-gradient-to-r from-slate-950 to-slate-900 border-b border-slate-800 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-400 text-white flex items-center justify-center shadow-md border border-blue-400/30">
+            <span class="material-symbols-outlined text-xl font-bold">edit_note</span>
+          </div>
+          <div>
+            <h3 class="text-sm md:text-base font-bold text-white uppercase tracking-wider">Redactar Nuevo Mensaje</h3>
+            <p class="text-[11px] text-slate-400 font-medium">Completa los campos para emitir una comunicación institucional segura</p>
+          </div>
+        </div>
+        <button (click)="cerrarModalRedactar()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body Form -->
+      <form [formGroup]="nuevoMensajeForm" (ngSubmit)="enviarNuevoMensaje()" class="flex-1 overflow-y-auto p-6 space-y-4">
+        
+        <!-- Recipient Type (Admins & Docentes have broadcast options) -->
+        <div *ngIf="currentUser?.rol === 'ADMINISTRADOR' || currentUser?.rol === 'DOCENTE'" class="space-y-1.5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Tipo de Envío</label>
+          <select 
+            formControlName="tipo"
+            class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl px-3.5 py-2 text-xs text-slate-100 font-semibold focus:border-blue-500 focus:ring-1 focus:ring-blue-500 cursor-pointer shadow-inner transition-all">
+            <option value="INDIVIDUAL">Destinatario Individual</option>
+            <option value="CURSO_MASIVO">Por Curso Específico (Todos los matriculados)</option>
+            <option *ngIf="currentUser?.rol === 'ADMINISTRADOR'" value="TODOS_ALUMNOS">Masivo: Todos los Alumnos</option>
+            <option *ngIf="currentUser?.rol === 'ADMINISTRADOR'" value="TODOS_DOCENTES">Masivo: Todos los Docentes</option>
+          </select>
+        </div>
+
+        <!-- Course Selector when CURSO_MASIVO is selected -->
+        <div *ngIf="nuevoMensajeForm.get('tipo')?.value === 'CURSO_MASIVO'" class="space-y-1.5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Seleccionar Curso <span class="text-rose-400">*</span></label>
+          <select 
+            formControlName="cursoId"
+            class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl px-3.5 py-2 text-xs text-slate-100 font-semibold focus:border-blue-500 focus:ring-1 focus:ring-blue-500 cursor-pointer shadow-inner transition-all">
+            <option [ngValue]="null" disabled selected>Seleccione un curso...</option>
+            <option *ngFor="let c of cursosDisponibles" [ngValue]="c.id">
+              {{ c.titulo }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Individual Recipient Selector -->
+        <div *ngIf="nuevoMensajeForm.get('tipo')?.value === 'INDIVIDUAL'" class="space-y-1.5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Destinatario <span class="text-rose-400">*</span></label>
+          <select 
+            formControlName="destinatarioId"
+            class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl px-3.5 py-2 text-xs text-slate-100 font-semibold focus:border-blue-500 focus:ring-1 focus:ring-blue-500 cursor-pointer shadow-inner transition-all">
+            <option [ngValue]="null" disabled selected>Seleccione un destinatario...</option>
+            <option *ngFor="let d of destinatarios" [ngValue]="d.id">
+              {{ d.nombreCompleto }} ({{ d.rol }}) {{ d.cursoNombre ? '— ' + d.cursoNombre : '' }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Subject -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Asunto del Mensaje <span class="text-rose-400">*</span></label>
+          <input 
+            type="text" 
+            formControlName="asunto"
+            placeholder="Ej: Consulta sobre el trabajo final del Módulo 3"
+            class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 font-semibold focus:border-blue-500 focus:ring-1 focus:ring-blue-500 shadow-inner transition-all">
+        </div>
+
+        <!-- Priority Selector -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Nivel de Prioridad</label>
+          <div class="grid grid-cols-3 gap-2.5">
+            <label 
+              [ngClass]="nuevoMensajeForm.get('prioridad')?.value === 'NORMAL' ? 'bg-blue-600/25 border-blue-500 text-white font-bold shadow-xs ring-1 ring-blue-500' : 'bg-slate-950 border-slate-800 text-slate-400 font-medium hover:border-slate-700'"
+              class="flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs cursor-pointer transition-all">
+              <input type="radio" formControlName="prioridad" value="NORMAL" class="hidden">
+              <span>⚪ Normal</span>
+            </label>
+            <label 
+              [ngClass]="nuevoMensajeForm.get('prioridad')?.value === 'IMPORTANTE' ? 'bg-amber-600/25 border-amber-500 text-amber-200 font-bold shadow-xs ring-1 ring-amber-500' : 'bg-slate-950 border-slate-800 text-slate-400 font-medium hover:border-slate-700'"
+              class="flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs cursor-pointer transition-all">
+              <input type="radio" formControlName="prioridad" value="IMPORTANTE" class="hidden">
+              <span>🟡 Importante</span>
+            </label>
+            <label 
+              [ngClass]="nuevoMensajeForm.get('prioridad')?.value === 'URGENTE' ? 'bg-rose-600/25 border-rose-500 text-rose-200 font-bold shadow-xs ring-1 ring-rose-500' : 'bg-slate-950 border-slate-800 text-slate-400 font-medium hover:border-slate-700'"
+              class="flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs cursor-pointer transition-all">
+              <input type="radio" formControlName="prioridad" value="URGENTE" class="hidden">
+              <span>🔴 Urgente</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Body Message -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-300">Contenido del Mensaje <span class="text-rose-400">*</span></label>
+          <textarea 
+            formControlName="contenido"
+            rows="4"
+            placeholder="Escribe el contenido detallado de tu comunicación..."
+            class="w-full bg-slate-950 border border-slate-800 hover:border-blue-500 rounded-xl p-3 text-xs text-slate-100 placeholder-slate-500 font-normal focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-inner transition-all">
+          </textarea>
+        </div>
+
+        <!-- Attachment Box -->
+        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2.5">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-emerald-400">attachment</span>
+              <span>Adjunto o Nota de Voz</span>
+            </span>
+            <div class="flex items-center gap-2">
+              <label class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-950/40 text-slate-200 hover:text-emerald-300 text-xs font-medium rounded-lg border border-slate-700 hover:border-emerald-500/40 cursor-pointer shadow-xs transition-all flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base text-emerald-400">upload_file</span>
+                <span>Subir Archivo</span>
+                <input type="file" (change)="onFileSelected($event, 'NUEVO')" class="hidden">
+              </label>
+              <button 
+                type="button"
+                (click)="iniciarGrabacion('NUEVO')"
+                class="px-3 py-1.5 bg-rose-950/40 text-rose-300 hover:bg-rose-900/60 border border-rose-500/40 text-xs font-medium rounded-lg flex items-center gap-1.5 cursor-pointer shadow-xs transition-all">
+                <span class="material-symbols-outlined text-base text-rose-400">mic</span>
+                <span>Grabar Voz</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Recording -->
+          <div *ngIf="isRecording && recordingTarget === 'NUEVO'" class="p-2.5 bg-gradient-to-r from-rose-950/80 to-slate-950 border border-rose-500/60 rounded-lg flex items-center justify-between animate-pulse">
+            <span class="text-xs font-bold text-rose-200">Grabando nota de voz... ({{ formatDuration(recordingDurationSeconds) }})</span>
+            <div class="flex items-center gap-2">
+              <button type="button" (click)="cancelarGrabacion()" class="px-2.5 py-1 bg-slate-800 text-xs font-bold rounded-lg cursor-pointer">Cancelar</button>
+              <button type="button" (click)="detenerGrabacion()" class="px-2.5 py-1 bg-rose-600 text-white font-bold text-xs rounded-lg cursor-pointer">Listo</button>
+            </div>
+          </div>
+
+          <!-- Selected Attachment Preview -->
+          <div *ngIf="adjuntoNuevoBase64" class="flex items-center justify-between p-2.5 bg-slate-900 rounded-xl border border-slate-800">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="material-symbols-outlined text-emerald-400 text-xl">{{ getIconForFile(adjuntoNuevoTipo, adjuntoNuevoNombre) }}</span>
+              <span class="text-xs font-bold text-white truncate">{{ adjuntoNuevoNombre }}</span>
+              <span class="text-[10px] text-slate-400 font-mono">({{ adjuntoNuevoTamano }})</span>
+            </div>
+            <button type="button" (click)="eliminarAdjunto('NUEVO')" class="text-rose-400 hover:text-rose-300 p-1 cursor-pointer hover:scale-110">
+              <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+          <button 
+            type="button" 
+            (click)="cerrarModalRedactar()" 
+            class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer transition-all">
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            [disabled]="isSending || nuevoMensajeForm.invalid"
+            class="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer border border-blue-400/30">
+            <span *ngIf="isSending" class="inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            <span class="material-symbols-outlined text-lg font-bold">send</span>
+            <span>Enviar Mensaje</span>
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>

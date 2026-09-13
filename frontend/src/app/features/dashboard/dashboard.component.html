@@ -1,0 +1,796 @@
+﻿<div class="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-body text-slate-800 dark:text-slate-200 transition-colors duration-350">
+
+  <!-- ============================================================ -->
+  <!-- MOBILE SIDEBAR DRAWER OVERLAY                                 -->
+  <!-- Shown only on mobile when sidebarOpen=true. md+ uses static. -->
+  <!-- ============================================================ -->
+
+  <!-- Dark backdrop -->
+  <div
+    *ngIf="sidebarOpen"
+    (click)="closeSidebar()"
+    class="fixed inset-0 z-40 bg-black/60 md:hidden"
+    aria-hidden="true">
+  </div>
+
+  <!-- Slide-out drawer panel (mobile) -->
+  <aside
+    class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0b0f19] text-slate-300 flex flex-col justify-between border-r border-slate-800 select-none transition-transform duration-300 md:hidden"
+    [ngClass]="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+
+    <!-- Brand header -->
+    <div>
+      <div class="px-6 py-5 border-b border-slate-800 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 border-2 border-primary bg-primary/10 flex items-center justify-center font-black text-sm text-white">
+            I
+          </div>
+          <div>
+            <h2 class="text-xs font-black tracking-wider uppercase text-slate-100 leading-none">Plataforma LMS</h2>
+            <span class="text-[8px] text-slate-500 font-bold uppercase tracking-widest leading-none">Panel Administrativo</span>
+          </div>
+        </div>
+        <!-- Close button -->
+        <button
+          (click)="closeSidebar()"
+          class="text-slate-400 hover:text-white p-1 transition-colors"
+          aria-label="Cerrar menú">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Mobile nav links -->
+      <nav class="p-4 space-y-1" *ngIf="profile">
+
+        <!-- ADMINISTRADOR -->
+        <ng-container *ngIf="profile.rol === 'ADMINISTRADOR'">
+          <a
+            routerLink="/dashboard"
+            [routerLinkActiveOptions]="{exact: true}"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">dashboard</span>
+            <span>Dashboard</span>
+          </a>
+          <a
+            routerLink="/dashboard/alumnos"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">school</span>
+            <span>Alumnos</span>
+          </a>
+          <a
+            routerLink="/dashboard/docentes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">groups</span>
+            <span>Docentes</span>
+          </a>
+          <a
+            routerLink="/dashboard/cursos"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">auto_stories</span>
+            <span>Cursos</span>
+          </a>
+          <!-- Certificados (Comentado según requerimiento)
+          <a
+            routerLink="/dashboard/certificados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">verified</span>
+            <span>Certificados</span>
+          </a>
+          -->
+          <!-- Mensajes (Comentado según requerimiento)
+          <a
+            routerLink="/dashboard/mensajes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">forum</span>
+              <span>Mensajes</span>
+            </div>
+            <span 
+              *ngIf="mensajesNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-primary text-white rounded-full shadow-xs animate-pulse">
+              {{ mensajesNoLeidosCount }}
+            </span>
+          </a>
+          -->
+          <a
+            routerLink="/dashboard/configuracion"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">settings</span>
+            <span>Configuración</span>
+          </a>
+          <!-- Auditoría integrada dentro de Sistema
+          <a
+            routerLink="/dashboard/auditoria"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">shield</span>
+            <span>Auditoría</span>
+          </a>
+          -->
+          <a
+            routerLink="/dashboard/sistema"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">settings_suggest</span>
+            <span>Sistema</span>
+          </a>
+          <a
+            routerLink="/dashboard/comunicados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">campaign</span>
+              <span>Comunicados</span>
+            </div>
+            <span 
+              *ngIf="comunicadosNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ comunicadosNoLeidosCount }}
+            </span>
+          </a>
+        </ng-container>
+
+        <!-- DOCENTE -->
+        <ng-container *ngIf="profile.rol === 'DOCENTE'">
+          <a
+            routerLink="/dashboard"
+            [routerLinkActiveOptions]="{exact: true}"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">home</span>
+            <span>Inicio</span>
+          </a>
+          <a
+            routerLink="/dashboard/mis-cursos-docente"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">auto_stories</span>
+            <span>Mis Cursos</span>
+          </a>
+          <a
+            routerLink="/dashboard/docente/tareas"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">assignment</span>
+              <span>Tareas</span>
+            </div>
+            <span 
+              *ngIf="tareasPendientesCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ tareasPendientesCount }}
+            </span>
+          </a>
+          <!-- Mensajes (Comentado según requerimiento)
+          <a
+            routerLink="/dashboard/mensajes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">forum</span>
+              <span>Mensajes</span>
+            </div>
+            <span 
+              *ngIf="mensajesNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-primary text-white rounded-full shadow-xs animate-pulse">
+              {{ mensajesNoLeidosCount }}
+            </span>
+          </a>
+          -->
+          <a
+            routerLink="/dashboard/comunicados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">campaign</span>
+              <span>Comunicados</span>
+            </div>
+            <span 
+              *ngIf="comunicadosNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ comunicadosNoLeidosCount }}
+            </span>
+          </a>
+          <a
+            routerLink="/dashboard/perfil"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span>Perfil</span>
+          </a>
+        </ng-container>
+
+        <!-- ALUMNO -->
+        <ng-container *ngIf="profile.rol === 'ALUMNO'">
+          <a
+            routerLink="/dashboard"
+            [routerLinkActiveOptions]="{exact: true}"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">home</span>
+            <span>Inicio</span>
+          </a>
+          <a
+            routerLink="/dashboard/mis-cursos"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">auto_stories</span>
+            <span>Mis Cursos</span>
+          </a>
+          <a
+            routerLink="/dashboard/mis-tareas"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">assignment</span>
+              <span>Mis Tareas</span>
+            </div>
+            <span 
+              *ngIf="tareasPendientesCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ tareasPendientesCount }}
+            </span>
+          </a>
+          <a
+            routerLink="/dashboard/certificados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">workspace_premium</span>
+            <span>Certificados</span>
+          </a>
+          <!-- Mensajes (Comentado según requerimiento)
+          <a
+            routerLink="/dashboard/mensajes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">forum</span>
+              <span>Mensajes</span>
+            </div>
+            <span 
+              *ngIf="mensajesNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-primary text-white rounded-full shadow-xs animate-pulse">
+              {{ mensajesNoLeidosCount }}
+            </span>
+          </a>
+          -->
+          <a
+            routerLink="/dashboard/comunicados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">campaign</span>
+              <span>Comunicados</span>
+            </div>
+            <span 
+              *ngIf="comunicadosNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ comunicadosNoLeidosCount }}
+            </span>
+          </a>
+          <a
+            routerLink="/dashboard/perfil"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span>Perfil</span>
+          </a>
+        </ng-container>
+
+      </nav>
+    </div>
+
+    <!-- Profile + logout at bottom (mobile drawer) -->
+    <div class="p-4 border-t border-slate-800 bg-slate-950/40">
+      <div *ngIf="profile" class="flex items-center gap-3 mb-3">
+        <div class="w-8 h-8 bg-primary/20 text-primary border border-primary/30 flex items-center justify-center font-bold text-xs">
+          {{ profile.nombres.charAt(0) }}{{ profile.apellidos.charAt(0) }}
+        </div>
+        <div class="overflow-hidden">
+          <h4 class="text-xs font-bold text-slate-200 truncate">{{ profile.nombres }} {{ profile.apellidos }}</h4>
+          <span class="text-[9px] text-slate-500 block truncate">{{ profile.correo }}</span>
+        </div>
+      </div>
+      <button
+        (click)="onLogout()"
+        class="w-full flex items-center justify-center gap-2 py-2 border border-red-900/30 text-red-400 hover:text-red-300 hover:bg-red-950/20 text-[10px] font-bold uppercase tracking-wider transition-colors rounded-none">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================ -->
+  <!-- DESKTOP SIDEBAR (md and above, always visible)               -->
+  <!-- ============================================================ -->
+  <aside class="hidden md:flex md:w-64 md:flex-col md:justify-between bg-[#0b0f19] text-slate-300 border-r border-slate-800 select-none shrink-0 h-full">
+    <div>
+      <!-- Brand header -->
+      <div class="px-6 py-5 border-b border-slate-800 flex items-center gap-3">
+        <div class="w-8 h-8 border-2 border-primary bg-primary/10 flex items-center justify-center font-black text-sm text-white">
+          I
+        </div>
+        <div>
+          <h2 class="text-xs font-black tracking-wider uppercase text-slate-100 leading-none">Plataforma LMS</h2>
+          <span class="text-[8px] text-slate-500 font-bold uppercase tracking-widest leading-none">Panel Administrativo</span>
+        </div>
+      </div>
+
+      <!-- Desktop nav links -->
+      <nav class="p-4 space-y-1" *ngIf="profile">
+
+        <!-- ADMINISTRADOR -->
+        <ng-container *ngIf="profile.rol === 'ADMINISTRADOR'">
+          <a
+            routerLink="/dashboard"
+            [routerLinkActiveOptions]="{exact: true}"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">dashboard</span>
+            <span>Dashboard</span>
+          </a>
+          <a
+            routerLink="/dashboard/alumnos"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">school</span>
+            <span>Alumnos</span>
+          </a>
+          <a
+            routerLink="/dashboard/docentes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">groups</span>
+            <span>Docentes</span>
+          </a>
+          <a
+            routerLink="/dashboard/cursos"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">auto_stories</span>
+            <span>Cursos</span>
+          </a>
+          <!-- Certificados (Comentado según requerimiento)
+          <a
+            routerLink="/dashboard/certificados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">verified</span>
+            <span>Certificados</span>
+          </a>
+          -->
+          <!-- Mensajes (Comentado según requerimiento)
+          <a
+            routerLink="/dashboard/mensajes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">forum</span>
+              <span>Mensajes</span>
+            </div>
+            <span 
+              *ngIf="mensajesNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-primary text-white rounded-full shadow-xs animate-pulse">
+              {{ mensajesNoLeidosCount }}
+            </span>
+          </a>
+          -->
+          <a
+            routerLink="/dashboard/configuracion"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">settings</span>
+            <span>Configuración</span>
+          </a>
+          <!-- Auditoría integrada dentro de Sistema
+          <a
+            routerLink="/dashboard/auditoria"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">shield</span>
+            <span>Auditoría</span>
+          </a>
+          -->
+          <a
+            routerLink="/dashboard/sistema"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">settings_suggest</span>
+            <span>Sistema</span>
+          </a>
+          <a
+            routerLink="/dashboard/comunicados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">campaign</span>
+              <span>Comunicados</span>
+            </div>
+            <span 
+              *ngIf="comunicadosNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ comunicadosNoLeidosCount }}
+            </span>
+          </a>
+        </ng-container>
+
+        <!-- DOCENTE -->
+        <ng-container *ngIf="profile.rol === 'DOCENTE'">
+          <a
+            routerLink="/dashboard"
+            [routerLinkActiveOptions]="{exact: true}"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">home</span>
+            <span>Inicio</span>
+          </a>
+          <a
+            routerLink="/dashboard/mis-cursos-docente"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">auto_stories</span>
+            <span>Mis Cursos</span>
+          </a>
+          <a
+            routerLink="/dashboard/docente/tareas"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">assignment</span>
+            <span>Tareas</span>
+          </a>
+          <!-- Mensajes (Comentado según requerimiento)
+          <a
+            routerLink="/dashboard/mensajes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">forum</span>
+              <span>Mensajes</span>
+            </div>
+            <span 
+              *ngIf="mensajesNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-primary text-white rounded-full shadow-xs animate-pulse">
+              {{ mensajesNoLeidosCount }}
+            </span>
+          </a>
+          -->
+          <a
+            routerLink="/dashboard/comunicados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">campaign</span>
+              <span>Comunicados</span>
+            </div>
+            <span 
+              *ngIf="comunicadosNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ comunicadosNoLeidosCount }}
+            </span>
+          </a>
+          <a
+            routerLink="/dashboard/perfil"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span>Perfil</span>
+          </a>
+        </ng-container>
+
+        <!-- ALUMNO -->
+        <ng-container *ngIf="profile.rol === 'ALUMNO'">
+          <a
+            routerLink="/dashboard"
+            [routerLinkActiveOptions]="{exact: true}"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">home</span>
+            <span>Inicio</span>
+          </a>
+          <a
+            routerLink="/dashboard/mis-cursos"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">auto_stories</span>
+            <span>Mis Cursos</span>
+          </a>
+          <a
+            routerLink="/dashboard/mis-tareas"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">assignment</span>
+              <span>Mis Tareas</span>
+            </div>
+            <span 
+              *ngIf="tareasPendientesCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ tareasPendientesCount }}
+            </span>
+          </a>
+          <a
+            routerLink="/dashboard/certificados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">workspace_premium</span>
+            <span>Certificados</span>
+          </a>
+          <!-- Mensajes (Comentado según requerimiento)
+          <a
+            routerLink="/dashboard/mensajes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">forum</span>
+              <span>Mensajes</span>
+            </div>
+            <span 
+              *ngIf="mensajesNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-primary text-white rounded-full shadow-xs animate-pulse">
+              {{ mensajesNoLeidosCount }}
+            </span>
+          </a>
+          -->
+          <a
+            routerLink="/dashboard/comunicados"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center justify-between px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none group">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-lg">campaign</span>
+              <span>Comunicados</span>
+            </div>
+            <span 
+              *ngIf="comunicadosNoLeidosCount > 0" 
+              class="px-2 py-0.5 text-[10px] font-black bg-rose-600 text-white rounded-full shadow-xs animate-pulse">
+              {{ comunicadosNoLeidosCount }}
+            </span>
+          </a>
+          <a
+            routerLink="/dashboard/perfil"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">person</span>
+            <span>Perfil</span>
+          </a>
+        </ng-container>
+
+      </nav>
+    </div>
+
+    <!-- Profile + logout at bottom (desktop sidebar) -->
+    <div class="p-4 border-t border-slate-800 bg-slate-950/40">
+      <div *ngIf="profile" class="flex items-center gap-3 mb-3">
+        <div class="w-8 h-8 bg-primary/20 text-primary border border-primary/30 flex items-center justify-center font-bold text-xs">
+          {{ profile.nombres.charAt(0) }}{{ profile.apellidos.charAt(0) }}
+        </div>
+        <div class="overflow-hidden">
+          <h4 class="text-xs font-bold text-slate-200 truncate">{{ profile.nombres }} {{ profile.apellidos }}</h4>
+          <span class="text-[9px] text-slate-500 block truncate">{{ profile.correo }}</span>
+        </div>
+      </div>
+      <button
+        (click)="onLogout()"
+        class="w-full flex items-center justify-center gap-2 py-2 border border-red-900/30 text-red-400 hover:text-red-300 hover:bg-red-950/20 text-[10px] font-bold uppercase tracking-wider transition-colors rounded-none">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================ -->
+  <!-- RIGHT PANEL: Topbar + Main content                           -->
+  <!-- ============================================================ -->
+  <div class="flex-grow flex flex-col h-full overflow-hidden min-w-0">
+
+    <!-- EXP Plataforma LMS Banner de Temporizador Flotante -->
+    <app-exp-timer-banner *ngIf="isExpUser"></app-exp-timer-banner>
+
+    <!-- Topbar -->
+    <header class="h-14 md:h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between px-4 md:px-8 shrink-0 gap-2 transition-colors duration-350">
+
+      <!-- LEFT: hamburger (mobile) + status indicator -->
+      <div class="flex items-center gap-2 md:gap-3">
+        <!-- Hamburger – mobile only -->
+        <button
+          (click)="toggleSidebar()"
+          class="md:hidden flex items-center justify-center w-9 h-9 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors rounded"
+          aria-label="Abrir menú">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+
+        <!-- Status pill – hidden on xs, shown sm+ -->
+        <div class="hidden sm:flex items-center gap-2">
+          <span class="w-2.5 h-2.5 bg-emerald-500 rounded-none"></span>
+          <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Consola Activa</span>
+        </div>
+      </div>
+
+      <!-- CENTER: Brand name on mobile only -->
+      <div class="sm:hidden flex items-center gap-2">
+        <div class="w-6 h-6 border-2 border-primary bg-primary/10 flex items-center justify-center font-black text-xs text-white">
+          I
+        </div>
+        <span class="text-xs font-black tracking-wider uppercase text-slate-800 dark:text-slate-200">Plataforma LMS</span>
+      </div>
+
+      <!-- RIGHT: Notificaciones + Theme Switch + Role badge (sm+) + logout icon (mobile) -->
+      <div class="flex items-center gap-2 md:gap-3">
+        <!-- Menú de Notificaciones (Campanita) -->
+        <app-notificaciones-menu></app-notificaciones-menu>
+
+        <!-- Theme conmutador -->
+        <button (click)="themeService.toggleTheme()" class="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white p-2 rounded-full transition-colors focus:outline-none" aria-label="Cambiar tema">
+          <span class="material-symbols-outlined text-2xl">
+            {{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}
+          </span>
+        </button>
+
+        <div *ngIf="profile" class="hidden sm:flex items-center gap-4 text-xs font-semibold">
+          <span class="text-slate-500 dark:text-slate-400">Rol: <strong class="text-primary dark:text-primary-fixed uppercase">{{ profile.rol }}</strong></span>
+        </div>
+        
+        <!-- Logout icon – mobile only -->
+        <button
+          (click)="onLogout()"
+          class="md:hidden flex items-center justify-center w-9 h-9 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors rounded"
+          aria-label="Cerrar sesión">
+          <span class="material-symbols-outlined text-xl">logout</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main workspace – pb-20 on mobile to clear bottom nav -->
+    <main class="flex-grow p-4 md:p-8 overflow-y-auto pb-20 md:pb-8">
+
+      <ng-container *ngIf="isLoading">
+        <app-skeleton-loader type="custom"></app-skeleton-loader>
+      </ng-container>
+
+      <div *ngIf="errorMsg" class="flex flex-col items-center justify-center h-full">
+        <div class="border border-red-200 bg-red-50 p-6 max-w-sm w-full text-center">
+          <span class="material-symbols-outlined text-red-600 text-3xl mb-2">warning</span>
+          <h4 class="text-sm font-bold text-red-900 uppercase">Error de Inicialización</h4>
+          <p class="text-xs text-red-600 mt-2">{{ errorMsg }}</p>
+        </div>
+      </div>
+
+      <!-- Content matches nested routing -->
+      <router-outlet *ngIf="!isLoading && !errorMsg"></router-outlet>
+    </main>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MOBILE BOTTOM NAVIGATION BAR (md:hidden)                     -->
+  <!-- ============================================================ -->
+  <nav
+    *ngIf="profile"
+    class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#0b0f19] border-t border-slate-800 flex items-stretch h-16">
+
+    <!-- ADMINISTRADOR bottom nav -->
+    <ng-container *ngIf="profile.rol === 'ADMINISTRADOR'">
+      <a
+        routerLink="/dashboard"
+        [routerLinkActiveOptions]="{exact: true}"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">dashboard</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Dashboard</span>
+      </a>
+      <a
+        routerLink="/dashboard/alumnos"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">school</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Alumnos</span>
+      </a>
+      <a
+        routerLink="/dashboard/docentes"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">groups</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Docentes</span>
+      </a>
+      <a
+        routerLink="/dashboard/cursos"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">auto_stories</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Cursos</span>
+      </a>
+      <a
+        routerLink="/dashboard/certificados"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">verified</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Certif.</span>
+      </a>
+      <a
+        routerLink="/dashboard/configuracion"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">settings</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Config.</span>
+      </a>
+    </ng-container>
+
+    <!-- ALUMNO bottom nav -->
+    <ng-container *ngIf="profile.rol === 'ALUMNO'">
+      <a
+        routerLink="/dashboard"
+        [routerLinkActiveOptions]="{exact: true}"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">home</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Inicio</span>
+      </a>
+      <a
+        routerLink="/dashboard/mis-cursos"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">auto_stories</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Mis Cursos</span>
+      </a>
+      <a
+        routerLink="/dashboard/mis-tareas"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="relative flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">assignment</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Tareas</span>
+        <span 
+          *ngIf="tareasPendientesCount > 0" 
+          class="absolute top-1 right-3.5 min-w-[16px] h-4 px-1 bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center animate-pulse shadow-xs">
+          {{ tareasPendientesCount }}
+        </span>
+      </a>
+      <a
+        routerLink="/dashboard/certificados"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">workspace_premium</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Certif.</span>
+      </a>
+      <a
+        routerLink="/dashboard/perfil"
+        routerLinkActive="text-primary border-t-2 border-primary"
+        class="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors py-1">
+        <span class="material-symbols-outlined text-xl leading-none">person</span>
+        <span class="text-[9px] font-bold uppercase tracking-wider leading-none">Perfil</span>
+      </a>
+    </ng-container>
+
+  </nav>
+
+  <!-- Modal Pop-up de Anuncios Promocionales -->
+  <app-anuncio-modal-dialog></app-anuncio-modal-dialog>
+
+</div>

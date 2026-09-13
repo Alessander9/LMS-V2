@@ -1,0 +1,5 @@
+2026-07-23 17:32:38.286 -05 [10248] LOG:  iniciando PostgreSQL 18.4 on x86_64-windows, compiled by msvc-19.44.35226, 64-bit
+2026-07-23 17:32:38.290 -05 [10248] LOG:  escuchando en la dirección IPv6 «::1», port 5455
+2026-07-23 17:32:38.290 -05 [10248] LOG:  escuchando en la dirección IPv4 «127.0.0.1», port 5455
+2026-07-23 17:32:38.574 -05 [9988] LOG:  el sistema de bases de datos fue apagado en 2026-07-23 17:32:25 -05
+2026-07-23 17:32:38.583 -05 [10248] LOG:  el sistema de bases de datos está listo para aceptar conexiones

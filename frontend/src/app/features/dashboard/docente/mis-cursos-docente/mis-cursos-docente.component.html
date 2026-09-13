@@ -1,0 +1,73 @@
+<div class="space-y-8 font-body text-slate-800 dark:text-slate-200 transition-colors duration-300">
+  <div class="border border-slate-200 dark:border-slate-800 p-8 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight uppercase leading-none">Mis Cursos (Docente)</h1>
+      <p class="text-slate-500 dark:text-slate-400 text-xs mt-2">Administra tus cursos asignados con búsqueda, orden por fecha y paginación consistente.</p>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+      <label class="flex items-center gap-2 border border-slate-200 dark:border-slate-700 px-3 py-2 bg-slate-50 dark:bg-slate-800 w-full sm:w-72">
+        <span class="material-symbols-outlined text-sm text-slate-400">search</span>
+        <input [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" type="text" placeholder="Buscar curso, docente o fecha" class="w-full bg-transparent outline-none text-sm">
+      </label>
+      <button (click)="toggleDateSort()" class="px-4 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">schedule</span>
+        <span>Fecha {{ dateSortOrder === 'desc' ? '↓' : '↑' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isLoading">
+    <app-skeleton-loader type="custom"></app-skeleton-loader>
+  </ng-container>
+
+  <div *ngIf="!isLoading && filteredCursos.length === 0" class="border border-slate-200 dark:border-slate-800 p-12 text-center bg-white dark:bg-slate-900">
+    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-2">auto_stories</span>
+    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase">Sin resultados</h3>
+    <p class="text-slate-500 dark:text-slate-400 text-xs mt-1.5 max-w-sm mx-auto">No encontramos cursos con esos criterios.</p>
+  </div>
+
+  <div *ngIf="!isLoading && pagedCursos.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div *ngFor="let curso of pagedCursos" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,0.04)]">
+      <div>
+        <div class="relative h-44 bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 overflow-hidden">
+          <img [src]="curso.imagenPortada || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3'" class="w-full h-full object-cover" alt="Portada Curso">
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+            <span class="material-symbols-outlined text-xs">event</span>
+            <span>{{ curso.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <h2 class="text-sm font-black text-slate-900 dark:text-slate-100 uppercase tracking-tight leading-snug line-clamp-1">{{ curso.nombre }}</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-xs mt-2 line-clamp-3 leading-relaxed">{{ curso.descripcion }}</p>
+          <div class="flex flex-wrap gap-1.5 mt-4">
+            <span *ngFor="let nivel of curso.nivelesSuscripcion" class="text-[9px] font-black uppercase tracking-widest border px-2 py-0.5 bg-slate-50 dark:bg-slate-800">{{ nivel }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="p-6 pt-0 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-2">
+        <div class="grid grid-cols-2 gap-2 mt-4">
+          <button (click)="manageContent(curso.id)" class="py-2 px-3 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors">
+            <span class="material-symbols-outlined text-xs">edit</span>
+            <span>Temario</span>
+          </button>
+          <button (click)="viewStudents(curso.id)" class="py-2 px-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-[10px] uppercase tracking-wider border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+            <span class="material-symbols-outlined text-xs">group</span>
+            <span>Estudiantes</span>
+          </button>
+        </div>
+        <a [routerLink]="['/dashboard/docente/tareas']" [queryParams]="{ cursoId: curso.id }" class="w-full py-2 px-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition-colors">
+          <span class="material-symbols-outlined text-xs">assignment</span>
+          <span>Historial de Tareas</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && totalPages > 1" class="flex items-center justify-between border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
+    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Página {{ currentPage }} de {{ totalPages }}</p>
+    <div class="flex items-center gap-2">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-3 py-2 border text-xs font-bold uppercase disabled:opacity-40">Anterior</button>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="px-3 py-2 border text-xs font-bold uppercase disabled:opacity-40">Siguiente</button>
+    </div>
+  </div>
+</div>

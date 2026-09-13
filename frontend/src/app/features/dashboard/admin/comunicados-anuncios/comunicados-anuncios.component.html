@@ -1,0 +1,1319 @@
+﻿<div class="space-y-6 animate-fade-in font-body pb-12">
+  
+  <!-- ==================== HEADER & TAB SELECTOR ==================== -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-800">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="p-2.5 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">campaign</span>
+          </span>
+          <div>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+              Centro de Comunicados y Avisos
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              {{ isAdmin ? 'Gestiona avisos masivos, campañas promocionales, documentos descargables y avisos programados.' : 'Consulta todos los comunicados oficiales, circulares, guías y avisos académicos emitidos por Plataforma LMS.' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pestañas de Navegación -->
+      <div class="flex items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl flex-wrap">
+        <button 
+          (click)="activeTab = 'bandeja'"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+          [ngClass]="activeTab === 'bandeja' ? 'bg-white dark:bg-slate-700 text-primary shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'">
+          <span class="material-symbols-outlined text-base">inbox</span>
+          <span>Bandeja de Avisos</span>
+          <span *ngIf="totalNoLeidas > 0" class="px-1.5 py-0.5 text-[9px] font-black bg-rose-600 text-white rounded-full">
+            {{ totalNoLeidas }}
+          </span>
+        </button>
+
+        <button 
+          *ngIf="isAdmin"
+          (click)="activeTab = 'comunicado'"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+          [ngClass]="activeTab === 'comunicado' ? 'bg-white dark:bg-slate-700 text-primary shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'">
+          <span class="material-symbols-outlined text-base">send</span>
+          <span>Redactar Comunicado</span>
+        </button>
+
+        <button 
+          *ngIf="isAdmin"
+          (click)="activeTab = 'anuncios'"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+          [ngClass]="activeTab === 'anuncios' ? 'bg-white dark:bg-slate-700 text-primary shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'">
+          <span class="material-symbols-outlined text-base">ad</span>
+          <span>Anuncios Pop-up & Scheduler</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PESTAÑA 0: BANDEJA DE AVISOS Y COMUNICADOS                   -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'bandeja'" class="space-y-4">
+    
+    <!-- Barra de Filtros y Búsqueda -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap">
+        <button 
+          (click)="setFiltroBandeja('TODOS')"
+          [class]="filtroBandeja === 'TODOS' ? 'bg-primary text-white font-bold shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          class="px-3.5 py-2 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer">
+          Todos ({{ notificaciones.length }})
+        </button>
+        
+        <button 
+          (click)="setFiltroBandeja('NO_LEIDOS')"
+          [class]="filtroBandeja === 'NO_LEIDOS' ? 'bg-rose-600 text-white font-bold shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          class="px-3.5 py-2 rounded-xl text-xs uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer">
+          <span>No Leídos</span>
+          <span *ngIf="totalNoLeidas > 0" class="px-1.5 py-0.2 bg-white text-rose-600 rounded-full font-black text-[10px]">
+            {{ totalNoLeidas }}
+          </span>
+        </button>
+
+        <button 
+          (click)="setFiltroBandeja('FIJADOS')"
+          [class]="filtroBandeja === 'FIJADOS' ? 'bg-amber-500 text-white font-bold shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          class="px-3.5 py-2 rounded-xl text-xs uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer">
+          <span>📌 Fijados</span>
+          <span *ngIf="totalFijados > 0" class="px-1.5 py-0.2 bg-white text-amber-600 rounded-full font-black text-[10px]">
+            {{ totalFijados }}
+          </span>
+        </button>
+
+        <button 
+          (click)="setFiltroBandeja('URGENTES')"
+          [class]="filtroBandeja === 'URGENTES' ? 'bg-rose-700 text-white font-bold shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          class="px-3.5 py-2 rounded-xl text-xs uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer">
+          <span>🔴 Urgentes</span>
+          <span *ngIf="totalUrgentes > 0" class="px-1.5 py-0.2 bg-white text-rose-700 rounded-full font-black text-[10px]">
+            {{ totalUrgentes }}
+          </span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <div class="relative flex-1 sm:w-72">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
+          <input 
+            type="text" 
+            [(ngModel)]="searchQueryBandeja" 
+            placeholder="Buscar por título, texto o adjunto..."
+            class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-primary"
+          />
+        </div>
+
+        <button 
+          *ngIf="totalNoLeidas > 0"
+          (click)="marcarTodasComoLeidas()"
+          class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer">
+          <span class="material-symbols-outlined text-sm">done_all</span>
+          <span class="hidden md:inline">Marcar todas</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Spinner Cargando -->
+    <div *ngIf="cargandoBandeja" class="p-12 text-center text-slate-500 flex flex-col items-center justify-center gap-3">
+      <span class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></span>
+      <span class="text-xs font-medium">Cargando comunicados...</span>
+    </div>
+
+    <!-- Estado Vacío -->
+    <div *ngIf="!cargandoBandeja && notificacionesFiltradas.length === 0" class="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl p-12 text-center space-y-3">
+      <span class="material-symbols-outlined text-5xl text-slate-400">mark_email_read</span>
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">No hay comunicados en este filtro</h3>
+      <p class="text-xs text-slate-500 max-w-md mx-auto">
+        {{ filtroBandeja === 'NO_LEIDOS' ? 'No tienes avisos sin leer pendientes.' : (filtroBandeja === 'FIJADOS' ? 'No hay comunicados fijados al inicio.' : 'No se han encontrado comunicados registrados.') }}
+      </p>
+    </div>
+
+    <!-- Listado de Comunicados -->
+    <div *ngIf="!cargandoBandeja && notificacionesFiltradas.length > 0" class="space-y-3.5">
+      <div 
+        *ngFor="let notif of notificacionesPaginadas"
+        [class]="notif.fijado ? 'border-amber-400/80 dark:border-amber-500/50 bg-amber-50/20 dark:bg-amber-950/10 shadow-sm border-l-4 border-l-amber-500' : (notif.leido ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 opacity-90' : 'bg-white dark:bg-slate-900 border-primary/40 shadow-sm border-l-4 border-l-primary')"
+        class="border rounded-2xl p-5 transition-all hover:border-slate-300 dark:hover:border-slate-700 flex flex-col gap-3.5">
+        
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex items-start gap-3.5 flex-1">
+            <!-- Icono Circular -->
+            <div [class]="notif.leido ? 'bg-slate-100 dark:bg-slate-800 text-slate-500' : (notif.fijado ? 'bg-amber-500/10 text-amber-600' : 'bg-primary/10 text-primary')" class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl">{{ notif.icono || 'campaign' }}</span>
+            </div>
+
+            <div class="space-y-1.5 flex-1">
+              <!-- Header de Notificación con Badges -->
+              <div class="flex items-center gap-2 flex-wrap">
+                <!-- Badge Pin Fijado -->
+                <span *ngIf="notif.fijado" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-500 text-white flex items-center gap-1 shadow-xs">
+                  <span>📌</span>
+                  <span>Fijado al Inicio</span>
+                </span>
+
+                <!-- Badge de Prioridad -->
+                <span 
+                  class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border flex items-center gap-1"
+                  [ngClass]="getPrioridadConfig(notif.prioridad).badgeBg">
+                  <span>{{ getPrioridadConfig(notif.prioridad).emoji }}</span>
+                  <span>{{ getPrioridadConfig(notif.prioridad).label }}</span>
+                </span>
+
+                <!-- Título -->
+                <h3 class="font-bold text-slate-900 dark:text-white text-sm" [innerHTML]="getFormattedHtml(notif.titulo)"></h3>
+
+                <span *ngIf="!notif.leido" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-600 text-white">
+                  Nuevo
+                </span>
+              </div>
+              
+              <!-- Mensaje con soporte Markdown -->
+              <div class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-1" [innerHTML]="getFormattedHtml(notif.mensaje)"></div>
+
+              <!-- TARJETA DE DOCUMENTO ADJUNTO DESCARGABLE -->
+              <div *ngIf="notif.adjuntoUrl" class="mt-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-xl">{{ getIconoAdjunto(notif.adjuntoNombre) }}</span>
+                  </div>
+                  <div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-100 block truncate max-w-xs">
+                      {{ notif.adjuntoNombre || 'Documento_Adjunto.pdf' }}
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-medium">
+                      Archivo complementario • {{ notif.adjuntoTamano || 'Descarga oficial' }}
+                    </span>
+                  </div>
+                </div>
+
+                <button 
+                  (click)="descargarAdjunto(notif)"
+                  type="button"
+                  class="px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-lg transition-all flex items-center gap-1.5 shadow-xs cursor-pointer">
+                  <span class="material-symbols-outlined text-sm text-primary">download</span>
+                  <span>Descargar</span>
+                </button>
+              </div>
+
+              <!-- Metadata & Fecha -->
+              <div class="flex items-center gap-3 pt-1 text-[10px] text-slate-400 font-mono">
+                <span class="flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">schedule</span>
+                  <span>{{ notif.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</span>
+                </span>
+                <span *ngIf="notif.urlDestino" class="text-primary font-semibold">
+                  • Incluye enlace interactivo
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button 
+              *ngIf="notif.urlDestino"
+              (click)="abrirEnlace(notif)"
+              class="px-3 py-1.5 bg-primary hover:bg-primary/90 text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-xs transition-colors flex items-center gap-1 cursor-pointer">
+              <span>Abrir</span>
+              <span class="material-symbols-outlined text-xs">open_in_new</span>
+            </button>
+
+            <button 
+              *ngIf="!notif.leido"
+              (click)="marcarComoLeida(notif)"
+              title="Marcar como leída"
+              class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
+              <span class="material-symbols-outlined text-xs">done</span>
+              <span class="hidden sm:inline">Leído</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    <div *ngIf="!cargandoBandeja && notificacionesFiltradas.length > pageSize" class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+      <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">
+        Mostrando <span class="font-bold text-slate-700 dark:text-slate-200">{{ ((currentPage - 1) * pageSize) + 1 }}</span> a <span class="font-bold text-slate-700 dark:text-slate-200">{{ ((currentPage * pageSize) > notificacionesFiltradas.length) ? notificacionesFiltradas.length : (currentPage * pageSize) }}</span> de <span class="font-bold text-slate-700 dark:text-slate-200">{{ notificacionesFiltradas.length }}</span> comunicados
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button 
+          (click)="cambiarPagina(currentPage - 1)" 
+          [disabled]="currentPage === 1"
+          class="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors flex items-center gap-1 cursor-pointer">
+          <span class="material-symbols-outlined text-sm">chevron_left</span>
+          <span>Anterior</span>
+        </button>
+
+        <div class="flex items-center gap-1">
+          <button 
+            *ngFor="let p of pagesArray" 
+            (click)="cambiarPagina(p)"
+            [class]="currentPage === p ? 'bg-primary text-white font-bold border-primary shadow-xs' : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium'"
+            class="w-8 h-8 rounded-lg border text-xs flex items-center justify-center transition-all cursor-pointer">
+            {{ p }}
+          </button>
+        </div>
+
+        <button 
+          (click)="cambiarPagina(currentPage + 1)" 
+          [disabled]="currentPage === totalPages"
+          class="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:pointer-events-none transition-colors flex items-center gap-1 cursor-pointer">
+          <span>Siguiente</span>
+          <span class="material-symbols-outlined text-sm">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PESTAÑA 1: REDACTAR COMUNICADO CON ASISTENTE Y LIVE PREVIEW -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'comunicado' && isAdmin" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Columna Izquierda: Formulario & Asistente (7 cols) -->
+    <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-7 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-6">
+      
+      <div>
+        <h2 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">send</span>
+          <span>Redactar Comunicado Masivo</span>
+        </h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Difunde circulares, avisos urgentes, guías académicas en PDF y fija mensajes prioritarios en el campus.
+        </p>
+      </div>
+
+      <!-- Plantillas Rápidas (1 Clic) -->
+      <div class="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
+          <span class="material-symbols-outlined text-xs text-amber-500">auto_awesome</span>
+          <span>Plantillas Rápidas (1 Clic):</span>
+        </span>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button type="button" (click)="aplicarPlantilla('seminario', 'comunicado')" class="px-2.5 py-1 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-primary text-slate-700 dark:text-slate-200 transition-colors cursor-pointer">
+            🌟 Seminario / Taller
+          </button>
+          <button type="button" (click)="aplicarPlantilla('bienvenida', 'comunicado')" class="px-2.5 py-1 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-primary text-slate-700 dark:text-slate-200 transition-colors cursor-pointer">
+            🎓 Bienvenida Ciclo
+          </button>
+          <button type="button" (click)="aplicarPlantilla('recordatorio_tareas', 'comunicado')" class="px-2.5 py-1 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-primary text-slate-700 dark:text-slate-200 transition-colors cursor-pointer">
+            ⏰ Recordatorio Tareas
+          </button>
+          <button type="button" (click)="aplicarPlantilla('certificados', 'comunicado')" class="px-2.5 py-1 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-primary text-slate-700 dark:text-slate-200 transition-colors cursor-pointer">
+            🏆 Certificados Listos
+          </button>
+        </div>
+      </div>
+
+      <!-- Alertas de Éxito / Error -->
+      <div *ngIf="mensajeExitoComunicado" class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">check_circle</span>
+        <span>{{ mensajeExitoComunicado }}</span>
+      </div>
+
+      <div *ngIf="mensajeErrorComunicado" class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs font-bold flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">error</span>
+        <span>{{ mensajeErrorComunicado }}</span>
+      </div>
+
+      <!-- NIVEL DE PRIORIDAD VISUAL (Selector con Cards) -->
+      <div class="space-y-2">
+        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+          Nivel de Prioridad / Etiqueta Visual
+        </label>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button 
+            *ngFor="let p of prioridadesConfig"
+            type="button"
+            (click)="setPrioridadComunicado(p.id)"
+            [ngClass]="prioridadComunicado === p.id ? p.activeBorder + ' ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+            class="p-3 rounded-xl border text-left flex flex-col gap-1 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="text-base">{{ p.emoji }}</span>
+              <span *ngIf="prioridadComunicado === p.id" class="material-symbols-outlined text-sm text-primary">check_circle</span>
+            </div>
+            <span class="text-xs font-bold leading-tight">{{ p.label }}</span>
+            <span class="text-[9px] opacity-70 line-clamp-1">{{ p.desc }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SWITCH: FIJAR COMUNICADO AL INICIO (PIN 📌) -->
+      <div class="p-4 rounded-xl border border-amber-300 dark:border-amber-700/60 bg-amber-50/40 dark:bg-amber-950/20 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <span class="text-xl">📌</span>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-slate-900 dark:text-white block">
+              Fijar Comunicado al Inicio (Pin 📌)
+            </span>
+            <span class="text-[10px] text-slate-500 dark:text-slate-400">
+              Mantener este comunicado siempre en la parte superior de la bandeja de los usuarios.
+            </span>
+          </div>
+        </div>
+
+        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+          <input type="checkbox" [(ngModel)]="comunicado.fijado" class="sr-only peer">
+          <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-amber-500"></div>
+        </label>
+      </div>
+
+      <!-- Audiencia Destinataria -->
+      <div class="space-y-2">
+        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+          ¿Quiénes recibirán este comunicado? (Audiencia)
+        </label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-all"
+            [ngClass]="comunicado.audiencia === 'TODOS' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60'">
+            <input type="radio" [(ngModel)]="comunicado.audiencia" value="TODOS" class="text-primary focus:ring-primary">
+            <span class="text-xs">🌍 Todos los Usuarios</span>
+          </label>
+
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-all"
+            [ngClass]="comunicado.audiencia === 'SOLO_ESTUDIANTES' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60'">
+            <input type="radio" [(ngModel)]="comunicado.audiencia" value="SOLO_ESTUDIANTES" class="text-primary focus:ring-primary">
+            <span class="text-xs">🎓 Solo Estudiantes</span>
+          </label>
+
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-all"
+            [ngClass]="comunicado.audiencia === 'SOLO_DOCENTES' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60'">
+            <input type="radio" [(ngModel)]="comunicado.audiencia" value="SOLO_DOCENTES" class="text-primary focus:ring-primary">
+            <span class="text-xs">👨‍🏫 Solo Docentes</span>
+          </label>
+
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border cursor-pointer transition-all"
+            [ngClass]="comunicado.audiencia === 'POR_CURSO' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60'">
+            <input type="radio" [(ngModel)]="comunicado.audiencia" value="POR_CURSO" class="text-primary focus:ring-primary">
+            <span class="text-xs">📚 Alumnos de un Curso Específico</span>
+          </label>
+        </div>
+
+        <!-- Selector de Curso si es POR_CURSO -->
+        <div *ngIf="comunicado.audiencia === 'POR_CURSO'" class="pt-2 animate-in fade-in">
+          <select [(ngModel)]="comunicado.cursoId" class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-primary cursor-pointer">
+            <option [ngValue]="undefined">Selecciona el curso de destino...</option>
+            <option *ngFor="let c of cursos" [ngValue]="c.id">{{ c.nombre }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Título del Comunicado con Emojis -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+            Título del Comunicado *
+          </label>
+          <div class="flex items-center gap-1">
+            <span class="text-[9px] text-slate-400">Emojis:</span>
+            <button *ngFor="let em of emojisDisponibles.slice(0, 6)" (click)="insertarEmoji(em, 'comunicado_titulo')" type="button" class="text-xs hover:scale-125 transition-transform cursor-pointer">
+              {{ em }}
+            </button>
+          </div>
+        </div>
+        <input 
+          type="text" 
+          [(ngModel)]="comunicado.titulo" 
+          placeholder="Ej: 📢 Aviso Importante sobre las Prácticas Clínicas de Septiembre"
+          class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-primary" />
+      </div>
+
+      <!-- Mensaje Completo -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+            Mensaje o Contenido Detallado *
+          </label>
+          <div class="flex items-center gap-2">
+            <button type="button" (click)="aplicarFormatoNegrita('comunicado_mensaje')" class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded cursor-pointer">
+              **Negrita**
+            </button>
+            <div class="flex items-center gap-1">
+              <button *ngFor="let em of emojisDisponibles.slice(6, 12)" (click)="insertarEmoji(em, 'comunicado_mensaje')" type="button" class="text-xs hover:scale-125 transition-transform cursor-pointer">
+                {{ em }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <textarea 
+          [(ngModel)]="comunicado.mensaje" 
+          rows="4" 
+          placeholder="Escribe el mensaje completo. Puedes usar **texto en negrita** para resaltar detalles importantes..."
+          class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-primary leading-relaxed"></textarea>
+      </div>
+
+      <!-- ZONA DE ADJUNTAR ARCHIVO (PDF / Word / Documentos) -->
+      <div class="space-y-2">
+        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
+          <span>📎 Adjunto Descargable (PDF, Word, Cronogramas, Guías)</span>
+          <span class="text-[9px] text-slate-400">Opcional • Máx 15MB</span>
+        </label>
+
+        <div 
+          (dragover)="$event.preventDefault(); isDraggingAdjunto = true"
+          (dragleave)="isDraggingAdjunto = false"
+          (drop)="onAdjuntoDropped($event)"
+          [ngClass]="isDraggingAdjunto ? 'border-primary bg-primary/10' : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50'"
+          class="border-2 border-dashed rounded-2xl p-5 text-center transition-all flex flex-col items-center justify-center gap-2.5">
+          
+          <div *ngIf="!comunicado.adjuntoUrl" class="space-y-1.5 flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+              <span class="material-symbols-outlined text-xl">attach_file</span>
+            </div>
+            <div class="text-xs font-bold text-slate-700 dark:text-slate-200">
+              Arrastra y suelta tu archivo PDF o documento aquí, o 
+              <label class="text-primary hover:underline cursor-pointer">
+                explorar archivo
+                <input type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" class="hidden" (change)="onAdjuntoSelected($event)">
+              </label>
+            </div>
+            <span class="text-[10px] text-slate-400">Ejemplos: Cronograma_2026.pdf, Guia_Practicas.pdf, Reglamento.docx</span>
+          </div>
+
+          <!-- Miniatura de Adjunto Cargado -->
+          <div *ngIf="comunicado.adjuntoUrl" class="w-full flex items-center justify-between gap-4 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-xl">{{ getIconoAdjunto(comunicado.adjuntoNombre) }}</span>
+              </div>
+              <div class="text-left">
+                <span class="text-xs font-bold text-slate-800 dark:text-white block truncate max-w-xs">{{ comunicado.adjuntoNombre }}</span>
+                <span class="text-[10px] text-emerald-500 font-semibold">✓ Documento listo para descarga ({{ comunicado.adjuntoTamano }})</span>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <button type="button" (click)="removerAdjunto()" class="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg cursor-pointer" title="Quitar archivo adjunto">
+                <span class="material-symbols-outlined text-base">delete</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Asistente Inteligente de Enlace de Destino (Paso a Paso) -->
+      <div class="space-y-4 p-5 bg-slate-50/80 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
+        
+        <div class="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-700/60">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 bg-primary/10 text-primary rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined text-base">link</span>
+            </span>
+            <div>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white block">
+                Acción al Tocar la Notificación
+              </span>
+              <span class="text-[10px] text-slate-500">
+                Elige qué sucederá cuando el estudiante o docente presione el aviso.
+              </span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-primary/10 text-primary">
+            Interactivo
+          </span>
+        </div>
+
+        <!-- Selector de Tipo de Enlace -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <button 
+            type="button"
+            (click)="setLinkTypeComunicado('NINGUNO')"
+            [ngClass]="linkTypeComunicado === 'NINGUNO' ? 'border-slate-800 bg-slate-900 text-white shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+            class="p-3 rounded-xl border text-left flex flex-col gap-1 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="text-lg">🚫</span>
+              <span *ngIf="linkTypeComunicado === 'NINGUNO'" class="material-symbols-outlined text-sm text-white">check_circle</span>
+            </div>
+            <span class="text-xs font-bold leading-tight">Sin Enlace</span>
+            <span class="text-[10px] opacity-70">Solo lectura</span>
+          </button>
+
+          <button 
+            type="button"
+            (click)="setLinkTypeComunicado('WHATSAPP')"
+            [ngClass]="linkTypeComunicado === 'WHATSAPP' ? 'border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 ring-2 ring-emerald-500/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+            class="p-3 rounded-xl border text-left flex flex-col gap-1 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="text-lg">🟢</span>
+              <span *ngIf="linkTypeComunicado === 'WHATSAPP'" class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+            </div>
+            <span class="text-xs font-bold leading-tight">WhatsApp</span>
+            <span class="text-[10px] opacity-70">Chat directo</span>
+          </button>
+
+          <button 
+            type="button"
+            (click)="setLinkTypeComunicado('CURSO')"
+            [ngClass]="linkTypeComunicado === 'CURSO' ? 'border-indigo-500 bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-2 ring-indigo-500/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+            class="p-3 rounded-xl border text-left flex flex-col gap-1 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="text-lg">🎓</span>
+              <span *ngIf="linkTypeComunicado === 'CURSO'" class="material-symbols-outlined text-sm text-indigo-600">check_circle</span>
+            </div>
+            <span class="text-xs font-bold leading-tight">Curso</span>
+            <span class="text-[10px] opacity-70">Página del curso</span>
+          </button>
+
+          <button 
+            type="button"
+            (click)="setLinkTypeComunicado('INTERNO')"
+            [ngClass]="linkTypeComunicado === 'INTERNO' ? 'border-primary bg-primary/10 text-primary ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+            class="p-3 rounded-xl border text-left flex flex-col gap-1 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="text-lg">📄</span>
+              <span *ngIf="linkTypeComunicado === 'INTERNO'" class="material-symbols-outlined text-sm text-primary">check_circle</span>
+            </div>
+            <span class="text-xs font-bold leading-tight">Sección</span>
+            <span class="text-[10px] opacity-70">Mis Cursos, etc.</span>
+          </button>
+        </div>
+
+        <!-- Parámetros según tipo de enlace -->
+        <div *ngIf="linkTypeComunicado === 'WHATSAPP'" class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-emerald-500/30 space-y-3 animate-fade-in">
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+            <div class="sm:col-span-5">
+              <label class="text-[10px] font-bold text-slate-500 block mb-1">País / Prefijo:</label>
+              <select 
+                [(ngModel)]="codigoPaisComunicado" 
+                (change)="actualizarLinkComunicado()" 
+                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:border-emerald-500">
+                <option *ngFor="let p of paises" [value]="p.codigo">{{ p.nombre }}</option>
+              </select>
+            </div>
+            <div class="sm:col-span-7">
+              <label class="text-[10px] font-bold text-slate-500 block mb-1">Número de Celular:</label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">+{{ codigoPaisComunicado }}</span>
+                <input 
+                  type="text" 
+                  [(ngModel)]="numeroLocalComunicado" 
+                  (input)="actualizarLinkComunicado()" 
+                  placeholder="987654321" 
+                  class="w-full pl-12 pr-3 py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-emerald-500">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-slate-500 block mb-1">Mensaje Predefinido:</label>
+            <input 
+              type="text" 
+              [(ngModel)]="whatsappMsgComunicado" 
+              (input)="actualizarLinkComunicado()" 
+              placeholder="Hola Plataforma LMS, tengo una consulta sobre..." 
+              class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div *ngIf="linkTypeComunicado === 'CURSO'" class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-indigo-500/30 space-y-2 animate-fade-in">
+          <label class="text-[10px] font-bold text-slate-500 block">Selecciona el Curso de Destino:</label>
+          <select 
+            [(ngModel)]="selectedCursoLinkComunicado" 
+            (change)="actualizarLinkComunicado()" 
+            class="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold focus:border-indigo-500">
+            <option *ngFor="let c of cursos" [value]="c.id">🎓 {{ c.nombre }}</option>
+          </select>
+        </div>
+
+        <div *ngIf="linkTypeComunicado === 'INTERNO'" class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-primary/30 space-y-2 animate-fade-in">
+          <label class="text-[10px] font-bold text-slate-500 block">Selecciona la Sección de la Plataforma:</label>
+          <select 
+            [(ngModel)]="selectedRutaInternaComunicado" 
+            (change)="actualizarLinkComunicado()" 
+            class="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold focus:border-primary">
+            <option *ngFor="let r of rutasInternas" [value]="r.ruta">{{ r.label }}</option>
+          </select>
+        </div>
+
+        <!-- Resumen de Destino -->
+        <div *ngIf="linkTypeComunicado !== 'NINGUNO'" class="pt-2 border-t border-slate-200/80 dark:border-slate-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-100/70 dark:bg-slate-900/60 p-3 rounded-xl">
+          <div class="flex items-center gap-2 overflow-hidden text-left">
+            <span class="material-symbols-outlined text-base text-primary shrink-0">check_circle</span>
+            <div class="truncate">
+              <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200 block truncate">
+                {{ getDestinoLegibleComunicado() }}
+              </span>
+              <span class="text-[9px] text-slate-400 font-mono truncate block">
+                {{ comunicado.urlDestino }}
+              </span>
+            </div>
+          </div>
+
+          <button 
+            type="button"
+            (click)="probarEnlace(comunicado.urlDestino)"
+            class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
+            <span>Probar Enlace</span>
+            <span class="material-symbols-outlined text-xs">open_in_new</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Botón de Envío -->
+      <div class="pt-2 flex justify-end">
+        <button 
+          (click)="enviarComunicado()" 
+          [disabled]="enviandoComunicado"
+          class="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 flex items-center justify-center gap-2 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-lg" [class.animate-spin]="enviandoComunicado">
+            {{ enviandoComunicado ? 'progress_activity' : 'send' }}
+          </span>
+          <span>{{ enviandoComunicado ? 'Transmitiendo...' : 'Enviar Comunicado Inmediato' }}</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Columna Derecha: Live Preview Simulator (5 cols) -->
+    <div class="lg:col-span-5 space-y-4">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-4 sticky top-6">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-primary">devices</span>
+            <span>Simulador en Tiempo Real (Live Preview)</span>
+          </span>
+          <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-500">
+            Vista Alumno
+          </span>
+        </div>
+
+        <p class="text-xs text-slate-500">
+          Así se verá la notificación en la campanita 🔔 y bandeja del estudiante:
+        </p>
+
+        <!-- Mock Notification Card -->
+        <div 
+          [class]="comunicado.fijado ? 'border-amber-400 bg-amber-50/20 dark:bg-amber-950/20 border-l-4 border-l-amber-500' : 'border-primary/30 bg-slate-50 dark:bg-slate-800/80'"
+          class="p-4 rounded-2xl border-2 shadow-md space-y-3 animate-in fade-in">
+          
+          <div class="flex items-start gap-3">
+            <div [class]="comunicado.fijado ? 'bg-amber-500' : 'bg-primary'" class="w-10 h-10 rounded-xl text-white flex items-center justify-center shrink-0 shadow-sm">
+              <span class="material-symbols-outlined text-xl">{{ comunicado.icono || 'campaign' }}</span>
+            </div>
+            
+            <div class="space-y-1.5 flex-1">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <!-- Badge Pin -->
+                <span *ngIf="comunicado.fijado" class="px-1.5 py-0.2 bg-amber-500 text-white rounded text-[8px] font-black uppercase">
+                  📌 FIJADO
+                </span>
+
+                <!-- Badge Prioridad -->
+                <span 
+                  class="px-1.5 py-0.2 rounded text-[8px] font-black uppercase border"
+                  [ngClass]="getPrioridadConfig(prioridadComunicado).badgeBg">
+                  {{ getPrioridadConfig(prioridadComunicado).emoji }} {{ getPrioridadConfig(prioridadComunicado).label }}
+                </span>
+
+                <span class="px-1.5 py-0.2 bg-rose-600 text-white rounded text-[8px] font-black uppercase">NUEVO</span>
+              </div>
+
+              <div class="font-bold text-xs text-slate-900 dark:text-white" [innerHTML]="getFormattedHtml(comunicado.titulo || 'Título del Comunicado...')"></div>
+
+              <div class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed" [innerHTML]="getFormattedHtml(comunicado.mensaje || 'Escribe el mensaje para ver la previsualización en vivo...')"></div>
+
+              <!-- Preview del Documento Adjunto -->
+              <div *ngIf="comunicado.adjuntoUrl" class="mt-2 p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 truncate">
+                  <span class="material-symbols-outlined text-rose-500 text-base">picture_as_pdf</span>
+                  <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 truncate">{{ comunicado.adjuntoNombre || 'Documento.pdf' }}</span>
+                </div>
+                <span class="text-[9px] text-primary font-bold shrink-0">Descargar ({{ comunicado.adjuntoTamano }})</span>
+              </div>
+
+              <div class="text-[9px] text-slate-400 font-mono pt-1 flex items-center justify-between">
+                <span>Hace un momento</span>
+                <span *ngIf="comunicado.urlDestino" class="text-primary font-bold">Tiene enlace ➔</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PESTAÑA 2: GESTOR DE ANUNCIOS POP-UP & SCHEDULER             -->
+  <!-- ============================================================ -->
+  <div *ngIf="activeTab === 'anuncios' && isAdmin" class="space-y-8">
+    
+    <!-- Creador de Anuncio Modal en 2 Columnas -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Formulario Izquierda (7 cols) -->
+      <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-7 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-6">
+        <div>
+          <h2 class="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">add_photo_alternate</span>
+            <span>Crear Anuncio Promocional & Pop-up (Scheduler)</span>
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Configura campañas automáticas con fecha de inicio y caducidad, flyer nítido sin recortes y botón interactivo.
+          </p>
+        </div>
+
+        <!-- Plantillas Rápidas -->
+        <div class="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60 space-y-2">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-amber-500">auto_awesome</span>
+            <span>Plantillas de Campaña (1 Clic):</span>
+          </span>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" (click)="aplicarPlantilla('seminario', 'anuncio')" class="px-2.5 py-1 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-primary text-slate-700 dark:text-slate-200 transition-colors cursor-pointer">
+              🌟 Seminario Auriculoterapia
+            </button>
+            <button type="button" (click)="aplicarPlantilla('bienvenida', 'anuncio')" class="px-2.5 py-1 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-primary text-slate-700 dark:text-slate-200 transition-colors cursor-pointer">
+              🎓 Inicio de Ciclo
+            </button>
+            <button type="button" (click)="aplicarPlantilla('recordatorio_tareas', 'anuncio')" class="px-2.5 py-1 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:border-primary text-slate-700 dark:text-slate-200 transition-colors cursor-pointer">
+              ⏰ Entrega de Tareas
+            </button>
+          </div>
+        </div>
+
+        <!-- Alertas -->
+        <div *ngIf="mensajeExitoAnuncio" class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-bold flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">check_circle</span>
+          <span>{{ mensajeExitoAnuncio }}</span>
+        </div>
+
+        <div *ngIf="mensajeErrorAnuncio" class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs font-bold flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">error</span>
+          <span>{{ mensajeErrorAnuncio }}</span>
+        </div>
+
+        <!-- Título -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+              Título del Anuncio / Campaña *
+            </label>
+            <div class="flex items-center gap-1">
+              <button *ngFor="let em of emojisDisponibles.slice(0, 6)" (click)="insertarEmoji(em, 'anuncio_titulo')" type="button" class="text-xs hover:scale-125 transition-transform cursor-pointer">
+                {{ em }}
+              </button>
+            </div>
+          </div>
+          <input 
+            type="text" 
+            [(ngModel)]="anuncioForm.titulo" 
+            placeholder="Ej: 🔥 ¡Nuevo Diplomado con 30% de Descuento Exclusivo!"
+            class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-800 dark:text-white focus:outline-none focus:border-primary" />
+        </div>
+
+        <!-- Mensaje -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+              Mensaje o Beneficios
+            </label>
+            <div class="flex items-center gap-2">
+              <button type="button" (click)="aplicarFormatoNegrita('anuncio_mensaje')" class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-[10px] font-bold rounded cursor-pointer">
+                **Negrita**
+              </button>
+              <div class="flex items-center gap-1">
+                <button *ngFor="let em of emojisDisponibles.slice(6, 12)" (click)="insertarEmoji(em, 'anuncio_mensaje')" type="button" class="text-xs hover:scale-125 transition-transform cursor-pointer">
+                  {{ em }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <textarea 
+            [(ngModel)]="anuncioForm.mensaje" 
+            rows="3" 
+            placeholder="Describe la promoción. Puedes usar **negritas** para resaltar fechas o beneficios..."
+            class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-primary leading-relaxed"></textarea>
+        </div>
+
+        <!-- SECCIÓN SCHEDULER: PROGRAMACIÓN Y VIGENCIA AUTOMÁTICA -->
+        <div class="p-4 rounded-xl border border-indigo-200 dark:border-indigo-800/60 bg-indigo-50/40 dark:bg-indigo-950/20 space-y-3">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined text-base">schedule</span>
+            </span>
+            <div>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white block">
+                ⏳ Programación y Vigencia Automática (Scheduler)
+              </span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400">
+                Define cuándo debe aparecer y cuándo expirar automáticamente el pop-up.
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                Fecha y Hora de Publicación / Inicio:
+              </label>
+              <input 
+                type="datetime-local" 
+                [(ngModel)]="anuncioForm.fechaInicio"
+                class="w-full px-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-indigo-500 text-slate-800 dark:text-slate-200 font-mono" />
+              <span class="text-[9px] text-slate-400 mt-0.5 block">Si se deja vacío, iniciará inmediatamente.</span>
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                Fecha y Hora de Expiración / Caducidad:
+              </label>
+              <input 
+                type="datetime-local" 
+                [(ngModel)]="anuncioForm.fechaFin"
+                class="w-full px-3 py-2 text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-indigo-500 text-slate-800 dark:text-slate-200 font-mono" />
+              <span class="text-[9px] text-slate-400 mt-0.5 block">Al vencer, el pop-up desaparecerá automáticamente.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ZONA DE SUBIDA DE IMAGEN (Drag & Drop + Local File Picker) -->
+        <div class="space-y-2">
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+            Imagen / Flyer Promocional (Local o Web)
+          </label>
+
+          <!-- Zona Drag & Drop -->
+          <div 
+            (dragover)="$event.preventDefault(); isDraggingAnuncio = true"
+            (dragleave)="isDraggingAnuncio = false"
+            (drop)="onFileDropped($event, 'anuncio')"
+            [ngClass]="isDraggingAnuncio ? 'border-primary bg-primary/10' : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50'"
+            class="border-2 border-dashed rounded-2xl p-6 text-center transition-all flex flex-col items-center justify-center gap-3">
+            
+            <div *ngIf="!anuncioForm.imagenUrl" class="space-y-2 flex flex-col items-center">
+              <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl">upload_file</span>
+              </div>
+              <div class="text-xs font-bold text-slate-700 dark:text-slate-200">
+                Arrastra y suelta tu imagen aquí, o 
+                <label class="text-primary hover:underline cursor-pointer">
+                  selecciona desde tu equipo
+                  <input type="file" accept="image/*" class="hidden" (change)="onFileSelected($event, 'anuncio')">
+                </label>
+              </div>
+              <span class="text-[10px] text-slate-400">Soporta JPG, PNG, WEBP de cualquier tamaño o dimensión (máx 8MB)</span>
+            </div>
+
+            <!-- Miniatura de Imagen Cargada -->
+            <div *ngIf="anuncioForm.imagenUrl" class="w-full flex items-center justify-between gap-4 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700">
+              <div class="flex items-center gap-3">
+                <img [src]="anuncioForm.imagenUrl" alt="Preview" class="w-16 h-16 object-cover rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="text-left">
+                  <span class="text-xs font-bold text-slate-800 dark:text-white block">Imagen cargada lista para emitir</span>
+                  <span class="text-[10px] text-emerald-500 font-semibold">✓ Se mostrará al 100% sin recortes</span>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-2">
+                <label class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg cursor-pointer transition-colors">
+                  Cambiar
+                  <input type="file" accept="image/*" class="hidden" (change)="onFileSelected($event, 'anuncio')">
+                </label>
+                <button type="button" (click)="removerImagen('anuncio')" class="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg cursor-pointer" title="Quitar imagen">
+                  <span class="material-symbols-outlined text-base">delete</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ASISTENTE INTELIGENTE DE BOTÓN Y ENLACE -->
+        <div class="space-y-4 p-5 bg-slate-50/80 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs">
+          
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-700/60">
+            <div class="flex items-center gap-2">
+              <span class="p-1.5 bg-emerald-500/10 text-emerald-600 rounded-lg flex items-center justify-center">
+                <span class="material-symbols-outlined text-base">touch_app</span>
+              </span>
+              <div>
+                <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white block">
+                  Configurador de Botón de Acción (CTA)
+                </span>
+                <span class="text-[10px] text-slate-500">
+                  Elige a dónde redirigir al usuario y personaliza el botón interactivo.
+                </span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400">
+              Paso a Paso
+            </span>
+          </div>
+
+          <!-- Selector de Destino -->
+          <div class="space-y-2">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+              1. Selecciona el Tipo de Destino:
+            </span>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <button 
+                type="button"
+                (click)="setLinkTypeAnuncio('WHATSAPP')"
+                [ngClass]="linkTypeAnuncio === 'WHATSAPP' ? 'border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 ring-2 ring-emerald-500/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+                class="p-3 rounded-xl border text-left flex flex-col gap-1.5 transition-all cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-lg">🟢</span>
+                  <span *ngIf="linkTypeAnuncio === 'WHATSAPP'" class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+                </div>
+                <span class="text-xs font-bold leading-tight">WhatsApp</span>
+                <span class="text-[10px] opacity-70">Abre chat directo</span>
+              </button>
+
+              <button 
+                type="button"
+                (click)="setLinkTypeAnuncio('CURSO')"
+                [ngClass]="linkTypeAnuncio === 'CURSO' ? 'border-indigo-500 bg-indigo-50/80 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 ring-2 ring-indigo-500/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+                class="p-3 rounded-xl border text-left flex flex-col gap-1.5 transition-all cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-lg">🎓</span>
+                  <span *ngIf="linkTypeAnuncio === 'CURSO'" class="material-symbols-outlined text-sm text-indigo-600">check_circle</span>
+                </div>
+                <span class="text-xs font-bold leading-tight">Curso</span>
+                <span class="text-[10px] opacity-70">Página del curso</span>
+              </button>
+
+              <button 
+                type="button"
+                (click)="setLinkTypeAnuncio('INTERNO')"
+                [ngClass]="linkTypeAnuncio === 'INTERNO' ? 'border-primary bg-primary/10 text-primary ring-2 ring-primary/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+                class="p-3 rounded-xl border text-left flex flex-col gap-1.5 transition-all cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-lg">📄</span>
+                  <span *ngIf="linkTypeAnuncio === 'INTERNO'" class="material-symbols-outlined text-sm text-primary">check_circle</span>
+                </div>
+                <span class="text-xs font-bold leading-tight">Sección</span>
+                <span class="text-[10px] opacity-70">Mis Cursos, Tareas...</span>
+              </button>
+
+              <button 
+                type="button"
+                (click)="setLinkTypeAnuncio('EXTERNO')"
+                [ngClass]="linkTypeAnuncio === 'EXTERNO' ? 'border-sky-500 bg-sky-50/80 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 ring-2 ring-sky-500/20 shadow-xs' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-slate-300'"
+                class="p-3 rounded-xl border text-left flex flex-col gap-1.5 transition-all cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <span class="text-lg">🌐</span>
+                  <span *ngIf="linkTypeAnuncio === 'EXTERNO'" class="material-symbols-outlined text-sm text-sky-600">check_circle</span>
+                </div>
+                <span class="text-xs font-bold leading-tight">Web Externa</span>
+                <span class="text-[10px] opacity-70">Zoom, Meet, Web</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Parámetros según tipo -->
+          <div class="space-y-3 pt-1">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+              2. Configura los Datos del Destino:
+            </span>
+
+            <!-- WHATSAPP -->
+            <div *ngIf="linkTypeAnuncio === 'WHATSAPP'" class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-emerald-500/30 space-y-3 animate-fade-in">
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                <div class="sm:col-span-5">
+                  <label class="text-[10px] font-bold text-slate-500 block mb-1">País / Prefijo:</label>
+                  <select 
+                    [(ngModel)]="codigoPaisAnuncio" 
+                    (change)="actualizarLinkAnuncio()" 
+                    class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:border-emerald-500">
+                    <option *ngFor="let p of paises" [value]="p.codigo">{{ p.nombre }}</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-7">
+                  <label class="text-[10px] font-bold text-slate-500 block mb-1">Número de Celular / Teléfono:</label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">+{{ codigoPaisAnuncio }}</span>
+                    <input 
+                      type="text" 
+                      [(ngModel)]="numeroLocalAnuncio" 
+                      (input)="actualizarLinkAnuncio()" 
+                      placeholder="987654321" 
+                      class="w-full pl-12 pr-3 py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-emerald-500">
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="text-[10px] font-bold text-slate-500 block mb-1">Mensaje de Inicio que enviará el Alumno:</label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="whatsappMsgAnuncio" 
+                  (input)="actualizarLinkAnuncio()" 
+                  placeholder="Hola Plataforma LMS, deseo inscribirme..." 
+                  class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-emerald-500">
+              </div>
+            </div>
+
+            <!-- CURSO -->
+            <div *ngIf="linkTypeAnuncio === 'CURSO'" class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-indigo-500/30 space-y-2 animate-fade-in">
+              <label class="text-[10px] font-bold text-slate-500 block">Selecciona el Curso al que llevará el botón:</label>
+              <select 
+                [(ngModel)]="selectedCursoLinkAnuncio" 
+                (change)="actualizarLinkAnuncio()" 
+                class="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold focus:border-indigo-500">
+                <option *ngFor="let c of cursos" [value]="c.id">🎓 {{ c.nombre }}</option>
+              </select>
+            </div>
+
+            <!-- SECCIÓN INTERNA -->
+            <div *ngIf="linkTypeAnuncio === 'INTERNO'" class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-primary/30 space-y-2 animate-fade-in">
+              <label class="text-[10px] font-bold text-slate-500 block">Selecciona la Sección del Campus:</label>
+              <select 
+                [(ngModel)]="selectedRutaInternaAnuncio" 
+                (change)="actualizarLinkAnuncio()" 
+                class="w-full px-3.5 py-2.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold focus:border-primary">
+                <option *ngFor="let r of rutasInternas" [value]="r.ruta">{{ r.label }}</option>
+              </select>
+            </div>
+
+            <!-- ENLACE EXTERNO -->
+            <div *ngIf="linkTypeAnuncio === 'EXTERNO'" class="p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-sky-500/30 space-y-2 animate-fade-in">
+              <label class="text-[10px] font-bold text-slate-500 block">URL de la Página Externa, Zoom o Google Meet:</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">link</span>
+                <input 
+                  type="text" 
+                  [(ngModel)]="urlExternaAnuncio" 
+                  (input)="actualizarLinkAnuncio()" 
+                  placeholder="https://zoom.us/j/... o https://ejemplo.com" 
+                  class="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-sky-500">
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Texto del Botón -->
+          <div class="space-y-2 pt-1">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                3. Texto Visible en el Botón:
+              </span>
+              <span class="text-[10px] text-slate-400">Sugerencias:</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button 
+                *ngFor="let sug of getBotonSugerenciasAnuncio()" 
+                type="button" 
+                (click)="setBotonTextoAnuncio(sug)" 
+                class="px-2.5 py-1 text-[11px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-primary text-slate-700 dark:text-slate-200 transition-colors cursor-pointer">
+                {{ sug }}
+              </button>
+            </div>
+
+            <input 
+              type="text" 
+              [(ngModel)]="anuncioForm.botonTexto" 
+              placeholder="Ej: Inscribirme por WhatsApp 📲"
+              class="w-full px-3.5 py-2.5 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-primary" />
+          </div>
+
+          <!-- Resumen y Botón de Prueba -->
+          <div class="pt-2 border-t border-slate-200/80 dark:border-slate-700/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-100/70 dark:bg-slate-900/60 p-3 rounded-xl">
+            <div class="flex items-center gap-2 overflow-hidden text-left">
+              <span class="material-symbols-outlined text-base text-emerald-600 shrink-0">check_circle</span>
+              <div class="truncate">
+                <span class="text-[10px] font-bold text-slate-700 dark:text-slate-200 block truncate">
+                  {{ getDestinoLegibleAnuncio() }}
+                </span>
+                <span class="text-[9px] text-slate-400 font-mono truncate block">
+                  {{ anuncioForm.botonUrl || 'Sin enlace' }}
+                </span>
+              </div>
+            </div>
+
+            <button 
+              type="button"
+              (click)="probarEnlace(anuncioForm.botonUrl)"
+              class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
+              <span>Probar Enlace</span>
+              <span class="material-symbols-outlined text-xs">open_in_new</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Audiencia del Modal -->
+        <div>
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">
+            Audiencia del Pop-up
+          </label>
+          <select [(ngModel)]="anuncioForm.audiencia" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold focus:border-primary">
+            <option value="TODOS">🌍 Todos los Usuarios</option>
+            <option value="SOLO_ESTUDIANTES">🎓 Solo Estudiantes</option>
+            <option value="SOLO_DOCENTES">👨‍🏫 Solo Docentes</option>
+            <option value="DOCENTES_Y_ESTUDIANTES">👥 Docentes y Estudiantes</option>
+          </select>
+        </div>
+
+        <!-- Botón Guardar -->
+        <div class="pt-2 flex justify-end">
+          <button 
+            (click)="guardarAnuncio()" 
+            [disabled]="guardandoAnuncio"
+            class="w-full sm:w-auto px-8 py-3 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 flex items-center justify-center gap-2 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-lg" [class.animate-spin]="guardandoAnuncio">
+              {{ guardandoAnuncio ? 'progress_activity' : 'campaign' }}
+            </span>
+            <span>{{ guardandoAnuncio ? 'Publicando...' : 'Publicar Anuncio Promocional' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Preview Derecha del Modal Pop-up (5 cols) -->
+      <div class="lg:col-span-5 space-y-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-4 sticky top-6">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-primary">visibility</span>
+              <span>Live Simulator: Modal Pop-up</span>
+            </span>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-primary/10 text-primary">
+              100% sin recortes
+            </span>
+          </div>
+
+          <!-- Mock Pop-up Dialog -->
+          <div class="rounded-2xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden animate-in fade-in">
+            
+            <!-- Imagen 100% visible en miniatura de preview -->
+            <div *ngIf="anuncioForm.imagenUrl" class="relative w-full bg-slate-950 flex items-center justify-center overflow-hidden min-h-[160px] max-h-[220px]">
+              <img [src]="anuncioForm.imagenUrl" alt="" class="absolute inset-0 w-full h-full object-cover blur-lg opacity-35 scale-125" />
+              <img [src]="anuncioForm.imagenUrl" alt="Preview" class="relative z-10 max-h-[220px] w-auto max-w-full object-contain" />
+              <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[9px] font-bold bg-primary text-white shadow-xs">
+                Novedad Especial
+              </span>
+            </div>
+
+            <div class="p-4 space-y-3">
+              <h3 class="text-sm font-black text-slate-900 dark:text-white leading-tight" [innerHTML]="getFormattedHtml(anuncioForm.titulo || 'Título del Anuncio Promocional...')"></h3>
+              
+              <div class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3" [innerHTML]="getFormattedHtml(anuncioForm.mensaje || 'Mensaje de la campaña...')"></div>
+
+              <!-- Indicador de Vigencia si está configurada -->
+              <div *ngIf="anuncioForm.fechaInicio || anuncioForm.fechaFin" class="p-2 rounded-lg bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 text-[10px] text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5 font-mono">
+                <span class="material-symbols-outlined text-xs">schedule</span>
+                <span>Vigencia: {{ (anuncioForm.fechaInicio | date:'dd/MM HH:mm') || 'Inmediato' }} ➔ {{ (anuncioForm.fechaFin | date:'dd/MM HH:mm') || 'Sin límite' }}</span>
+              </div>
+
+              <div class="pt-2 flex items-center gap-2">
+                <span class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-500">
+                  Cerrar
+                </span>
+                <span class="flex-1 px-4 py-2 rounded-lg bg-primary text-white text-[10px] font-bold text-center flex items-center justify-center gap-1 shadow-sm">
+                  <span>{{ anuncioForm.botonTexto || 'Me interesa' }}</span>
+                  <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tabla de Anuncios Existentes con Scheduler Status -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">view_list</span>
+          <span>Campañas y Anuncios Registrados</span>
+        </h2>
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+          {{ anuncios.length }} campañas
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+          <thead class="uppercase bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800">
+            <tr>
+              <th class="px-4 py-3">Campaña / Mensaje</th>
+              <th class="px-4 py-3">Audiencia</th>
+              <th class="px-4 py-3">Vigencia / Scheduler</th>
+              <th class="px-4 py-3 text-center">Estado Dinámico</th>
+              <th class="px-4 py-3 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+            <tr *ngFor="let item of anuncios" class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+              <td class="px-4 py-3.5">
+                <div class="flex items-center gap-3">
+                  <img *ngIf="item.imagenUrl" [src]="item.imagenUrl" class="w-10 h-10 object-cover rounded-lg shrink-0 border border-slate-200 dark:border-slate-700" alt="">
+                  <div>
+                    <div class="font-bold text-slate-900 dark:text-white" [innerHTML]="getFormattedHtml(item.titulo)"></div>
+                    <div class="text-[11px] text-slate-400 mt-0.5 line-clamp-1" [innerHTML]="getFormattedHtml(item.mensaje)"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3.5">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  {{ item.audiencia }}
+                </span>
+              </td>
+              <td class="px-4 py-3.5">
+                <div class="space-y-0.5 text-[11px] font-mono">
+                  <div class="text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                    <span class="text-[9px] text-slate-400">Inicio:</span>
+                    <span>{{ (item.fechaInicio | date:'dd/MM/yy HH:mm') || 'Inmediato' }}</span>
+                  </div>
+                  <div class="text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                    <span class="text-[9px] text-slate-400">Fin:</span>
+                    <span>{{ (item.fechaFin | date:'dd/MM/yy HH:mm') || 'Sin límite' }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3.5 text-center">
+                <div class="flex flex-col items-center gap-1">
+                  <span 
+                    class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border"
+                    [ngClass]="getEstadoAnuncio(item).badgeClass">
+                    <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getEstadoAnuncio(item).dotClass"></span>
+                    {{ getEstadoAnuncio(item).label }}
+                  </span>
+
+                  <button 
+                    (click)="toggleEstadoAnuncio(item)"
+                    class="text-[10px] text-slate-400 hover:text-primary underline cursor-pointer">
+                    {{ item.activo ? 'Pausar manual' : 'Activar' }}
+                  </button>
+                </div>
+              </td>
+              <td class="px-4 py-3.5 text-right">
+                <button 
+                  (click)="eliminarAnuncio(item.id)" 
+                  class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg transition-colors cursor-pointer"
+                  title="Eliminar campaña">
+                  <span class="material-symbols-outlined text-base">delete</span>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="anuncios.length === 0">
+              <td colspan="5" class="px-4 py-8 text-center text-slate-400 text-xs">
+                No hay campañas de anuncios registradas todavía.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

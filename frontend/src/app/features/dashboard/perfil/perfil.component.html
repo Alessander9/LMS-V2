@@ -1,0 +1,349 @@
+<div class="space-y-8 font-body text-slate-800 dark:text-slate-200 transition-colors duration-300" *ngIf="profile">
+  
+  <!-- Banner Header -->
+  <div class="border border-slate-200 dark:border-slate-800 p-8 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.03)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] flex flex-col md:flex-row md:items-center justify-between gap-6 transition-colors duration-300">
+    <div>
+      <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight uppercase leading-none">Mi Perfil</h1>
+      <p class="text-slate-500 dark:text-slate-400 text-xs mt-2">Gestiona los datos de tu cuenta personal y visualiza tus logros académicos en el campus.</p>
+    </div>
+    <div class="flex items-center gap-2" *ngIf="profile.rol === 'ALUMNO' && profile.nivelSuscripcion">
+      <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Nivel de Suscripción:</span>
+      <span [ngClass]="{
+        'bg-amber-100 text-amber-800 border-amber-200': profile.nivelSuscripcion === 'PREMIUM',
+        'bg-blue-100 text-blue-800 border-blue-200': profile.nivelSuscripcion === 'INTERMEDIO',
+        'bg-slate-100 text-slate-800 border-slate-200': profile.nivelSuscripcion === 'BASICO',
+        'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-300 border-slate-200 dark:border-slate-700': !profile.nivelSuscripcion || profile.nivelSuscripcion === 'NINGUNO'
+      }" class="text-[10px] font-black uppercase tracking-widest px-3 py-1.5 border">
+        {{ profile.nivelSuscripcion }}
+      </span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- Left Column: User Info -->
+    <div class="lg:col-span-2 space-y-6">
+      
+      <!-- Account Info Card -->
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.03)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] space-y-6 transition-colors duration-300">
+        <div class="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+          <div class="w-16 h-16 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 flex items-center justify-center font-black text-2xl border border-slate-900 dark:border-slate-100 shrink-0">
+            {{ profile.nombres.charAt(0) }}{{ profile.apellidos.charAt(0) }}
+          </div>
+          <div>
+            <h2 class="text-lg font-black text-slate-900 dark:text-slate-100 uppercase tracking-tight">{{ profile.nombres }} {{ profile.apellidos }}</h2>
+            <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">{{ profile.correo }}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div>
+            <label class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Nombre Completo</label>
+            <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-bold uppercase">
+              {{ profile.nombres }} {{ profile.apellidos }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Dirección de Correo</label>
+            <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-semibold">
+              {{ profile.correo }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Rol asignado</label>
+            <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider">
+              {{ profile.rol }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Identificador de Usuario</label>
+            <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-mono">
+              USR-{{ profile.id }}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Student Progress & Achievements Section -->
+      <div *ngIf="profile.rol === 'ALUMNO' && metrics" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.03)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] space-y-6 transition-colors duration-300">
+        <h2 class="text-sm font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 pb-3 mb-4 flex items-center gap-2">
+          <span class="material-symbols-outlined text-base text-indigo-600">military_tech</span>
+          Tus Logros Académicos
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Metric 1: Cursos Inscritos -->
+          <div class="border border-slate-200 dark:border-slate-800 p-5 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col justify-between">
+            <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Cursos Inscritos</span>
+            <div class="flex items-baseline gap-1.5 mt-3">
+              <span class="text-3xl font-black text-slate-900 dark:text-slate-100 font-mono">{{ metrics.cursosInscritos }}</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">cursos</span>
+            </div>
+            <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-2">Cursos asignados en tu aula virtual.</p>
+          </div>
+          
+          <!-- Metric 2: Cursos Completados -->
+          <div class="border border-slate-200 dark:border-slate-800 p-5 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col justify-between">
+            <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Cursos Terminados</span>
+            <div class="flex items-baseline gap-1.5 mt-3">
+              <span class="text-3xl font-black text-slate-900 dark:text-slate-100 font-mono">{{ metrics.cursosCompletados }}</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">completos</span>
+            </div>
+            <p class="text-[10px] text-emerald-600 font-semibold mt-2 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+              Metas cumplidas
+            </p>
+          </div>
+
+          <!-- Metric 3: Logros Obtenidos -->
+          <div class="border border-slate-200 dark:border-slate-800 p-5 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col justify-between">
+            <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">Logros Obtenidos</span>
+            <div class="flex items-baseline gap-1.5 mt-3">
+              <span class="text-3xl font-black text-slate-900 dark:text-slate-100 font-mono">{{ metrics.certificados }}</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">reconocimientos</span>
+            </div>
+            <p class="text-[10px] text-amber-600 font-semibold mt-2 flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">emoji_events</span>
+              Metas cumplidas
+            </p>
+          </div>
+        </div>
+</div>
+
+  <div *ngIf="profile?.rol === 'ALUMNO'" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.03)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] space-y-6 transition-colors duration-300">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div>
+        <h2 class="text-sm font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+          <span class="material-symbols-outlined text-base text-indigo-600">school</span>
+          Mis cursos recientes
+        </h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Vista rápida de los cursos matriculados con los mismos controles de listado.</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+        <label class="flex items-center gap-2 border border-slate-200 dark:border-slate-700 px-3 py-2 bg-slate-50 dark:bg-slate-800 w-full sm:w-72">
+          <span class="material-symbols-outlined text-sm text-slate-400">search</span>
+          <input [(ngModel)]="cursosSearch" (ngModelChange)="onCursosSearchChange()" type="text" placeholder="Buscar curso, plan o fecha" class="w-full bg-transparent outline-none text-sm">
+        </label>
+        <button (click)="toggleCursosSort()" class="px-4 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">schedule</span>
+          <span>Fecha {{ cursosSortOrder === 'desc' ? '↓' : '↑' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="filteredRecentCursos.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div *ngFor="let curso of pagedRecentCursos" class="border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 p-5">
+        <div class="flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+          <span class="material-symbols-outlined text-xs">event</span>
+          <span>{{ curso.fechaMatricula | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <h3 class="text-sm font-black uppercase text-slate-900 dark:text-slate-100 line-clamp-1">{{ curso.nombre }}</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-3">{{ curso.descripcion }}</p>
+        <div class="mt-4 flex items-center justify-between gap-3">
+          <span class="text-[9px] font-black uppercase tracking-widest border px-2 py-0.5 bg-white dark:bg-slate-900">{{ curso.nivelSuscripcion }}</span>
+          <span class="text-xs font-mono text-slate-900 dark:text-slate-100">{{ curso.avancePorcentaje }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filteredRecentCursos.length === 0" class="text-center py-8 text-sm text-slate-500 dark:text-slate-400">
+      No hay cursos que coincidan con la búsqueda.
+    </div>
+
+    <div *ngIf="totalRecentPages > 1" class="flex items-center justify-between border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
+      <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Página {{ cursosPage }} de {{ totalRecentPages }}</p>
+      <div class="flex items-center gap-2">
+        <button (click)="previousCursosPage()" [disabled]="cursosPage === 1" class="px-3 py-2 border text-xs font-bold uppercase disabled:opacity-40">Anterior</button>
+        <button (click)="nextCursosPage()" [disabled]="cursosPage === totalRecentPages" class="px-3 py-2 border text-xs font-bold uppercase disabled:opacity-40">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+    <!-- Right Column: Subscription details -->
+    <div class="space-y-6">
+      
+      <!-- Subscription status card -->
+      <div class="border bg-white dark:bg-slate-900 p-8 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.03)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300" [ngClass]="{
+        'border-amber-400 dark:border-amber-500': profile.nivelSuscripcion === 'PREMIUM',
+        'border-blue-400 dark:border-blue-500': profile.nivelSuscripcion === 'INTERMEDIO',
+        'border-slate-300 dark:border-slate-700': profile.nivelSuscripcion === 'BASICO',
+        'border-red-400 dark:border-red-500 border-dashed bg-red-50/10 dark:bg-red-950/10': !profile.nivelSuscripcion || profile.nivelSuscripcion === 'NINGUNO'
+      }">
+        <h2 class="text-sm font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider mb-6 border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base" [ngClass]="{
+            'text-amber-500': profile.nivelSuscripcion === 'PREMIUM',
+            'text-blue-500': profile.nivelSuscripcion === 'INTERMEDIO',
+            'text-slate-500': profile.nivelSuscripcion === 'BASICO',
+            'text-red-500': !profile.nivelSuscripcion || profile.nivelSuscripcion === 'NINGUNO'
+          }">card_membership</span>
+          Detalle del Plan
+        </h2>
+        
+        <div class="space-y-6">
+          <!-- Icon and Plan Name -->
+          <div class="text-center py-2">
+            <div [ngClass]="{
+              'bg-amber-500 border-amber-600': profile.nivelSuscripcion === 'PREMIUM',
+              'bg-blue-600 border-blue-700': profile.nivelSuscripcion === 'INTERMEDIO',
+              'bg-slate-700 border-slate-800': profile.nivelSuscripcion === 'BASICO',
+              'bg-red-600 border-red-700': !profile.nivelSuscripcion || profile.nivelSuscripcion === 'NINGUNO'
+            }" class="w-14 h-14 border text-white flex items-center justify-center mx-auto shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)]">
+              <span class="material-symbols-outlined text-2xl font-black">
+                {{ (!profile.nivelSuscripcion || profile.nivelSuscripcion === 'NINGUNO') ? 'lock' : 'workspace_premium' }}
+              </span>
+            </div>
+            
+            <h3 class="text-base font-black text-slate-900 dark:text-slate-100 uppercase mt-4 tracking-tight leading-none">
+              {{ profile.nivelSuscripcion || 'SIN PLAN ACTIVO' }}
+            </h3>
+            
+            <div [ngClass]="{
+              'bg-amber-100 text-amber-800 border-amber-200': profile.nivelSuscripcion === 'PREMIUM',
+              'bg-blue-100 text-blue-800 border-blue-200': profile.nivelSuscripcion === 'INTERMEDIO',
+              'bg-slate-100 text-slate-800 border-slate-200': profile.nivelSuscripcion === 'BASICO',
+              'bg-red-100 text-red-800 border-red-200': !profile.nivelSuscripcion || profile.nivelSuscripcion === 'NINGUNO'
+            }" class="inline-block mt-3 px-3.5 py-1 border text-[8px] font-black uppercase tracking-widest">
+              {{ (!profile.nivelSuscripcion || profile.nivelSuscripcion === 'NINGUNO') ? 'SUSCRIPCIÓN REQUERIDA' : 'SUSCRIPCIÓN ACTIVA' }}
+            </div>
+          </div>
+
+          <!-- Benefits List -->
+          <div class="text-xs space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block">Beneficios de tu nivel</span>
+            
+            <!-- Premium -->
+            <ul class="space-y-2 text-slate-600 dark:text-slate-300" *ngIf="profile.nivelSuscripcion === 'PREMIUM'">
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-base shrink-0 select-none">check_circle</span>
+                <span>Acceso 100% libre al catálogo completo</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-base shrink-0 select-none">check_circle</span>
+                <span>Materiales de apoyo y descargas ilimitadas</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-base shrink-0 select-none">check_circle</span>
+                <span>Descarga de certificados oficiales firmados</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-base shrink-0 select-none">check_circle</span>
+                <span>Soporte VIP y tutorías de consultas</span>
+              </li>
+            </ul>
+
+            <!-- Intermedio -->
+            <ul class="space-y-2 text-slate-600 dark:text-slate-300" *ngIf="profile.nivelSuscripcion === 'INTERMEDIO'">
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-base shrink-0 select-none">check_circle</span>
+                <span>Acceso libre al catálogo del nivel</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-base shrink-0 select-none">check_circle</span>
+                <span>Materiales de apoyo descargables</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-base shrink-0 select-none">check_circle</span>
+                <span>Descarga de certificados de aprobación</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-slate-300 text-base shrink-0 select-none">cancel</span>
+                <span class="text-slate-400 line-through">Soporte VIP y tutorías personalizadas</span>
+              </li>
+            </ul>
+
+            <!-- Basico -->
+            <ul class="space-y-2 text-slate-600 dark:text-slate-300" *ngIf="profile.nivelSuscripcion === 'BASICO'">
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-base shrink-0 select-none">check_circle</span>
+                <span>Acceso al contenido básico del campus</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-slate-300 text-base shrink-0 select-none">cancel</span>
+                <span class="text-slate-400 line-through">Descargas de material adicional</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-slate-300 text-base shrink-0 select-none">cancel</span>
+                <span class="text-slate-400 line-through">Certificados oficiales de finalización</span>
+              </li>
+            </ul>
+
+            <!-- None -->
+            <div class="space-y-3" *ngIf="!profile.nivelSuscripcion || profile.nivelSuscripcion === 'NINGUNO'">
+              <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-xs">
+                No tienes privilegios de alumno activo. Para habilitar los cursos, exámenes y certificados, ponte en contacto con administración o carga un comprobante de pago en el sistema.
+              </p>
+              <button 
+                routerLink="/dashboard"
+                class="w-full text-center py-2.5 bg-red-600 dark:bg-red-500 hover:bg-red-700 dark:hover:bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)] transition-colors">
+                Ver Métodos de Pago
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Change Password Card -->
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.03)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+        <h2 class="text-sm font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider mb-6 border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-indigo-600">lock</span>
+          Cambiar Contraseña
+        </h2>
+        
+        <form (ngSubmit)="onChangePassword()" class="space-y-4 text-xs">
+          <div>
+            <label class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Contraseña Actual</label>
+            <div class="relative">
+              <input [type]="hideCurrentPassword ? 'password' : 'text'" [(ngModel)]="currentPassword" name="currentPassword" placeholder="••••••••" autocomplete="new-password" class="w-full pl-4 pr-10 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-semibold outline-none focus:border-slate-900 dark:focus:border-slate-100">
+              <button type="button" (click)="hideCurrentPassword = !hideCurrentPassword" class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <span class="material-symbols-outlined text-[18px] select-none">
+                  {{ hideCurrentPassword ? 'visibility' : 'visibility_off' }}
+                </span>
+              </button>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Nueva Contraseña</label>
+            <div class="relative">
+              <input [type]="hideNewPassword ? 'password' : 'text'" [(ngModel)]="newPassword" name="newPassword" placeholder="••••••••" autocomplete="new-password" class="w-full pl-4 pr-10 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-semibold outline-none focus:border-slate-900 dark:focus:border-slate-100">
+              <button type="button" (click)="hideNewPassword = !hideNewPassword" class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <span class="material-symbols-outlined text-[18px] select-none">
+                  {{ hideNewPassword ? 'visibility' : 'visibility_off' }}
+                </span>
+              </button>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Confirmar Nueva Contraseña</label>
+            <div class="relative">
+              <input [type]="hideConfirmNewPassword ? 'password' : 'text'" [(ngModel)]="confirmNewPassword" name="confirmNewPassword" placeholder="••••••••" autocomplete="new-password" class="w-full pl-4 pr-10 py-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-semibold outline-none focus:border-slate-900 dark:focus:border-slate-100">
+              <button type="button" (click)="hideConfirmNewPassword = !hideConfirmNewPassword" class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <span class="material-symbols-outlined text-[18px] select-none">
+                  {{ hideConfirmNewPassword ? 'visibility' : 'visibility_off' }}
+                </span>
+              </button>
+            </div>
+          </div>
+          
+          <div *ngIf="passwordError" class="text-[10px] text-red-600 dark:text-red-400 font-bold uppercase tracking-wider">
+            {{ passwordError }}
+          </div>
+          
+          <button type="submit" [disabled]="isSavingPassword" class="w-full text-center py-2.5 bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 text-[10px] font-bold uppercase tracking-widest border border-slate-900 dark:border-slate-100 disabled:opacity-50 transition-colors">
+            {{ isSavingPassword ? 'GUARDANDO...' : 'ACTUALIZAR CONTRASEÑA' }}
+          </button>
+        </form>
+      </div>
+      
+    </div>
+
+  </div>
+
+</div>

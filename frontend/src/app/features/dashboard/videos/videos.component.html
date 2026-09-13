@@ -1,0 +1,377 @@
+<div class="space-y-8 font-body text-slate-800 dark:text-slate-200 transition-colors duration-300" *ngIf="modulo">
+  
+  <!-- Back button -->
+  <div class="flex items-center">
+    <a 
+      [routerLink]="['/dashboard/cursos', modulo.cursoId]" 
+      class="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 uppercase tracking-widest transition-colors">
+      <span class="material-symbols-outlined text-sm">arrow_back</span>
+      <span>Volver a Módulos del Curso</span>
+    </a>
+  </div>
+
+  <!-- Header Banner: Structured Course and Module context -->
+  <div class="border border-slate-200 dark:border-slate-800 p-8 bg-white dark:bg-slate-900 rounded-none shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] flex flex-col md:flex-row justify-between items-start md:items-center gap-6 transition-colors duration-300">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 uppercase tracking-widest rounded-none">
+          Curso: {{ modulo.cursoNombre }}
+        </span>
+      </div>
+      <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100 mt-2 tracking-tight uppercase leading-none">
+        Módulo {{ modulo.orden }}: {{ modulo.nombre }}
+      </h1>
+      <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Gestión y secuenciación de los videos de aprendizaje interactivo.</p>
+    </div>
+    <button 
+      (click)="openCreateModal()" 
+      class="flex items-center gap-2 px-4 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors rounded-none">
+      <span class="material-symbols-outlined text-sm">add</span>
+      <span>Agregar Video</span>
+    </button>
+  </div>
+
+  <!-- Videos Workspace -->
+  <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-none shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] overflow-hidden transition-colors duration-300">
+    <!-- Filter bar -->
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div class="relative w-full max-w-xs">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+          <span class="material-symbols-outlined text-base">search</span>
+        </span>
+        <input 
+          [(ngModel)]="searchQuery"
+          (input)="applyFilter()"
+          class="block w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-xs rounded-none" 
+          placeholder="Buscar video por título...">
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <select [(ngModel)]="dateSortOrder" (change)="onDateSortChange($any($event.target).value)" class="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold uppercase tracking-wider">
+          <option value="desc">Fecha desc</option>
+          <option value="asc">Fecha asc</option>
+        </select>
+        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+          {{ totalElements }} videos en el módulo
+        </span>
+      </div>
+    </div>
+
+    <!-- Videos List Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 font-bold uppercase tracking-wider text-[10px]">
+            <th class="p-4 w-20">Orden</th>
+            <th class="p-4">Título del Video</th>
+            <th class="p-4 w-44">Enlace YouTube</th>
+            <th class="p-4 w-32">Estado</th>
+            <th class="p-4 text-right w-36">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+          <!-- Empty state -->
+          <tr *ngIf="filteredVideos.length === 0">
+            <td colspan="5" class="p-12 text-center text-slate-400 dark:text-slate-500">
+              <span class="material-symbols-outlined text-4xl mb-2 text-slate-300 dark:text-slate-600">smart_display</span>
+              <p class="font-medium text-xs">Este módulo todavía no contiene videos registrados.</p>
+            </td>
+          </tr>
+          <!-- Rows -->
+          <tr *ngFor="let video of paginatedVideos" class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+            <!-- Orden -->
+            <td class="p-4 font-black text-slate-900 dark:text-slate-100 text-center">
+              <span class="inline-block w-6 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center font-mono">
+                {{ video.orden }}
+              </span>
+            </td>
+            <!-- Título -->
+            <td class="p-4 font-bold text-slate-900 dark:text-slate-100">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-red-400/60 dark:text-red-400/40 text-sm shrink-0">smart_display</span>
+                <div class="overflow-hidden">
+                  <span class="block truncate">{{ video.titulo }}</span>
+                  <span class="block font-normal text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">{{ video.descripcion }}</span>
+                </div>
+              </div>
+            </td>
+            <!-- YouTube URL -->
+            <td class="p-4 font-mono text-[10px] text-slate-400 dark:text-slate-500 truncate max-w-xs">
+              <a [href]="video.youtubeUrl" target="_blank" class="text-primary hover:underline flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">link</span>
+                Ver en YouTube
+              </a>
+            </td>
+            <!-- Estado -->
+            <td class="p-4">
+            <span [ngClass]="video.estado ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-200 border-emerald-200 dark:border-emerald-900/40' : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-200 border-red-200 dark:border-red-900/40'" class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border rounded-none">
+                {{ video.estado ? 'ACTIVO' : 'INACTIVO' }}
+              </span>
+            </td>
+            <!-- Acciones -->
+            <td class="p-4 text-right">
+              <div class="inline-flex gap-2">
+                <button 
+                  (click)="openEditModal(video)" 
+                  title="Editar Video"
+                  class="p-1.5 border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-none transition-colors">
+                  <span class="material-symbols-outlined text-base block">edit</span>
+                </button>
+                <button 
+                  (click)="toggleEstado(video)" 
+                  [title]="video.estado ? 'Desactivar' : 'Activar'"
+                  [ngClass]="video.estado ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'"
+                  class="p-1.5 border rounded-none transition-colors">
+                  <span class="material-symbols-outlined text-base block">
+                    {{ video.estado ? 'block' : 'check_circle' }}
+                  </span>
+                </button>
+                <button 
+                  (click)="eliminarVideo(video)" 
+                  title="Eliminar Video Permanentemente"
+                  class="p-1.5 border border-red-200 dark:border-red-900/60 text-red-600 dark:text-red-400 rounded-none hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors">
+                  <span class="material-symbols-outlined text-base block">delete_forever</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="totalPages > 1" class="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage===1" class="px-3 py-2 border text-[10px] font-bold uppercase">Anterior</button>
+      <div class="text-[10px] font-bold uppercase">Página {{ currentPage }} de {{ totalPages }}</div>
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage===totalPages" class="px-3 py-2 border text-[10px] font-bold uppercase">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- Create/Edit Video Modal -->
+  <div *ngIf="showVideoModal" role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6" (click)="closeVideoModal()">
+    <div class="w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-none relative max-h-[92vh] flex flex-col transition-colors duration-300 overflow-hidden" (click)="$event.stopPropagation()">
+      <!-- Top Color Accent Bar -->
+      <div class="h-1.5 w-full bg-gradient-to-r from-red-600 via-rose-500 to-amber-500 shrink-0"></div>
+
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-red-600/10 dark:bg-red-600/20 text-red-600 dark:text-red-400 flex items-center justify-center border border-red-600/20">
+            <span class="material-symbols-outlined text-xl">{{ isEditMode ? 'video_settings' : 'smart_display' }}</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
+              {{ isEditMode ? 'Editar Clase en Video' : 'Registrar Nueva Clase en Video' }}
+            </h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              {{ isEditMode ? 'Actualiza los datos, orden o el enlace embebido del video' : 'Agrega una nueva video-clase explicativa para este módulo' }}
+            </p>
+          </div>
+        </div>
+        <button (click)="closeVideoModal()" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Form Body (Scrollable) -->
+      <form [formGroup]="videoForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto p-6 space-y-6" autocomplete="off">
+        <!-- Error response display -->
+        <div *ngIf="modalErrorMsg" class="flex items-start gap-2.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 p-3.5 text-xs font-semibold">
+          <span class="material-symbols-outlined text-red-600 text-lg shrink-0">warning</span>
+          <span>{{ modalErrorMsg }}</span>
+        </div>
+
+        <!-- 2 Columns Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <!-- Columna 1: Información de la Lección -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+              <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-lg">subtitles</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">Información de la Clase</span>
+            </div>
+
+            <!-- Módulo Badge -->
+            <div *ngIf="modulo" class="p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Módulo Destino</span>
+              <div class="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                <span class="material-symbols-outlined text-primary text-sm">view_module</span>
+                <span>{{ modulo.nombre }}</span>
+              </div>
+            </div>
+
+            <!-- Título -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Título del Video <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-base pointer-events-none">movie</span>
+                <input 
+                  formControlName="titulo" 
+                  type="text" 
+                  autocomplete="off"
+                  placeholder="Ej. Clase 1: Fundamentos y Conceptos Clave"
+                  class="w-full pl-9 pr-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors">
+              </div>
+              <p *ngIf="videoForm.get('titulo')?.hasError('required') && videoForm.get('titulo')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">El título es obligatorio.</p>
+              <p *ngIf="videoForm.get('titulo')?.hasError('minlength') && videoForm.get('titulo')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">Debe tener al menos 3 caracteres.</p>
+            </div>
+
+            <!-- Descripción -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Descripción / Resumen <span class="text-red-500">*</span>
+              </label>
+              <textarea 
+                formControlName="descripcion" 
+                rows="3" 
+                placeholder="Breve resumen de los temas abordados en esta sesión de video..."
+                class="w-full p-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors resize-none"></textarea>
+              <p *ngIf="videoForm.get('descripcion')?.hasError('required') && videoForm.get('descripcion')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">La descripción es obligatoria.</p>
+              <p *ngIf="videoForm.get('descripcion')?.hasError('minlength') && videoForm.get('descripcion')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">Debe tener al menos 5 caracteres.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Orden -->
+              <div>
+                <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                  Orden de Visualización <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-base pointer-events-none">format_list_numbered</span>
+                  <input 
+                    formControlName="orden" 
+                    type="number" 
+                    min="1"
+                    class="w-full pl-9 pr-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors">
+                </div>
+              </div>
+
+              <!-- Estado Segmented Switch -->
+              <div>
+                <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                  Estado
+                </label>
+                <div class="grid grid-cols-2 gap-1.5">
+                  <button 
+                    type="button"
+                    (click)="setEstado(true)"
+                    [ngClass]="isEstadoActivo ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-500' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-slate-500'"
+                    class="py-2.5 px-2 border text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span class="uppercase">Activo</span>
+                  </button>
+                  <button 
+                    type="button"
+                    (click)="setEstado(false)"
+                    [ngClass]="!isEstadoActivo ? 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300 ring-1 ring-red-500' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-slate-500'"
+                    class="py-2.5 px-2 border text-[10px] font-bold flex items-center justify-center gap-1.5 transition-all">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    <span class="uppercase">Inactivo</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna 2: URL de YouTube y Live Player -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+              <span class="material-symbols-outlined text-red-600 dark:text-red-400 text-lg">play_circle</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">Fuente de YouTube & Reproductor</span>
+            </div>
+
+            <!-- YouTube URL Input -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Enlace del Video en YouTube <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-red-600 dark:text-red-400 text-base pointer-events-none">link</span>
+                <input 
+                  formControlName="youtubeUrl" 
+                  type="text" 
+                  (input)="onUrlInput()"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  class="w-full pl-9 pr-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500 transition-colors">
+              </div>
+              <p *ngIf="videoForm.get('youtubeUrl')?.hasError('required') && videoForm.get('youtubeUrl')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">El enlace de YouTube es obligatorio.</p>
+              <p *ngIf="videoForm.get('youtubeUrl')?.hasError('pattern') && videoForm.get('youtubeUrl')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">Ingresa una URL de YouTube válida (youtube.com o youtu.be).</p>
+            </div>
+
+            <!-- Live Player Container -->
+            <div class="border border-slate-200 dark:border-slate-700 bg-slate-900 rounded-none overflow-hidden relative">
+              <div *ngIf="youtubeId" class="aspect-video w-full relative">
+                <iframe 
+                  *ngIf="safeEmbedUrl" 
+                  [src]="safeEmbedUrl" 
+                  class="absolute inset-0 w-full h-full"
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen>
+                </iframe>
+              </div>
+
+              <!-- Placeholder when no URL -->
+              <div *ngIf="!youtubeId" class="aspect-video w-full flex flex-col items-center justify-center p-6 text-center bg-slate-900/90 text-slate-400">
+                <div class="w-14 h-14 rounded-full bg-red-600/10 text-red-500 flex items-center justify-center mb-3">
+                  <span class="material-symbols-outlined text-3xl">smart_display</span>
+                </div>
+                <p class="text-xs font-bold text-white uppercase tracking-wider mb-1">Vista Previa en Vivo</p>
+                <p class="text-[11px] text-slate-400 max-w-xs">Pega el enlace de YouTube para previsualizar el reproductor interactivo y verificar el audio/video.</p>
+              </div>
+            </div>
+
+            <!-- Detected Video ID Chip -->
+            <div *ngIf="youtubeId" class="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-xs text-emerald-600">check_circle</span>
+                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Video ID Detectado:</span>
+                <code class="text-xs font-mono font-bold text-primary">{{ youtubeId }}</code>
+              </div>
+              <a [href]="'https://www.youtube.com/watch?v=' + youtubeId" target="_blank" class="text-[10px] font-bold text-red-600 hover:underline flex items-center gap-1">
+                <span>Ver en YT</span>
+                <span class="material-symbols-outlined text-xs">open_in_new</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar Footer -->
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-red-600">info</span>
+            <span>Los campos marcados con <strong class="text-red-500">*</strong> son obligatorios</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <button 
+              type="button" 
+              (click)="closeVideoModal()" 
+              class="px-5 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors rounded-none flex items-center gap-2">
+              <span class="material-symbols-outlined text-sm">cancel</span>
+              <span>Cancelar</span>
+            </button>
+            <button 
+              type="submit" 
+              [disabled]="videoForm.invalid || isFormSubmitting" 
+              class="px-6 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
+              <span *ngIf="isFormSubmitting" class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+              <span *ngIf="!isFormSubmitting" class="material-symbols-outlined text-sm">{{ isEditMode ? 'save' : 'smart_display' }}</span>
+              <span>{{ isFormSubmitting ? 'Guardando...' : (isEditMode ? 'Guardar Cambios' : 'Registrar Video') }}</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm modal -->
+  <app-confirm-modal
+    [visible]="showConfirmModal"
+    [type]="confirmModalType"
+    [title]="confirmModalTitle"
+    [message]="confirmModalMessage"
+    confirmText="Confirmar"
+    (onConfirm)="confirmAction()"
+    (onCancel)="showConfirmModal = false">
+  </app-confirm-modal>
+
+</div>

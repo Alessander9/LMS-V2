@@ -1,0 +1,589 @@
+﻿<app-navbar></app-navbar>
+
+<main class="libros-page">
+  <!-- ========================================================================= -->
+  <!-- 1. HERO SECTION -->
+  <!-- ========================================================================= -->
+  <header class="lib-hero relative py-12 md:py-16 overflow-hidden">
+    <div class="lib-hero__glow lib-hero__glow--one" aria-hidden="true"></div>
+    <div class="lib-hero__glow lib-hero__glow--two" aria-hidden="true"></div>
+
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
+      <div class="text-center max-w-3xl mx-auto space-y-4">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/70 border border-blue-200/80 dark:border-blue-800/50 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-[#0088ff] animate-pulse"></span>
+          <span class="font-mono text-[10px] uppercase tracking-widest text-[#003466] dark:text-blue-300 font-bold">
+            BIBLIOTECA Y PUBLICACIONES OFICIALES · Plataforma LMS
+          </span>
+          <span class="w-2 h-2 rounded-full bg-[#0088ff] animate-pulse"></span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#06264a] dark:text-white tracking-tight leading-tight">
+          Libros, Atlas y Manuales de <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#003466] via-[#0088ff] to-[#23b7dd]">Medicina Tradicional China.</span>
+        </h1>
+
+        <p class="text-sm md:text-base text-slate-650 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
+          Obras clínicas de referencia para terapeutas, alumnos y profesionales. Guías con protocolos prácticos, esquemas en alta resolución y casos reales escritos por los docentes del <strong>Instituto Plataforma LMS</strong>.
+        </p>
+
+        <!-- Search input -->
+        <div class="pt-2 max-w-xl mx-auto">
+          <div class="relative flex items-center shadow-lg shadow-blue-950/5 rounded-2xl overflow-hidden border border-blue-200/80 dark:border-slate-800 bg-white dark:bg-[#071529]">
+            <span class="material-symbols-outlined text-slate-400 pl-4 text-xl">search</span>
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              placeholder="Buscar por título, autor o tema (ej. Acupuntura, Frecuencias, Puntos...)"
+              class="w-full py-3.5 px-3 bg-transparent text-xs md:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none"
+            />
+            <button
+              *ngIf="searchQuery"
+              (click)="searchQuery = ''"
+              class="px-3 text-slate-400 hover:text-slate-600 transition-colors"
+              title="Limpiar búsqueda">
+              <span class="material-symbols-outlined text-base">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Trust Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 max-w-3xl mx-auto">
+          <div class="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-blue-100 dark:border-slate-800/80 backdrop-blur-sm">
+            <span class="block text-lg font-extrabold text-[#003466] dark:text-cyan-400 font-mono">+10</span>
+            <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">Obras Especializadas</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-blue-100 dark:border-slate-800/80 backdrop-blur-sm">
+            <span class="block text-lg font-extrabold text-[#003466] dark:text-cyan-400 font-mono">100%</span>
+            <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">PDF Digital HD</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-blue-100 dark:border-slate-800/80 backdrop-blur-sm">
+            <span class="block text-lg font-extrabold text-[#003466] dark:text-cyan-400 font-mono">24/7</span>
+            <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">Acceso Inmediato</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/70 dark:bg-white/5 border border-blue-100 dark:border-slate-800/80 backdrop-blur-sm">
+            <span class="block text-lg font-extrabold text-[#003466] dark:text-cyan-400 font-mono">DOCENTES</span>
+            <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">Autores Clínicos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. 3D WEBGL INTERACTIVE BOOKSHELF -->
+  <!-- ========================================================================= -->
+  <section #bookshelfSection class="bookshelf-3d-section py-8 md:py-12 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800/80">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop space-y-6 relative z-10">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div class="space-y-1.5 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/70 border border-cyan-500/30 text-cyan-300 font-mono text-[10px] font-bold uppercase tracking-widest shadow-lg">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            EXPERIENCIA 3D WEBGL · BIBLIOTECA VIRTUAL
+          </div>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+            Estante Interactivo de Libros & Obras Clínicas
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+            Explora las ediciones encuadernadas en tela con relieve y foliado en oro. Desliza horizontalmente para recorrer el archivador, pasa el ratón para elevar un libro o haz clic para orbitar e inspeccionar sus detalles en 3D.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-[11px] font-mono text-cyan-300 bg-slate-900/80 border border-slate-700 px-3.5 py-1.5 rounded-xl backdrop-blur-sm shadow-md flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-cyan-400">3d_rotation</span>
+            Vista 3D Interactiva
+          </span>
+        </div>
+      </div>
+
+      <!-- 3D Bookshelf WebGL Canvas -->
+      <app-newsletter-bookshelf
+        [height]="560"
+        brand="Plataforma LMS · EDICIONES"
+        (viewDetails)="on3DBookViewDetails($event)">
+      </app-newsletter-bookshelf>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 2. CATEGORY FILTER TABS -->
+  <!-- ========================================================================= -->
+  <section class="py-4 border-y border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-[#071324]/50 sticky top-20 z-20 backdrop-blur-md">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop overflow-x-auto no-scrollbar">
+      <div class="flex items-center gap-2 min-w-max">
+        <button
+          *ngFor="let cat of categories"
+          type="button"
+          (click)="setCategory(cat.id)"
+          class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200"
+          [ngClass]="selectedCategory === cat.id
+            ? 'bg-gradient-to-r from-[#003466] to-[#005299] text-white shadow-md shadow-blue-950/20 scale-[1.02]'
+            : 'text-slate-600 dark:text-slate-300 hover:text-[#003466] dark:hover:text-white bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800'">
+          {{ cat.label }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 3. FEATURED BOOK HIGHLIGHT (DESTACADO) -->
+  <!-- ========================================================================= -->
+  <section *ngIf="selectedCategory === 'todos' && !searchQuery" class="py-8 md:py-12 bg-gradient-to-b from-transparent via-blue-50/40 to-transparent dark:via-blue-950/20">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="rounded-3xl border border-blue-200/80 dark:border-blue-900/50 bg-white/90 dark:bg-[#061e38]/90 shadow-2xl shadow-blue-950/10 p-6 md:p-10 relative overflow-hidden backdrop-blur-md">
+        
+        <div class="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-[#0088ff]/15 via-[#23b7dd]/10 to-transparent rounded-bl-full pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+          
+          <!-- Book Cover Column -->
+          <div class="lg:col-span-4 flex justify-center">
+            <div class="lib-book-cover relative rounded-2xl overflow-hidden shadow-2xl shadow-blue-950/25 border border-white/20 group max-w-[260px] cursor-pointer" (click)="openDetails(libros[1])">
+              <img [src]="libros[1].portada" [alt]="libros[1].titulo" class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 block">
+              <div class="absolute top-3 left-3 bg-[#003466] text-white font-mono text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-md">
+                NUEVA EDICIÓN 2026
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-4">
+                <span class="text-white text-xs font-bold flex items-center gap-1">
+                  <span class="material-symbols-outlined text-sm">visibility</span> Ver Índice Completo
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Book Info Column -->
+          <div class="lg:col-span-8 space-y-4">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/80 dark:bg-blue-950/80 text-[#003466] dark:text-cyan-300 font-mono text-[10px] font-bold uppercase tracking-wider border border-blue-200/80 dark:border-blue-800/60">
+                <span class="material-symbols-outlined text-xs text-[#0088ff]">auto_awesome</span> LIBRO DESTACADO DEL MES
+              </span>
+              <span class="px-2.5 py-1 rounded-full bg-purple-100/80 dark:bg-purple-950/80 text-[#7c3aed] dark:text-purple-300 font-mono text-[10px] font-bold uppercase tracking-wider border border-purple-200/80 dark:border-purple-800/60">
+                {{ libros[1].categoria }}
+              </span>
+            </div>
+
+            <h2 class="text-2xl md:text-3xl font-extrabold text-[#06264a] dark:text-white tracking-tight leading-snug">
+              {{ libros[1].titulo }}
+            </h2>
+
+            <p class="text-xs md:text-sm font-semibold text-[#005299] dark:text-cyan-400">
+              Autor: {{ libros[1].autor }} · {{ libros[1].paginas }} Páginas · {{ libros[1].formato }}
+            </p>
+
+            <p class="text-xs md:text-sm text-slate-650 dark:text-slate-300 leading-relaxed">
+              {{ libros[1].resumen }}
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+              <div class="flex items-baseline gap-1.5">
+                <span class="text-2xl md:text-3xl font-black text-[#06264a] dark:text-white">S/ {{ libros[1].precioSoles }}</span>
+                <span class="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase">pago único</span>
+              </div>
+
+              <a
+                [href]="getWhatsAppLink(libros[1])"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-mono text-xs font-extrabold uppercase tracking-wider bg-gradient-to-r from-[#003466] to-[#005299] hover:from-[#002244] hover:to-[#003e73] text-white transition-all shadow-lg shadow-blue-950/20 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]">
+                <span class="material-symbols-outlined text-base">shopping_cart</span>
+                Adquirir por WhatsApp
+              </a>
+
+              <button
+                type="button"
+                (click)="openDetails(libros[1])"
+                class="inline-flex items-center justify-center gap-1.5 px-5 py-3 rounded-xl font-mono text-xs font-bold uppercase tracking-wider border border-slate-300 dark:border-slate-700 text-[#06264a] dark:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
+                <span class="material-symbols-outlined text-base">menu_book</span>
+                Ver Índice y Muestra
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 4. MAIN BOOKS CATALOG GRID -->
+  <!-- ========================================================================= -->
+  <section class="py-8 md:py-12">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop space-y-8">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="font-mono text-[10px] uppercase tracking-widest text-[#005299] dark:text-blue-300 font-bold">CATÁLOGO EDITORIAL</span>
+          <h2 class="text-xl md:text-2xl font-extrabold text-[#06264a] dark:text-white tracking-tight">
+            {{ selectedCategory === 'todos' ? 'Todas las Obras Disponibles' : 'Publicaciones de ' + selectedCategory }}
+            <span class="text-sm font-normal text-slate-500 dark:text-slate-400 font-mono">({{ filteredLibros.length }} encontrados)</span>
+          </h2>
+        </div>
+
+        <a
+          [href]="getGeneralWhatsAppCatalog()"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#0088ff] hover:text-[#005299] transition-colors">
+          <span class="material-symbols-outlined text-base">picture_as_pdf</span>
+          Solicitar catálogo completo en PDF
+        </a>
+      </div>
+
+      <!-- No results state -->
+      <div *ngIf="filteredLibros.length === 0" class="text-center py-16 bg-white/60 dark:bg-white/5 rounded-3xl border border-slate-200 dark:border-slate-800">
+        <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">menu_book</span>
+        <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">No se encontraron libros con ese criterio</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">Prueba buscando otro término o selecciona "Todos los Libros" para ver el catálogo completo.</p>
+        <button
+          type="button"
+          (click)="searchQuery = ''; selectedCategory = 'todos'"
+          class="mt-4 px-4 py-2 bg-slate-200 dark:bg-slate-800 text-xs font-bold rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-300 transition-colors">
+          Restablecer Filtros
+        </button>
+      </div>
+
+      <!-- Grid of books -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div
+          *ngFor="let libro of filteredLibros"
+          class="lib-card group bg-white dark:bg-[#07172b] rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-md hover:shadow-2xl hover:shadow-blue-950/10 transition-all duration-300 flex flex-col overflow-hidden hover:-translate-y-1">
+          
+          <!-- Card Image / Book Preview -->
+          <div class="relative aspect-[4/3] bg-slate-100 dark:bg-slate-900 overflow-hidden cursor-pointer" (click)="openDetails(libro)">
+            <img [src]="libro.portada" [alt]="libro.titulo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 block">
+            
+            <div class="absolute top-2.5 left-2.5 flex flex-col gap-1">
+              <span *ngIf="libro.bestseller" class="bg-amber-500 text-slate-950 font-mono text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
+                Bestseller
+              </span>
+              <span *ngIf="libro.nuevo" class="bg-[#0088ff] text-white font-mono text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow-sm">
+                Nuevo 2026
+              </span>
+            </div>
+
+            <div class="absolute bottom-2.5 left-2.5" *ngIf="libro.galeria && libro.galeria.length > 1">
+              <span class="bg-[#003466]/85 backdrop-blur-sm text-cyan-300 font-mono text-[8.5px] font-bold uppercase px-2 py-0.5 rounded border border-cyan-500/30 flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-xs">photo_library</span>
+                {{ libro.galeria.length }} Vistas HD
+              </span>
+            </div>
+
+            <div class="absolute bottom-2.5 right-2.5">
+              <span class="bg-slate-950/80 backdrop-blur-sm text-white font-mono text-[9px] font-bold uppercase px-2 py-1 rounded border border-white/10">
+                {{ libro.paginas }} págs.
+              </span>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+            <div class="space-y-1.5">
+              <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-[#0088ff] dark:text-cyan-400">
+                {{ libro.categoria }}
+              </span>
+              <h3 class="text-sm md:text-base font-extrabold text-[#06264a] dark:text-white leading-snug group-hover:text-[#0088ff] transition-colors cursor-pointer line-clamp-2" (click)="openDetails(libro)">
+                {{ libro.titulo }}
+              </h3>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                {{ libro.subtitulo }}
+              </p>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+              <div>
+                <span class="text-[9px] font-mono text-slate-400 block uppercase">Inversión</span>
+                <span class="text-base font-black text-[#06264a] dark:text-white font-mono">S/ {{ libro.precioSoles }}</span>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  (click)="openDetails(libro)"
+                  class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  title="Ver índice y detalles">
+                  <span class="material-symbols-outlined text-base block">menu_book</span>
+                </button>
+                <a
+                  [href]="getWhatsAppLink(libro)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-1 px-3 py-2 rounded-lg bg-gradient-to-r from-[#003466] to-[#005299] hover:from-[#002244] hover:to-[#003e73] text-white text-[10px] font-mono font-bold uppercase tracking-wider transition-all shadow-md shadow-blue-950/20">
+                  <span class="material-symbols-outlined text-sm">chat</span>
+                  Comprar
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 5. WHY STUDY WITH Plataforma LMS BOOKS (VENTAJAS) -->
+  <!-- ========================================================================= -->
+  <section class="py-8 md:py-12 bg-slate-50 dark:bg-[#06182e] border-y border-slate-200/80 dark:border-slate-800">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center max-w-2xl mx-auto space-y-2 mb-8">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-[#005299] dark:text-blue-300 font-bold">VENTAJAS EDITORIALES</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-[#06264a] dark:text-white tracking-tight">
+          ¿Por qué capacitarte con los libros de Plataforma LMS?
+        </h2>
+        <p class="text-xs md:text-sm text-slate-650 dark:text-slate-400 leading-relaxed">
+          Materiales desarrollados bajo el rigor metodológico de la Medicina Tradicional China y adaptados a la realidad clínica terapéutica.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-[#0088ff]">
+            <span class="material-symbols-outlined text-xl">verified</span>
+          </div>
+          <h3 class="text-sm font-extrabold text-[#06264a] dark:text-white">100% Clínico y Práctico</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Sin rodeos teóricos innecesarios. Mapas cun por cun, tablas de frecuencias en Hz y dosificación exacta para cada tratamiento.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-[#0088ff]">
+            <span class="material-symbols-outlined text-xl">devices</span>
+          </div>
+          <h3 class="text-sm font-extrabold text-[#06264a] dark:text-white">Formato Digital HD Multiplataforma</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Llévalos en tu teléfono, tablet o laptop. Archivos PDF de alta resolución con texto buscable y marcadores interactivos.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-[#0088ff]">
+            <span class="material-symbols-outlined text-xl">school</span>
+          </div>
+          <h3 class="text-sm font-extrabold text-[#06264a] dark:text-white">Autores Docentes Titulados</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Elaborados por profesionales con años de docencia y experiencia en consulta clínica en Lima y sedes nacionales.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-2.5 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-[#0088ff]">
+            <span class="material-symbols-outlined text-xl">support_agent</span>
+          </div>
+          <h3 class="text-sm font-extrabold text-[#06264a] dark:text-white">Asesoría de Compra Directa</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+            Envío inmediato tras tu pago por Yape, Plin o transferencia bancaria. Confirmación y descarga en menos de 5 minutos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 6. FINAL CTA & WHATSAPP SUPPORT -->
+  <!-- ========================================================================= -->
+  <section class="py-8 md:py-12">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="rounded-3xl bg-gradient-to-r from-[#003466] via-[#004780] to-[#005299] p-8 md:p-12 text-white text-center space-y-4 shadow-xl shadow-blue-950/20 relative overflow-hidden">
+        
+        <div class="space-y-2 max-w-2xl mx-auto">
+          <span class="font-mono text-[10px] uppercase tracking-widest text-cyan-300 font-bold">¿BUSCAS UN LIBRO O GUÍA ESPECÍFICA?</span>
+          <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight">
+            Consulta con Coordinación Académica por WhatsApp
+          </h2>
+          <p class="text-xs md:text-sm text-blue-100 leading-relaxed">
+            Si requieres asesoría sobre qué libro es el más adecuado para tu nivel o deseas adquirir el paquete completo con descuento especial para alumnos, escríbenos ahora mismo.
+          </p>
+        </div>
+
+        <div class="pt-2 flex flex-wrap items-center justify-center gap-4">
+          <a
+            [href]="getGeneralWhatsAppCatalog()"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider bg-white text-[#003466] hover:bg-blue-50 transition-all shadow-lg hover:scale-105 active:scale-95">
+            <span class="material-symbols-outlined text-base">chat</span>
+            Contactar por WhatsApp (+51 939 371 250)
+          </a>
+          <a
+            routerLink="/programas"
+            class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-mono text-xs font-bold uppercase tracking-wider border border-white/30 text-white hover:bg-white/10 transition-all">
+            <span class="material-symbols-outlined text-base">school</span>
+            Ver Cursos y Diplomados
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ========================================================================= -->
+<!-- 7. MODAL VISTA PREVIA Y DETALLES DEL LIBRO -->
+<!-- ========================================================================= -->
+<div *ngIf="showModal && selectedBook" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-4 animate-fade-in" (click)="closeModal()">
+  <div class="relative max-w-3xl w-full max-h-[92vh] bg-white dark:bg-[#07162b] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col" (click)="$event.stopPropagation()">
+    
+    <!-- Modal Header -->
+    <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between gap-4 bg-slate-50/70 dark:bg-slate-900/70 backdrop-blur-sm">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="text-[9px] font-mono font-bold uppercase tracking-wider text-[#0088ff] dark:text-cyan-400">
+            {{ selectedBook.categoria }} · {{ selectedBook.anio }}
+          </span>
+          <span *ngIf="selectedBook.galeria?.length" class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950/80 text-[#003466] dark:text-cyan-300 font-mono text-[9px] font-bold">
+            {{ selectedBook.galeria?.length }} Vistas Disponibles
+          </span>
+        </div>
+        <h3 class="text-lg sm:text-xl font-extrabold text-[#06264a] dark:text-white leading-tight">
+          {{ selectedBook.titulo }}
+        </h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400">
+          Autor: <strong>{{ selectedBook.autor }}</strong>
+        </p>
+      </div>
+
+      <button type="button" (click)="closeModal()" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors shrink-0">
+        <span class="material-symbols-outlined text-base">close</span>
+      </button>
+    </div>
+
+    <!-- Modal Body (Scrollable) -->
+    <div class="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1 text-xs md:text-sm">
+      
+      <!-- Interactive Gallery / Visual Showcase if Book Has Multiple Views -->
+      <div *ngIf="selectedBook.galeria && selectedBook.galeria.length > 0" class="space-y-3 bg-gradient-to-b from-slate-900 to-slate-950 p-4 sm:p-5 rounded-2xl border border-slate-800 text-white shadow-inner">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-base text-cyan-400">photo_library</span>
+            <h4 class="font-bold text-white uppercase font-mono text-[10px] tracking-wider">
+              Galería Editorial HD · Vista {{ activeModalImageIndex + 1 }} de {{ selectedBook.galeria.length }}
+            </h4>
+          </div>
+          <span class="text-[10px] font-mono text-cyan-300 font-bold bg-cyan-950/70 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
+            {{ selectedBook.galeria[activeModalImageIndex].label }}
+          </span>
+        </div>
+
+        <!-- Main High-Res Viewer -->
+        <div class="relative w-full max-h-[360px] sm:max-h-[420px] flex items-center justify-center bg-slate-950/60 rounded-xl overflow-hidden border border-slate-800/80 p-2">
+          <img
+            [src]="activeModalImage"
+            [alt]="selectedBook.galeria[activeModalImageIndex].label"
+            class="max-h-[340px] sm:max-h-[400px] w-auto max-w-full object-contain rounded-lg shadow-2xl transition-all duration-300">
+        </div>
+
+        <!-- Image Description Caption -->
+        <p class="text-[11px] text-slate-300 text-center italic" *ngIf="selectedBook.galeria[activeModalImageIndex].descripcion">
+          {{ selectedBook.galeria[activeModalImageIndex].descripcion }}
+        </p>
+
+        <!-- Thumbnail Selector Row -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+          <button
+            *ngFor="let item of selectedBook.galeria; let i = index"
+            type="button"
+            (click)="setModalImage(item.url, i)"
+            class="group p-1.5 rounded-xl border text-left transition-all duration-200 flex flex-col items-center gap-1.5"
+            [ngClass]="activeModalImageIndex === i
+              ? 'border-cyan-400 bg-cyan-950/50 shadow-md ring-2 ring-cyan-400/40'
+              : 'border-slate-800 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-900'">
+            <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-slate-950 flex items-center justify-center">
+              <img [src]="item.url" [alt]="item.label" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            </div>
+            <span class="text-[9.5px] font-mono font-bold truncate w-full text-center" [ngClass]="activeModalImageIndex === i ? 'text-cyan-300' : 'text-slate-400'">
+              {{ item.label }}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Single Cover Preview for Books without gallery -->
+      <div *ngIf="!selectedBook.galeria || selectedBook.galeria.length === 0" class="flex justify-center">
+        <div class="max-w-[200px] rounded-xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-800">
+          <img [src]="selectedBook.portada" [alt]="selectedBook.titulo" class="w-full h-auto object-cover">
+        </div>
+      </div>
+
+      <!-- Synopsis -->
+      <div class="space-y-2">
+        <h4 class="font-bold text-[#06264a] dark:text-white uppercase font-mono text-[10px] tracking-wider">
+          📖 Sinopsis y Enfoque Terapéutico
+        </h4>
+        <p class="text-slate-650 dark:text-slate-300 leading-relaxed">
+          {{ selectedBook.resumen }}
+        </p>
+      </div>
+
+      <!-- Table of Contents -->
+      <div class="space-y-2.5">
+        <h4 class="font-bold text-[#06264a] dark:text-white uppercase font-mono text-[10px] tracking-wider">
+          📑 Índice de Capítulos Principales
+        </h4>
+        <div class="space-y-1.5 bg-slate-50 dark:bg-slate-900/80 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800">
+          <div *ngFor="let cap of selectedBook.capitulos" class="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
+            <span class="material-symbols-outlined text-xs text-[#0088ff] mt-0.5 shrink-0">check_circle</span>
+            <span>{{ cap }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical Sheet -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-3.5 bg-blue-50/50 dark:bg-blue-950/40 rounded-xl border border-blue-100 dark:border-blue-900/50 text-xs">
+        <div>
+          <span class="text-[9px] font-mono text-slate-500 uppercase block">Páginas</span>
+          <strong class="text-slate-800 dark:text-slate-200">{{ selectedBook.paginas }}</strong>
+        </div>
+        <div>
+          <span class="text-[9px] font-mono text-slate-500 uppercase block">Formato</span>
+          <strong class="text-slate-800 dark:text-slate-200">{{ selectedBook.formato }}</strong>
+        </div>
+        <div>
+          <span class="text-[9px] font-mono text-slate-500 uppercase block">Editorial</span>
+          <strong class="text-slate-800 dark:text-slate-200">Plataforma LMS Perú</strong>
+        </div>
+      </div>
+
+      <!-- Related Course Link if any -->
+      <div *ngIf="selectedBook.cursoRelacionado" class="flex items-center justify-between p-3.5 bg-purple-50 dark:bg-purple-950/40 rounded-xl border border-purple-200/70 dark:border-purple-900/50">
+        <div>
+          <span class="text-[9px] font-mono text-purple-600 dark:text-purple-300 uppercase block font-bold">CURSO COMPLEMENTARIO</span>
+          <span class="text-xs font-bold text-slate-800 dark:text-slate-200">{{ selectedBook.cursoRelacionado.nombre }}</span>
+        </div>
+        <a [routerLink]="selectedBook.cursoRelacionado.ruta" (click)="closeModal()" class="text-xs font-mono font-bold text-[#7c3aed] hover:underline flex items-center gap-1">
+          Ver Curso <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="p-5 sm:p-6 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4 bg-slate-50/70 dark:bg-slate-900/70 backdrop-blur-sm">
+      <div class="flex items-baseline gap-1">
+        <span class="text-[10px] font-mono text-slate-400 uppercase">Total:</span>
+        <span class="text-2xl font-black text-[#06264a] dark:text-white font-mono">S/ {{ selectedBook.precioSoles }}</span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button type="button" (click)="closeModal()" class="px-4 py-2.5 rounded-xl text-xs font-mono font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+          Cerrar
+        </button>
+        <a
+          [href]="getWhatsAppLink(selectedBook)"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-1.5 px-6 py-2.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider bg-gradient-to-r from-[#003466] to-[#005299] hover:from-[#002244] hover:to-[#003e73] text-white transition-all shadow-md shadow-blue-950/20">
+          <span class="material-symbols-outlined text-sm">chat</span>
+          Comprar por WhatsApp
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<app-footer></app-footer>

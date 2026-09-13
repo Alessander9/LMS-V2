@@ -1,0 +1,65 @@
+:host {
+  display: block;
+}
+
+.libros-page {
+  min-height: 100vh;
+  padding-top: 5rem;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(0, 136, 255, 0.08), transparent 28rem),
+    radial-gradient(circle at 90% 20%, rgba(35, 183, 221, 0.12), transparent 26rem),
+    linear-gradient(180deg, #f8fbff 0%, #edf5fc 50%, #f7fbff 100%);
+  color: #16283a;
+  font-family: 'Manrope', sans-serif;
+}
+
+.lib-hero__glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lib-hero__glow--one {
+  top: 1rem;
+  right: -8rem;
+  width: 28rem;
+  height: 28rem;
+  background: radial-gradient(circle, rgba(0, 136, 255, 0.14), transparent 70%);
+}
+
+.lib-hero__glow--two {
+  bottom: 0;
+  left: -8rem;
+  width: 24rem;
+  height: 24rem;
+  background: radial-gradient(circle, rgba(35, 183, 221, 0.18), transparent 70%);
+}
+
+.lib-book-cover {
+  box-shadow: -10px 14px 28px rgba(6, 38, 74, 0.22), 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.lib-book-cover:hover {
+  transform: translateY(-4px) rotate(-1deg);
+  box-shadow: -14px 20px 36px rgba(6, 38, 74, 0.28);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.22s ease-out forwards;
+}

@@ -1,0 +1,301 @@
+﻿<div class="login-shell font-body">
+  <aside class="brand-panel" aria-hidden="true">
+    <div class="brand-backdrop"></div>
+    <div class="brand-grid"></div>
+
+    <div class="brand-top">
+      <div class="brand-mark">I</div>
+      <div>
+        <p class="brand-name">Plataforma LMS</p>
+        <p class="brand-subname">Campus Virtual</p>
+      </div>
+    </div>
+
+    <div class="brand-body">
+      <span class="brand-kicker">
+        <span class="brand-kicker-dot"></span>
+        Formacion profesional certificada
+      </span>
+
+      <h1 class="brand-title">
+        Un acceso serio para una experiencia
+        <span>academica moderna</span>
+      </h1>
+
+      <p class="brand-copy">
+        Ingresa a tus cursos, materiales y certificados desde una plataforma disenada para acompanarte con claridad, orden y confianza institucional.
+      </p>
+
+      <div class="brand-divider"></div>
+
+      <div class="brand-features">
+        <article class="feature-card">
+          <div class="feature-icon">
+            <span class="material-symbols-outlined text-[18px]">play_circle</span>
+          </div>
+          <div>
+            <p class="feature-title">Clases en progreso continuo</p>
+            <p class="feature-copy">Tu avance se registra mientras aprendes.</p>
+          </div>
+        </article>
+
+        <article class="feature-card feature-card--gold">
+          <div class="feature-icon feature-icon--gold">
+            <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
+          </div>
+          <div>
+            <p class="feature-title">Certificacion validable</p>
+            <p class="feature-copy">Emision formal con codigo unico de verificacion.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="brand-stats">
+        <div class="stat-card">
+          <strong>+120</strong>
+          <span>Alumnos activos</span>
+        </div>
+        <div class="stat-card stat-card--gold">
+          <strong>18</strong>
+          <span>Programas vigentes</span>
+        </div>
+        <div class="brand-status">
+          <span class="status-dot"></span>
+          Plataforma operativa
+        </div>
+      </div>
+    </div>
+
+    <p class="brand-footer">© 2026 Plataforma LMS · Formacion y campus virtual</p>
+  </aside>
+
+  <main class="form-panel">
+    <div class="mobile-brand">
+      <div class="brand-mark">I</div>
+      <div>
+        <p class="brand-name brand-name--light">Plataforma LMS</p>
+        <p class="brand-subname brand-subname--light">Campus Virtual</p>
+      </div>
+    </div>
+
+    <section class="login-card" aria-labelledby="login-title">
+      <header class="login-header">
+        <span class="login-badge">
+          <span class="material-symbols-outlined text-[14px]">lock</span>
+          Acceso seguro
+        </span>
+        <h2 id="login-title" class="login-title">Iniciar sesion</h2>
+        <p class="login-subtitle">
+          Accede con tus credenciales institucionales para entrar al campus virtual.
+        </p>
+      </header>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" novalidate>
+        @if (errorMessage) {
+          <div class="alert-error" role="alert">
+            <span class="material-symbols-outlined text-base shrink-0">error</span>
+            <div>
+              <span class="block font-bold">No se pudo iniciar sesion</span>
+              <span class="block font-normal mt-0.5 opacity-90">{{ errorMessage }}</span>
+            </div>
+          </div>
+        }
+
+        <div class="field-block">
+          <label class="field-label" for="email">Correo electronico</label>
+          <div class="field-shell">
+            <span class="field-icon material-symbols-outlined text-[18px]">mail</span>
+            <input
+              formControlName="correo"
+              class="field-input"
+              id="email"
+              type="email"
+              autocomplete="email"
+              placeholder="usuario@Plataforma LMS.com">
+          </div>
+          @if (loginForm.get('correo')?.hasError('required') && loginForm.get('correo')?.touched) {
+            <p class="field-error">
+              <span class="material-symbols-outlined text-[12px]">info</span>
+              El correo es obligatorio.
+            </p>
+          }
+          @if (loginForm.get('correo')?.hasError('email') && loginForm.get('correo')?.touched) {
+            <p class="field-error">
+              <span class="material-symbols-outlined text-[12px]">info</span>
+              El formato de correo no es valido.
+            </p>
+          }
+        </div>
+
+        <div class="field-block">
+          <div class="field-row">
+            <label class="field-label field-label--tight" for="password">Contrasena</label>
+            <!-- Recuperacion de contrasena deshabilitada temporalmente -->
+            <!--
+            <button
+              type="button"
+              class="link-action"
+              (click)="openRecoveryModal()">
+              Olvide mi contrasena
+            </button>
+            -->
+          </div>
+
+          <div class="field-shell">
+            <span class="field-icon material-symbols-outlined text-[18px]">lock</span>
+            <input
+              formControlName="password"
+              class="field-input field-input--password"
+              id="password"
+              [type]="hidePassword ? 'password' : 'text'"
+              autocomplete="current-password"
+              placeholder="••••••••">
+            <button
+              type="button"
+              class="field-toggle"
+              (click)="hidePassword = !hidePassword"
+              [attr.aria-label]="hidePassword ? 'Mostrar contrasena' : 'Ocultar contrasena'">
+              <span class="material-symbols-outlined text-[18px]">
+                {{ hidePassword ? 'visibility' : 'visibility_off' }}
+              </span>
+            </button>
+          </div>
+          @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+            <p class="field-error">
+              <span class="material-symbols-outlined text-[12px]">info</span>
+              La contrasena es obligatoria.
+            </p>
+          }
+        </div>
+
+        <label class="remember-row" for="remember-me">
+          <input formControlName="rememberMe" id="remember-me" type="checkbox">
+          <span>Mantener sesion iniciada</span>
+        </label>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="loginForm.invalid || isLoading">
+          @if (isLoading) {
+            <span class="btn-spinner" aria-hidden="true"></span>
+            Verificando acceso...
+          } @else {
+            <span>Ingresar al campus</span>
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          }
+        </button>
+      </form>
+    </section>
+
+    <footer class="form-footer">
+      <nav class="form-footer-links" aria-label="Enlaces legales">
+        <a href="#">Terminos</a>
+        <span aria-hidden="true">·</span>
+        <a href="#">Privacidad</a>
+        <span aria-hidden="true">·</span>
+        <a href="#">Soporte</a>
+      </nav>
+      <p>© 2026 Plataforma LMS · Campus Virtual</p>
+    </footer>
+  </main>
+</div>
+
+<!--
+@if (showRecoveryModal) {
+  <div
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="recovery-title"
+    (click)="closeRecoveryModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="recovery-title" class="modal-title">
+          <span class="material-symbols-outlined text-[18px] text-primary-container">lock_reset</span>
+          Recuperar contrasena
+        </h3>
+        <button type="button" class="modal-close" (click)="closeRecoveryModal()" aria-label="Cerrar">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        @if (recoveryError) {
+          <div class="alert-error modal-alert" role="alert">
+            <span class="material-symbols-outlined text-base shrink-0">warning</span>
+            <span>{{ recoveryError }}</span>
+          </div>
+        }
+
+        @if (recoveryMessage) {
+          <div class="alert-success modal-alert" role="status">
+            <span class="material-symbols-outlined text-base shrink-0">check_circle</span>
+            <span>{{ recoveryMessage }}</span>
+          </div>
+        }
+
+        @if (recoveryStep === 1) {
+          <div class="modal-stack">
+            <p class="modal-copy">
+              Ingresa tu correo registrado. Si existe una cuenta asociada, recibirás un codigo temporal de 6 digitos.
+            </p>
+            <div>
+              <label class="field-label" for="recovery-email">Correo electronico</label>
+              <input
+                id="recovery-email"
+                [(ngModel)]="recoveryEmail"
+                type="email"
+                class="modal-input"
+                placeholder="correo@institucion.com"
+                autocomplete="email">
+            </div>
+            <button
+              type="button"
+              class="btn-primary"
+              (click)="onRequestToken()"
+              [disabled]="isRecoveryLoading">
+              {{ isRecoveryLoading ? 'Enviando...' : 'Enviar codigo' }}
+            </button>
+          </div>
+        }
+
+        @if (recoveryStep === 2) {
+          <div class="modal-stack">
+            <p class="modal-copy">
+              Introduce el codigo recibido y define tu nueva contrasena.
+            </p>
+            <div>
+              <label class="field-label" for="recovery-token">Codigo de recuperacion</label>
+              <input
+                id="recovery-token"
+                [(ngModel)]="recoveryToken"
+                type="text"
+                class="modal-input modal-input--code"
+                placeholder="123456"
+                inputmode="numeric">
+            </div>
+            <div>
+              <label class="field-label" for="recovery-password">Nueva contrasena</label>
+              <input
+                id="recovery-password"
+                [(ngModel)]="recoveryNewPassword"
+                type="password"
+                class="modal-input"
+                placeholder="Minimo 6 caracteres"
+                autocomplete="new-password">
+            </div>
+            <button
+              type="button"
+              class="btn-primary"
+              (click)="onResetPassword()"
+              [disabled]="isRecoveryLoading">
+              {{ isRecoveryLoading ? 'Restableciendo...' : 'Restablecer contrasena' }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+-->

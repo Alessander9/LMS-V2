@@ -1,0 +1,105 @@
+/* =====================================================
+   DASHBOARD HOME — Card Animations & Hover FX
+   ===================================================== */
+
+/* ── Entrada escalonada de los elementos ── */
+@keyframes cardFadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.metric-card,
+.action-card,
+.quick-card {
+  animation: cardFadeUp 0.4s ease both;
+}
+
+/* ── Tarjetas de métricas ── */
+.metric-card {
+  position: relative;
+  transition:
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  cursor: default;
+}
+
+/* Colored left accent border — sutil */
+.metric-card:nth-child(1) { border-left: 3px solid #3b82f6; }
+.metric-card:nth-child(2) { border-left: 3px solid #10b981; }
+.metric-card:nth-child(3) { border-left: 3px solid #f59e0b; }
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+.metric-card:hover .metric-icon {
+  color: #335f99;
+  transform: scale(1.12) rotate(-5deg);
+  filter: drop-shadow(0 4px 12px rgba(51, 95, 153, 0.25));
+  border-color: rgba(51, 95, 153, 0.3);
+  background: rgba(51, 95, 153, 0.06);
+}
+.metric-icon {
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+              filter 0.3s ease,
+              border-color 0.25s ease,
+              background 0.25s ease,
+              color 0.2s ease;
+}
+
+/* ── Acciones rápidas ── */
+.action-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+/* Colored top accent — sutil */
+.action-card:nth-child(1) { border-top: 2px solid #6366f1; }
+.action-card:nth-child(2) { border-top: 2px solid #ec4899; }
+.action-card:nth-child(3) { border-top: 2px solid #8b5cf6; }
+.action-card:nth-child(4) { border-top: 2px solid #06b6d4; }
+
+.action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
+}
+.action-card:hover .action-icon {
+  transform: scale(1.15) rotate(-5deg);
+  filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
+  border-color: rgba(99, 102, 241, 0.4);
+}
+.action-icon {
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+              filter 0.3s ease,
+              border-color 0.25s ease,
+              background 0.25s ease,
+              color 0.2s ease;
+}
+
+/* ── Tabla / Lista de alumnos recientes ── */
+.dashboard-row {
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+.dashboard-row:hover {
+  background-color: rgba(99, 120, 200, 0.04);
+  transform: translateX(2px);
+}
+
+/* ── Progress bar ── */
+.progress-bar {
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Stagger delays para grid de tarjetas ── */
+.metric-card:nth-child(1) { animation-delay: 0.05s; }
+.metric-card:nth-child(2) { animation-delay: 0.12s; }
+.metric-card:nth-child(3) { animation-delay: 0.19s; }
+.action-card:nth-child(1) { animation-delay: 0.08s; }
+.action-card:nth-child(2) { animation-delay: 0.14s; }
+.action-card:nth-child(3) { animation-delay: 0.20s; }
+.action-card:nth-child(4) { animation-delay: 0.26s; }

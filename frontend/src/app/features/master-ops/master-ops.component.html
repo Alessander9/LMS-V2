@@ -1,0 +1,683 @@
+﻿<div class="min-h-screen bg-slate-900 text-slate-100 p-4 sm:p-6 lg:p-8 font-sans">
+  
+  <!-- HEADER & BADGE -->
+  <div class="max-w-7xl mx-auto mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <span class="px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-md bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            Master Operations Console
+          </span>
+          <span class="text-xs text-slate-400">Ruta Oculta de Gestión Rápida</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+          ⚡ Centro de Control Rápido
+        </h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Automatiza matriculación múltiple, provisión ágil de usuarios y publicación masiva de módulos y clases.
+        </p>
+      </div>
+
+      <!-- STATUS RESUMEN -->
+      <div class="flex items-center gap-3 bg-slate-800/80 border border-slate-700/60 rounded-xl p-3 shadow-inner">
+        <div class="text-right">
+          <div class="text-xs text-slate-400">Cursos disponibles</div>
+          <div class="text-lg font-bold text-emerald-400">{{ cursos.length }}</div>
+        </div>
+        <div class="h-8 w-px bg-slate-700"></div>
+        <div class="text-right">
+          <div class="text-xs text-slate-400">Alumnos en memoria</div>
+          <div class="text-lg font-bold text-sky-400">{{ alumnosRegistrados.length }}</div>
+        </div>
+        <button (click)="cargarAlumnosCache(); cargarCursos()" title="Recargar datos" class="p-2 hover:bg-slate-700 rounded-lg text-slate-300 transition-colors">
+          🔄
+        </button>
+      </div>
+    </div>
+
+    <!-- TABS DE NAVEGACIÓN -->
+    <div class="flex flex-wrap gap-2 mt-6 border-b border-slate-800 pb-2">
+      <button 
+        (click)="activeTab = 'matriculas'"
+        [class]="activeTab === 'matriculas' 
+          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-semibold' 
+          : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'"
+        class="px-4 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
+        <span>🎓</span> Matriculador Masivo Inteligente
+      </button>
+
+      <button 
+        (click)="activeTab = 'usuarios'"
+        [class]="activeTab === 'usuarios' 
+          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-semibold' 
+          : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'"
+        class="px-4 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
+        <span>👥</span> Creación Rápida de Usuarios
+      </button>
+
+      <button 
+        (click)="activeTab = 'contenido'"
+        [class]="activeTab === 'contenido' 
+          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-semibold' 
+          : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'"
+        class="px-4 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
+        <span>📚</span> Constructor Ágil de Cursos
+      </button>
+
+      <button 
+        (click)="activeTab = 'inspector'"
+        [class]="activeTab === 'inspector' 
+          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 font-semibold' 
+          : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'"
+        class="px-4 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
+        <span>🔍</span> Inspector Rápido de Alumno
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="max-w-7xl mx-auto space-y-6">
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: SMART MATRICULACIÓN MASIVA -->
+    <!-- ================================================================= -->
+    <div *ngIf="activeTab === 'matriculas'" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- COLUMNA IZQUIERDA: CONFIGURACIÓN Y CURSOS (4 COLS) -->
+      <div class="lg:col-span-4 space-y-6">
+        
+        <!-- SELECCIÓN DE CURSOS -->
+        <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-5 shadow-xl">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-bold text-white flex items-center gap-2">
+              <span>🎯</span> 1. Cursos Destino
+              <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full font-normal">
+                {{ selectedCursoIds.length }} seleccionados
+              </span>
+            </h2>
+            <button 
+              (click)="selectAllCursos()" 
+              class="text-xs text-blue-400 hover:text-blue-300 font-medium">
+              {{ selectedCursoIds.length === filteredCursos.length ? 'Deseleccionar todos' : 'Seleccionar todos' }}
+            </button>
+          </div>
+
+          <!-- Buscador de curso -->
+          <div class="mb-3">
+            <input 
+              type="text" 
+              [(ngModel)]="searchCursoTerm"
+              placeholder="Buscar curso por nombre..."
+              class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <!-- Lista scrollable de cursos -->
+          <div class="max-h-72 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
+            <div *ngFor="let c of filteredCursos" 
+                 (click)="toggleCursoSelection(c.id)"
+                 [class]="isCursoSelected(c.id) 
+                  ? 'bg-blue-600/20 border-blue-500/50 text-white' 
+                  : 'bg-slate-900/40 border-slate-800 text-slate-300 hover:bg-slate-700/50'"
+                 class="border rounded-xl p-2.5 flex items-center justify-between cursor-pointer transition-colors text-sm">
+              <div class="flex items-center gap-2.5 truncate">
+                <input 
+                  type="checkbox" 
+                  [checked]="isCursoSelected(c.id)" 
+                  class="rounded text-blue-600 focus:ring-0 bg-slate-800 border-slate-600"
+                  (click)="$event.stopPropagation(); toggleCursoSelection(c.id)"
+                />
+                <span class="truncate font-medium">{{ c.nombre }}</span>
+              </div>
+              <span class="text-xs text-slate-500 shrink-0">ID: {{ c.id }}</span>
+            </div>
+
+            <div *ngIf="filteredCursos.length === 0" class="text-center py-6 text-slate-500 text-sm">
+              No se encontraron cursos.
+            </div>
+          </div>
+        </div>
+
+        <!-- OPCIONES ADICIONALES -->
+        <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-5 shadow-xl space-y-4">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2">
+            <span>⚙️</span> Opciones de Auto-Creación
+          </h3>
+
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="autoCreateMissingStudents"
+              class="mt-1 rounded text-blue-600 focus:ring-0 bg-slate-800 border-slate-600"
+            />
+            <div>
+              <span class="text-sm font-semibold text-slate-200">Auto-crear usuarios no registrados</span>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Si un alumno no existe en la base de datos, lo crea al instante y luego lo matricula.
+              </p>
+            </div>
+          </label>
+
+          <div *ngIf="autoCreateMissingStudents" class="space-y-3 pt-2 border-t border-slate-700/50">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Contraseña por defecto</label>
+              <input 
+                type="text" 
+                [(ngModel)]="defaultPassword"
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Nivel de Suscripción</label>
+              <select 
+                [(ngModel)]="defaultSubscriptionLevel"
+                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white">
+                <option [ngValue]="1">1 - BÁSICO</option>
+                <option [ngValue]="2">2 - INTERMEDIO</option>
+                <option [ngValue]="3">3 - PREMIUM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: SMART PASTE & PREVIEW (8 COLS) -->
+      <div class="lg:col-span-8 space-y-6">
+        
+        <!-- SMART PASTE AREA -->
+        <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-5 shadow-xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-bold text-white flex items-center gap-2">
+              <span>📋</span> 2. Pegar Lista de Alumnos (Smart Paste)
+            </h2>
+            <div class="flex items-center gap-2">
+              <button 
+                (click)="clearMatriculaForm()"
+                class="text-xs text-slate-400 hover:text-slate-200 px-2 py-1 rounded bg-slate-700/50">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-400 bg-slate-900/80 p-3 rounded-xl border border-slate-700/50 space-y-1">
+            <div>💡 <strong>Formatos soportados automáticamente:</strong></div>
+            <ul class="list-disc list-inside space-y-0.5 text-slate-300">
+              <li><strong>Formato WhatsApp / Bloque:</strong> <code class="text-amber-300">NOMBRE: Juan Perez | CORREO: juan@mail.com | CLAVE: miClave123</code></li>
+              <li><strong>Formato Excel / Columnas:</strong> <code class="text-amber-300">Nombres [TAB] Apellidos [TAB] Correo [TAB] Teléfono [TAB] Clave</code></li>
+            </ul>
+          </div>
+
+          <textarea 
+            rows="6"
+            [(ngModel)]="rawStudentText"
+            (ngModelChange)="onSmartPasteInput($event)"
+            placeholder="Pega aquí los datos en cualquier formato...
+Ejemplo 1 (Bloque):
+NOMBRE: Eddys Josefina Molina Rojas
+CORREO: eddysjosefina@Plataforma LMS.com
+CLAVE: anifesojsydde8
+
+Ejemplo 2 (Excel / TSV):
+Juan	Perez	juan.perez@example.com	987654321	miClave2025"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed custom-scrollbar">
+          </textarea>
+
+          <!-- PREVISUALIZACIÓN Y PARSEO EN TIEMPO REAL -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                Alumnos reconocidos ({{ parsedStudents.length }})
+                <span class="text-emerald-400 font-normal">({{ (parsedStudents | slice:0).length }} listos)</span>
+              </span>
+            </div>
+
+            <!-- Tabla de preview -->
+            <div class="max-h-64 overflow-y-auto border border-slate-700/80 rounded-xl overflow-hidden custom-scrollbar">
+              <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-slate-900/90 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-700">
+                  <tr>
+                    <th class="p-2.5">Estado</th>
+                    <th class="p-2.5">Nombres</th>
+                    <th class="p-2.5">Apellidos</th>
+                    <th class="p-2.5">Correo</th>
+                    <th class="p-2.5">Teléfono</th>
+                    <th class="p-2.5">Contraseña Asignada</th>
+                    <th class="p-2.5 text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40">
+                  <tr *ngFor="let s of parsedStudents; let idx = index" class="hover:bg-slate-800/40">
+                    <td class="p-2.5">
+                      <span *ngIf="s.existingId" class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                        Registrado #{{ s.existingId }}
+                      </span>
+                      <span *ngIf="!s.existingId && s.valid" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        Nuevo
+                      </span>
+                      <span *ngIf="!s.valid" class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30" [title]="s.error || ''">
+                        Inválido
+                      </span>
+                    </td>
+                    <td class="p-2.5 font-medium text-white">{{ s.nombres }}</td>
+                    <td class="p-2.5">{{ s.apellidos }}</td>
+                    <td class="p-2.5 font-mono text-slate-300">{{ s.correo }}</td>
+                    <td class="p-2.5">{{ s.telefono || '-' }}</td>
+                    <td class="p-2.5 font-mono text-amber-300">{{ s.password }}</td>
+                    <td class="p-2.5 text-center">
+                      <button (click)="removeParsedStudent(idx)" class="text-rose-400 hover:text-rose-300 p-1">✕</button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="parsedStudents.length === 0">
+                    <td colspan="7" class="p-6 text-center text-slate-500">
+                      Pega datos en el cuadro superior para previsualizar aquí a los alumnos.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- BOTÓN DE EJECUCIÓN -->
+          <div class="pt-4 border-t border-slate-700/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-xs text-slate-400">
+              Total operaciones calculadas: 
+              <strong class="text-white">{{ parsedStudents.length * selectedCursoIds.length }}</strong>
+            </div>
+
+            <button 
+              (click)="ejecutarMatriculaMasiva()"
+              [disabled]="isExecuting || parsedStudents.length === 0 || selectedCursoIds.length === 0"
+              class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-900/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2">
+              <span *ngIf="!isExecuting">🚀 Ejecutar Matrícula Masiva</span>
+              <span *ngIf="isExecuting" class="flex items-center gap-2">
+                <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Procesando ({{ executionProgress }}%)...
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: BULK USER CREATOR -->
+    <!-- ================================================================= -->
+    <div *ngIf="activeTab === 'usuarios'" class="space-y-6">
+      <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-6 shadow-xl space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>👥</span> Provisión y Creación Masiva de Cuentas
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Crea múltiples cuentas al instante. Se configurarán contraseñas automáticamente y podrás exportar las credenciales creadas.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Rol de los usuarios</label>
+            <select 
+              [(ngModel)]="bulkUserRole"
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+              <option value="ALUMNO">ALUMNO</option>
+              <option value="DOCENTE">DOCENTE</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Contraseña por defecto</label>
+            <input 
+              type="text" 
+              [(ngModel)]="defaultPassword"
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nivel de Suscripción (Alumnos)</label>
+            <select 
+              [(ngModel)]="defaultSubscriptionLevel"
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white">
+              <option [ngValue]="1">1 - BÁSICO</option>
+              <option [ngValue]="2">2 - INTERMEDIO</option>
+              <option [ngValue]="3">3 - PREMIUM</option>
+            </select>
+          </div>
+        </div>
+
+        <textarea 
+          rows="6"
+          [(ngModel)]="rawUsersText"
+          (ngModelChange)="onBulkUsersInput($event)"
+          placeholder="Pega aquí los usuarios desde Excel (Nombres	Apellidos	Correo	Teléfono	ContraseñaOpcional)..."
+          class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed custom-scrollbar">
+        </textarea>
+
+        <!-- Preview table for users -->
+        <div class="max-h-60 overflow-y-auto border border-slate-700/80 rounded-xl overflow-hidden custom-scrollbar">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-900 text-slate-400 uppercase text-[10px] tracking-wider">
+              <tr>
+                <th class="p-2.5">Estado</th>
+                <th class="p-2.5">Nombres</th>
+                <th class="p-2.5">Apellidos</th>
+                <th class="p-2.5">Correo</th>
+                <th class="p-2.5">Teléfono</th>
+                <th class="p-2.5">Contraseña Asignada</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-900/40">
+              <tr *ngFor="let u of parsedUsers">
+                <td class="p-2.5">
+                  <span [class]="u.valid ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'" class="px-2 py-0.5 rounded text-[10px] font-bold">
+                    {{ u.valid ? 'Válido' : 'Incompleto' }}
+                  </span>
+                </td>
+                <td class="p-2.5 font-medium text-white">{{ u.nombres }}</td>
+                <td class="p-2.5">{{ u.apellidos }}</td>
+                <td class="p-2.5 font-mono">{{ u.correo }}</td>
+                <td class="p-2.5">{{ u.telefono }}</td>
+                <td class="p-2.5 font-mono text-amber-300">{{ u.password }}</td>
+              </tr>
+              <tr *ngIf="parsedUsers.length === 0">
+                <td colspan="6" class="p-6 text-center text-slate-500">
+                  Pega filas de usuarios para visualizarlos aquí antes de crearlos.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-700">
+          <div class="text-xs text-slate-400">
+            Usuarios a crear: <strong class="text-white">{{ parsedUsers.length }}</strong>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button 
+              *ngIf="createdUsersReport.length > 0"
+              (click)="copyCreatedCredentials()"
+              class="px-4 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold transition-colors flex items-center gap-2">
+              📋 Copiar Reporte de Credenciales ({{ createdUsersReport.length }})
+            </button>
+
+            <button 
+              (click)="ejecutarCreacionUsuarios()"
+              [disabled]="isExecuting || parsedUsers.length === 0"
+              class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-900/30 disabled:opacity-50 transition-all flex items-center gap-2">
+              <span>🚀 Crear Usuarios en Bloque</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: FAST CURRICULUM BUILDER -->
+    <!-- ================================================================= -->
+    <div *ngIf="activeTab === 'contenido'" class="space-y-6">
+      <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-6 shadow-xl space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <span>📚</span> Constructor Ágil de Módulos y Lecciones
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              Estructura un curso completo y publica decenas de videos y lecciones en un solo clic.
+            </p>
+          </div>
+
+          <!-- Selector de Curso destino -->
+          <div class="w-full sm:w-80">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Curso destino</label>
+            <select 
+              [(ngModel)]="contentCursoId"
+              class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500">
+              <option *ngFor="let c of cursos" [ngValue]="c.id">{{ c.nombre }} (ID: {{ c.id }})</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Selector de modo -->
+        <div class="flex items-center gap-2 border-b border-slate-700 pb-3">
+          <button 
+            (click)="curriculumMode = 'visual'"
+            [class]="curriculumMode === 'visual' ? 'bg-slate-700 text-white font-bold' : 'text-slate-400 hover:text-white'"
+            class="px-3 py-1.5 rounded-lg text-xs transition-colors">
+            🎨 Modo Visual Dinámico
+          </button>
+          <button 
+            (click)="curriculumMode = 'outline'"
+            [class]="curriculumMode === 'outline' ? 'bg-slate-700 text-white font-bold' : 'text-slate-400 hover:text-white'"
+            class="px-3 py-1.5 rounded-lg text-xs transition-colors">
+            📝 Modo Texto Rápido (Outline)
+          </button>
+        </div>
+
+        <!-- MODO OUTLINE -->
+        <div *ngIf="curriculumMode === 'outline'" class="space-y-4">
+          <div class="text-xs text-slate-400 bg-slate-900/80 p-3 rounded-xl border border-slate-700/50">
+            💡 Escribe o pega el temario en formato outline. Cada línea con <code class="text-amber-300">Módulo</code> crea un módulo y cada línea con <code class="text-amber-300">- Título | URL_Video | DuracionMin</code> crea una lección.
+          </div>
+
+          <textarea 
+            rows="10"
+            [(ngModel)]="outlineText"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs sm:text-sm font-mono text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 custom-scrollbar">
+          </textarea>
+
+          <button 
+            (click)="parseOutlineText()"
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition-colors">
+            Convertir y Cargar a Modo Visual ➔
+          </button>
+        </div>
+
+        <!-- MODO VISUAL DINÁMICO -->
+        <div *ngIf="curriculumMode === 'visual'" class="space-y-6">
+          <div *ngFor="let mod of modulesDraft; let mIdx = index" class="bg-slate-900/70 border border-slate-700/60 rounded-xl p-4 space-y-4">
+            
+            <!-- Encabezado de Módulo -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-800/80 p-3 rounded-lg border border-slate-700/50">
+              <div class="flex items-center gap-3 flex-1">
+                <span class="text-xs font-bold bg-blue-500/20 text-blue-400 px-2 py-1 rounded">Módulo #{{ mIdx + 1 }}</span>
+                <input 
+                  type="text" 
+                  [(ngModel)]="mod.nombre"
+                  placeholder="Título del Módulo"
+                  class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm font-semibold text-white flex-1"
+                />
+              </div>
+              <div class="flex items-center gap-2">
+                <button 
+                  (click)="addLessonDraft(mIdx)" 
+                  class="text-xs bg-emerald-600/20 text-emerald-300 hover:bg-emerald-600/30 px-3 py-1.5 rounded-lg border border-emerald-500/30 font-medium">
+                  + Agregar Lección
+                </button>
+                <button 
+                  (click)="removeModuleDraft(mIdx)" 
+                  class="text-xs text-rose-400 hover:text-rose-300 p-1.5">
+                  Eliminar Módulo
+                </button>
+              </div>
+            </div>
+
+            <!-- Lista de Lecciones dentro del Módulo -->
+            <div class="space-y-2 pl-4 border-l-2 border-slate-800">
+              <div *ngFor="let les of mod.lecciones; let lIdx = index" class="grid grid-cols-1 md:grid-cols-12 gap-2 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/80 items-center">
+                <div class="md:col-span-1 text-xs text-slate-500 font-mono">#{{ lIdx + 1 }}</div>
+                <div class="md:col-span-4">
+                  <input 
+                    type="text" 
+                    [(ngModel)]="les.titulo"
+                    placeholder="Título de la lección"
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white"
+                  />
+                </div>
+                <div class="md:col-span-5">
+                  <input 
+                    type="text" 
+                    [(ngModel)]="les.urlVideo"
+                    placeholder="URL del video (YouTube, Vimeo, Drive...)"
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-mono text-slate-300"
+                  />
+                </div>
+                <div class="md:col-span-1">
+                  <input 
+                    type="number" 
+                    [(ngModel)]="les.duracionMinutos"
+                    placeholder="Min"
+                    title="Duración en minutos"
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-300 text-center"
+                  />
+                </div>
+                <div class="md:col-span-1 text-center">
+                  <button (click)="removeLessonDraft(mIdx, lIdx)" class="text-rose-400 hover:text-rose-300 text-xs p-1">✕</button>
+                </div>
+              </div>
+
+              <div *ngIf="mod.lecciones.length === 0" class="text-xs text-slate-500 italic py-2">
+                Sin lecciones añadidas aún.
+              </div>
+            </div>
+          </div>
+
+          <button 
+            (click)="addModuleDraft()"
+            class="w-full py-3 border-2 border-dashed border-slate-700 hover:border-slate-500 rounded-xl text-slate-400 hover:text-white text-xs font-semibold transition-colors">
+            + Agregar Otro Módulo
+          </button>
+        </div>
+
+        <div class="pt-4 border-t border-slate-700 flex justify-end">
+          <button 
+            (click)="publicarCurriculum()"
+            [disabled]="isExecuting || modulesDraft.length === 0 || !contentCursoId"
+            class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-purple-900/30 disabled:opacity-50 transition-all flex items-center gap-2">
+            <span>🚀 Publicar Todo el Temario al Curso</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 4: QUICK INSPECTOR -->
+    <!-- ================================================================= -->
+    <div *ngIf="activeTab === 'inspector'" class="space-y-6">
+      <div class="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-6 shadow-xl space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>🔍</span> Inspector y Gestor Rápido de Alumno
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Verifica el estado y los cursos matriculados de cualquier alumno al instante.
+          </p>
+        </div>
+
+        <div class="flex gap-3">
+          <input 
+            type="text" 
+            [(ngModel)]="inspectorSearch"
+            (keyup.enter)="inspeccionarAlumno()"
+            placeholder="Buscar por correo electrónico, teléfono o nombre completo..."
+            class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button 
+            (click)="inspeccionarAlumno()"
+            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-xl transition-colors">
+            Consultar
+          </button>
+        </div>
+
+        <!-- Resultado Alumno -->
+        <div *ngIf="inspectedStudent" class="bg-slate-900/70 border border-slate-700/60 rounded-xl p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-lg font-bold text-white">{{ inspectedStudent.nombres }} {{ inspectedStudent.apellidos }}</h3>
+                <span [class]="inspectedStudent.estado ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'" class="px-2 py-0.5 rounded text-[10px] font-bold">
+                  {{ inspectedStudent.estado ? 'ACTIVO' : 'INACTIVO' }}
+                </span>
+              </div>
+              <div class="text-xs text-slate-400 font-mono mt-1">
+                {{ inspectedStudent.correo }} | Tel: {{ inspectedStudent.telefono }} | Nivel: {{ inspectedStudent.nivelSuscripcion }}
+              </div>
+            </div>
+            <div class="text-xs text-slate-500">ID Usuario: #{{ inspectedStudent.id }}</div>
+          </div>
+
+          <!-- Matrículas activas -->
+          <div class="space-y-2">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Cursos en los que está matriculado ({{ studentEnrollments.length }})
+            </h4>
+
+            <div *ngIf="isInspecting" class="text-xs text-slate-400 py-4 text-center">
+              Buscando matrículas en todos los cursos...
+            </div>
+
+            <div *ngIf="!isInspecting && studentEnrollments.length === 0" class="text-xs text-slate-500 italic py-2">
+              Este alumno no cuenta con matrículas activas registradas.
+            </div>
+
+            <div *ngFor="let m of studentEnrollments" class="flex items-center justify-between p-3 bg-slate-800/80 rounded-lg border border-slate-700/50">
+              <div>
+                <div class="text-sm font-semibold text-white">{{ m.cursoNombre }}</div>
+                <div class="text-xs text-slate-400">Matrícula ID: #{{ m.matriculaId }} | Fecha: {{ m.fecha | date:'mediumDate' }}</div>
+              </div>
+              <button 
+                (click)="desmatricularRapido(m.matriculaId, m.cursoNombre)"
+                class="px-3 py-1.5 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 text-xs font-semibold border border-rose-500/30 transition-colors">
+                Desmatricular
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- CONSOLA DE PROGRESO Y LOGS INTERACTIVOS -->
+    <!-- ================================================================= -->
+    <div *ngIf="logs.length > 0 || isExecuting" class="bg-slate-950 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full" [class.bg-emerald-400]="!isExecuting" [class.bg-amber-400]="isExecuting" [class.animate-pulse]="isExecuting"></span>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 font-mono">Consola de Operaciones & Feedback</h3>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-mono text-slate-400">{{ completedOperations }}/{{ totalOperations }} completadas</span>
+          <button (click)="clearLogs()" class="text-xs text-slate-500 hover:text-slate-300">Limpiar</button>
+        </div>
+      </div>
+
+      <!-- Barra de progreso -->
+      <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+        <div 
+          class="bg-gradient-to-r from-blue-500 to-emerald-500 h-full transition-all duration-300"
+          [style.width.%]="executionProgress">
+        </div>
+      </div>
+
+      <!-- Log stream -->
+      <div class="max-h-48 overflow-y-auto font-mono text-xs space-y-1 pr-1 custom-scrollbar text-slate-300">
+        <div *ngFor="let log of logs" class="flex items-start gap-2 py-0.5 leading-relaxed">
+          <span class="text-slate-600 select-none">[{{ log.timestamp }}]</span>
+          <span *ngIf="log.type === 'success'" class="text-emerald-400">✓</span>
+          <span *ngIf="log.type === 'warning'" class="text-amber-400">⚠</span>
+          <span *ngIf="log.type === 'error'" class="text-rose-400 font-bold">✗</span>
+          <span *ngIf="log.type === 'info'" class="text-sky-400">ℹ</span>
+          <span [class.text-rose-300]="log.type === 'error'" 
+                [class.text-amber-300]="log.type === 'warning'" 
+                [class.text-emerald-300]="log.type === 'success'">
+            {{ log.message }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

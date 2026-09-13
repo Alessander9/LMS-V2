@@ -1,0 +1,85 @@
+<section id="plan-estudios" class="acu-section acu-section--syllabus py-6 md:py-10">
+  <div class="acu-shell max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop space-y-6">
+    <div class="syllabus-header acu-section__heading space-y-2">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/60 dark:border-blue-800/40 text-[10px] font-mono font-bold tracking-widest text-[#005299] dark:text-blue-300 uppercase">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#0088ff] animate-pulse"></span>
+        ESTRUCTURA ACADÉMICA
+      </div>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-[#06264a] dark:text-white tracking-tight">Plan de Estudios</h2>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div
+      class="acu-phase-tabs inline-flex flex-col sm:flex-row bg-slate-100/90 dark:bg-[#071324] p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-800 gap-1.5 shadow-inner"
+      role="tablist" aria-label="Fases del plan de estudios">
+      <button *ngFor="let phase of phases" type="button" (click)="setPhase(phase.id)" role="tab" [attr.aria-selected]="activePhaseId === phase.id"
+        [attr.aria-controls]="phase.id + '-panel'"
+        class="px-5 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 w-full sm:w-auto"
+        [ngClass]="activePhaseId === phase.id ? 'bg-gradient-to-r from-[#003466] to-[#005299] text-white shadow-md shadow-blue-950/20 scale-[1.02]' : 'text-slate-600 dark:text-slate-400 hover:text-[#003466] hover:bg-white/80 dark:hover:text-white dark:hover:bg-slate-800/80'">
+        {{ phase.tabLabel }}
+      </button>
+    </div>
+
+    <!-- Phase Contents -->
+    <ng-container *ngFor="let phase of phases">
+      <div *ngIf="activePhaseId === phase.id" [id]="phase.id + '-panel'" role="tabpanel"
+        class="acu-phase-panel grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center animate-scale-up pt-2">
+
+        <!-- Left: Syllabus Items (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <div class="border-l-4 border-[#0088ff] pl-4 space-y-1.5">
+            <h3 class="text-base md:text-lg font-extrabold text-[#06264a] dark:text-white uppercase tracking-tight">{{ phase.title }}</h3>
+            <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              {{ phase.description }}
+            </p>
+          </div>
+
+          <div class="divide-y divide-slate-200/70 dark:divide-slate-800/80 border-y border-slate-200/70 dark:border-slate-800/80">
+            
+            <!-- Items Loop -->
+            <div *ngFor="let item of phase.items"
+              class="py-3.5 px-4 -mx-4 flex gap-4 items-start hover:bg-gradient-to-r hover:from-blue-50/70 hover:to-transparent hover:dark:from-blue-950/30 rounded-xl transition-all duration-200 group">
+              <span class="font-mono text-xs text-[#0088ff] dark:text-cyan-400 font-black pt-0.5 group-hover:translate-x-0.5 transition-transform">{{ item.number }} //</span>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h4 class="text-xs md:text-sm font-bold text-[#06264a] dark:text-white tracking-tight group-hover:text-[#0088ff] transition-colors">{{ item.title }}</h4>
+                  <span class="text-[9px] font-mono font-bold tracking-wider uppercase bg-blue-50 dark:bg-blue-950/80 text-[#005299] dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/40 px-2.5 py-0.5 rounded-full">{{ item.badge1 }}</span>
+                  <span class="text-[9px] font-mono font-bold tracking-wider uppercase bg-purple-50 dark:bg-purple-950/80 text-[#7c3aed] dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/40 px-2.5 py-0.5 rounded-full">{{ item.badge2 }}</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">{{ item.description }}</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Syllabus Image (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col justify-center items-center">
+          <div class="relative w-full rounded-2xl overflow-hidden shadow-xl shadow-slate-900/10 hover:shadow-2xl hover:shadow-blue-900/15 transition-all duration-300 group cursor-pointer border border-slate-200/60 dark:border-slate-800" (click)="openLightbox(phase.image)">
+            <img [src]="phase.image" [alt]="phase.imageAlt" class="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out block" />
+            <button type="button" (click)="openLightbox(phase.image); $event.stopPropagation()" class="absolute bottom-3.5 right-3.5 z-30 flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-950/80 hover:bg-[#003466] text-white rounded-lg text-[9px] font-bold uppercase tracking-wider backdrop-blur-md transition-all shadow-md active:scale-95 border border-white/20">
+              <span class="material-symbols-outlined text-[13px] block">zoom_in</span>
+              Ampliar Imagen
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </ng-container>
+
+  </div>
+</section>
+
+<!-- Lightbox Modal Overlay -->
+<div *ngIf="showLightbox" role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-opacity duration-300" (click)="closeLightbox()">
+  <!-- Close Button -->
+  <button type="button" (click)="closeLightbox()" class="absolute top-6 right-6 text-white/75 hover:text-white transition-all p-2 rounded-full hover:bg-white/10 flex z-50">
+    <span class="material-symbols-outlined text-2xl">close</span>
+  </button>
+  
+  <!-- Image Container -->
+  <div class="max-w-4xl max-h-[85vh] w-full flex items-center justify-center relative" (click)="$event.stopPropagation()">
+    <img [src]="lightboxImage" alt="Plan de estudios ampliado" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/15 animate-[fadeIn_0.2s_ease-out]" />
+  </div>
+</div>
+

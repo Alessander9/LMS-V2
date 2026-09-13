@@ -1,0 +1,391 @@
+﻿<div class="space-y-8 font-body" *ngIf="modulo">
+  
+  <!-- Back button -->
+  <div class="flex items-center">
+    <a 
+      [routerLink]="['/dashboard/cursos', modulo.cursoId]" 
+      class="flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white uppercase tracking-wider transition-all">
+      <span class="material-symbols-outlined text-sm">arrow_back</span>
+      <span>Volver a Módulos del Curso</span>
+    </a>
+  </div>
+
+  <!-- Header Banner -->
+  <div class="border border-slate-200 dark:border-slate-800 p-6 bg-white dark:bg-slate-900 rounded-none shadow-[4px_4px_0px_0px_rgba(15,23,42,0.03)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-colors duration-300">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="text-[9px] font-black text-indigo-700 bg-indigo-50 border border-indigo-200 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-900 px-2 py-0.5 uppercase tracking-wider rounded-none">
+          Curso: {{ modulo.cursoNombre }}
+        </span>
+      </div>
+      <h1 class="text-xl font-black text-slate-900 dark:text-white mt-2 tracking-tight uppercase leading-none truncate">
+        Módulo {{ modulo.orden | number:'2.0' }}: {{ modulo.nombre }}
+      </h1>
+      <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Gestión de guías, presentaciones, PDFs y materiales didácticos de descarga.</p>
+    </div>
+    <button 
+      (click)="openCreateModal()" 
+      class="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-black text-xs uppercase tracking-wider hover:bg-slate-800 dark:hover:bg-slate-200 transition-all rounded-none w-full sm:w-auto shadow-[2px_2px_0px_0px_rgba(0,0,0,0.15)] transition-colors duration-300">
+      <span class="material-symbols-outlined text-sm">upload_file</span>
+      <span>Subir Material</span>
+    </button>
+  </div>
+
+  <!-- Material Workspace -->
+  <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-none shadow-[4px_4px_0px_0px_rgba(15,23,42,0.03)] overflow-hidden transition-colors duration-300">
+    <!-- Filter bar -->
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors duration-300">
+      <div class="relative w-full max-w-xs">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+          <span class="material-symbols-outlined text-base">search</span>
+        </span>
+        <input 
+          [(ngModel)]="searchQuery"
+          (input)="applyFilter()"
+          class="block w-full pl-9 pr-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-600 focus:border-indigo-600 text-xs rounded-none transition-colors duration-300" 
+          placeholder="Buscar material por nombre...">
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <select [(ngModel)]="dateSortOrder" (change)="onDateSortChange($any($event.target).value)" class="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase tracking-wider">
+          <option value="desc">Fecha desc</option>
+          <option value="asc">Fecha asc</option>
+        </select>
+        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+          {{ totalElements }} materiales en el módulo
+        </span>
+      </div>
+    </div>
+
+    <!-- Materials Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-800/40 text-slate-700 dark:text-slate-300 font-bold uppercase tracking-wider text-[10px] transition-colors duration-300">
+            <th class="p-4">Archivo</th>
+            <th class="p-4 w-32">Tipo</th>
+            <th class="p-4 w-32">Tamaño</th>
+            <th class="p-4 w-32">Estado</th>
+            <th class="p-4 text-right w-44">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+          <!-- Empty state -->
+          <tr *ngIf="filteredMateriales.length === 0">
+            <td colspan="5" class="p-12 text-center text-slate-400 dark:text-slate-500">
+              <span class="material-symbols-outlined text-4xl mb-2 text-slate-300 dark:text-slate-700">folder_open</span>
+              <p class="font-medium text-xs">Este módulo todavía no contiene materiales de descarga.</p>
+            </td>
+          </tr>
+          <!-- Rows -->
+          <tr *ngFor="let mat of paginatedMateriales" class="hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors duration-200">
+            <!-- Archivo (Name & Link) -->
+            <td class="p-4">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-lg">
+                  {{ getFileIcon(mat.tipoArchivo) }}
+                </span>
+                <span class="font-bold text-slate-900 dark:text-white truncate max-w-sm uppercase">{{ mat.nombre }}</span>
+              </div>
+            </td>
+            <!-- Tipo -->
+            <td class="p-4">
+              <span 
+                [ngClass]="{
+                  'bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-900': getCleanFileType(mat.tipoArchivo) === 'PDF',
+                  'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-900': getCleanFileType(mat.tipoArchivo) === 'DOCX' || getCleanFileType(mat.tipoArchivo) === 'DOC',
+                  'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900': getCleanFileType(mat.tipoArchivo) === 'JPG' || getCleanFileType(mat.tipoArchivo) === 'PNG',
+                  'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-400 border-slate-200 dark:border-slate-700': getCleanFileType(mat.tipoArchivo) !== 'PDF' && getCleanFileType(mat.tipoArchivo) !== 'DOCX' && getCleanFileType(mat.tipoArchivo) !== 'DOC' && getCleanFileType(mat.tipoArchivo) !== 'JPG' && getCleanFileType(mat.tipoArchivo) !== 'PNG'
+                }"
+                class="px-2 py-0.5 border text-[9px] font-black uppercase tracking-wider rounded-none shrink-0">
+                {{ getCleanFileType(mat.tipoArchivo) }}
+              </span>
+            </td>
+            <!-- Tamaño -->
+            <td class="p-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">
+              {{ formatBytes(mat.pesoBytes) }}
+            </td>
+            <!-- Estado -->
+            <td class="p-4">
+              <span [ngClass]="mat.estado ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900' : 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900'" class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border rounded-none">
+                {{ mat.estado ? 'ACTIVO' : 'INACTIVO' }}
+              </span>
+            </td>
+            <!-- Acciones -->
+            <td class="p-4 text-right">
+              <div class="inline-flex gap-2">
+                <!-- Download direct file stream -->
+                <button
+                  (click)="descargarMaterial(mat)"
+                  title="Descargar Archivo"
+                  class="p-2 border border-slate-200 dark:border-slate-700 hover:border-slate-800 dark:hover:border-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-none transition-all shadow-[1px_1px_0px_0px_rgba(0,0,0,0.03)]">
+                  <span class="material-symbols-outlined text-sm block">download</span>
+                </button>
+                <button 
+                  (click)="openEditModal(mat)" 
+                  title="Editar Nombre del Material"
+                  class="p-2 border border-slate-200 dark:border-slate-700 hover:border-slate-800 dark:hover:border-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-none transition-all shadow-[1px_1px_0px_0px_rgba(0,0,0,0.03)]">
+                  <span class="material-symbols-outlined text-sm block">edit</span>
+                </button>
+                <button 
+                  (click)="toggleEstado(mat)" 
+                  [title]="mat.estado ? 'Desactivar' : 'Activar'"
+                  [ngClass]="mat.estado ? 'border-red-200 dark:border-red-900/60 text-red-600 dark:text-red-400 hover:bg-red-50/50 dark:hover:bg-red-950/20' : 'border-emerald-200 dark:border-emerald-900/60 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20'"
+                  class="p-2 border rounded-none transition-all shadow-[1px_1px_0px_0px_rgba(0,0,0,0.03)]">
+                  <span class="material-symbols-outlined text-sm block">
+                    {{ mat.estado ? 'block' : 'check_circle' }}
+                  </span>
+                </button>
+                <button 
+                  (click)="eliminarMaterial(mat)" 
+                  title="Eliminar Material Permanentemente"
+                  class="p-2 border border-red-200 dark:border-red-900/60 text-red-600 dark:text-red-400 rounded-none transition-all shadow-[1px_1px_0px_0px_rgba(0,0,0,0.03)] hover:bg-red-50/50 dark:hover:bg-red-950/20">
+                  <span class="material-symbols-outlined text-sm block">delete_forever</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="totalPages > 1" class="p-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage===1" class="px-3 py-2 border text-[10px] font-bold uppercase">Anterior</button>
+      <div class="text-[10px] font-bold uppercase">Página {{ currentPage }} de {{ totalPages }}</div>
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage===totalPages" class="px-3 py-2 border text-[10px] font-bold uppercase">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- Create/Edit Material Modal -->
+  <div *ngIf="showMaterialModal" role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6" (click)="closeMaterialModal()">
+    <div class="w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-none relative max-h-[92vh] flex flex-col transition-colors duration-300 overflow-hidden" (click)="$event.stopPropagation()">
+      <!-- Top Color Accent Bar -->
+      <div class="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600 shrink-0"></div>
+
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+            <span class="material-symbols-outlined text-xl">{{ isEditMode ? 'edit_document' : 'upload_file' }}</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
+              {{ isEditMode ? 'Editar Material de Estudio' : 'Subir Nuevo Material de Estudio' }}
+            </h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              {{ isEditMode ? 'Actualiza el título o reemplaza el archivo adjunto' : 'Adjunta guías, lecturas o recursos descargables para este módulo' }}
+            </p>
+          </div>
+        </div>
+        <button (click)="closeMaterialModal()" [disabled]="isUploading" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors disabled:opacity-30">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Form Body (Scrollable) -->
+      <form [formGroup]="materialForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto p-6 space-y-6" autocomplete="off">
+        <!-- Error response display -->
+        <div *ngIf="modalErrorMsg" class="flex items-start gap-2.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 p-3.5 text-xs font-semibold">
+          <span class="material-symbols-outlined text-red-600 text-lg shrink-0">warning</span>
+          <span>{{ modalErrorMsg }}</span>
+        </div>
+
+        <!-- 2 Columns Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <!-- Columna 1: Información del Recurso -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+              <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-lg">info</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">Detalles del Documento</span>
+            </div>
+
+            <!-- Módulo Vinculado (Badge) -->
+            <div *ngIf="modulo" class="p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Módulo Destino</span>
+              <div class="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                <span class="material-symbols-outlined text-primary text-sm">view_module</span>
+                <span>{{ modulo.nombre }}</span>
+              </div>
+            </div>
+
+            <!-- Nombre del Recurso -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Nombre del Recurso <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-base pointer-events-none">description</span>
+                <input 
+                  formControlName="nombre" 
+                  type="text" 
+                  autocomplete="off"
+                  placeholder="Ej. Guía Teórica de Terapias Integrales"
+                  class="w-full pl-9 pr-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-colors">
+              </div>
+              <p *ngIf="materialForm.get('nombre')?.invalid && (materialForm.get('nombre')?.touched || isFormSubmitted)" class="text-[10px] text-red-600 font-semibold mt-1">El nombre del recurso es obligatorio.</p>
+            </div>
+
+            <!-- Estado con Segmented Switch -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Visibilidad para los Estudiantes
+              </label>
+              <div class="grid grid-cols-2 gap-2">
+                <button 
+                  type="button"
+                  (click)="setEstado(true)"
+                  [ngClass]="isEstadoActivo ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-500' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-slate-500 hover:border-slate-400'"
+                  class="py-2 px-3 border text-xs font-bold flex items-center justify-center gap-2 transition-all">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span class="uppercase tracking-wider text-[11px]">Visible (Activo)</span>
+                </button>
+                <button 
+                  type="button"
+                  (click)="setEstado(false)"
+                  [ngClass]="!isEstadoActivo ? 'border-red-500 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-300 ring-1 ring-red-500' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-slate-500 hover:border-slate-400'"
+                  class="py-2 px-3 border text-xs font-bold flex items-center justify-center gap-2 transition-all">
+                  <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                  <span class="uppercase tracking-wider text-[11px]">Oculto (Inactivo)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Notice card -->
+            <div class="p-3.5 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/80 space-y-1.5">
+              <div class="flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-slate-200">
+                <span class="material-symbols-outlined text-sm text-emerald-600">lock</span>
+                <span>Almacenamiento Seguro</span>
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Los archivos se almacenan en el repositorio protegido de Plataforma LMS y solo están accesibles para alumnos con suscripción activa.
+              </p>
+            </div>
+          </div>
+
+          <!-- Columna 2: Archivo Físico y Dropzone -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+              <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-lg">cloud_upload</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">Archivo Adjunto</span>
+            </div>
+
+            <!-- Dropzone Area -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                {{ isEditMode ? 'Reemplazar Archivo (Opcional)' : 'Seleccionar Archivo *' }}
+              </label>
+
+              <!-- Active Selected File Card -->
+              <div *ngIf="selectedFile" class="p-4 border-2 border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/20 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 overflow-hidden">
+                  <div class="w-10 h-10 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-xl">attach_file</span>
+                  </div>
+                  <div class="truncate">
+                    <p class="text-xs font-black text-slate-900 dark:text-white truncate">{{ selectedFile.name }}</p>
+                    <p class="text-[10px] text-slate-500 font-semibold">{{ formatBytes(selectedFile.size) }}</p>
+                  </div>
+                </div>
+                <button 
+                  type="button" 
+                  (click)="removeSelectedFile()" 
+                  class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-red-600 transition-colors"
+                  title="Quitar archivo">
+                  <span class="material-symbols-outlined text-base">delete</span>
+                </button>
+              </div>
+
+              <!-- Drag & Drop Box (when no file is chosen) -->
+              <div 
+                *ngIf="!selectedFile"
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDropFile($event)"
+                [ngClass]="isDraggingFile ? 'border-emerald-500 bg-emerald-500/10 scale-[0.99]' : 'border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-emerald-500/60'"
+                class="border-2 border-dashed p-8 text-center transition-all relative rounded-none select-none cursor-pointer group">
+                <input 
+                  type="file" 
+                  (change)="onFileSelected($event)"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.mp4,.zip,.xlsx,.pptx,.txt,.csv,.json,.psd,.ai,.svg,.rar"
+                  class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                
+                <div class="space-y-2">
+                  <div class="w-12 h-12 mx-auto bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl">upload_file</span>
+                  </div>
+                  <div class="text-xs font-black text-slate-800 dark:text-slate-200">
+                    Arrastra aquí tu archivo o <span class="text-emerald-600 underline">haz clic para examinar</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 dark:text-slate-500">
+                    PDF, DOC, DOCX, XLS, PPT, ZIP, RAR, MP4, PNG, JPG (Hasta 100MB)
+                  </p>
+                </div>
+              </div>
+
+              <p *ngIf="isEditMode && !selectedFile" class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5">
+                Mantendrás el archivo original si no seleccionas uno nuevo.
+              </p>
+              <p *ngIf="!isEditMode && !selectedFile && isFormSubmitted" class="text-[10px] font-bold text-red-600 mt-1.5">
+                Debe seleccionar un archivo para continuar.
+              </p>
+            </div>
+
+            <!-- Upload Progress Bar -->
+            <div *ngIf="isUploading && uploadProgress > 0" class="space-y-1.5 p-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <div class="flex items-center justify-between text-[10px] font-bold text-slate-700 dark:text-slate-300">
+                <span class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-xs text-emerald-600 animate-spin">progress_activity</span>
+                  <span>Subiendo al servidor...</span>
+                </span>
+                <span class="text-emerald-600 dark:text-emerald-400 font-black">{{ uploadProgress }}%</span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 overflow-hidden">
+                <div 
+                  class="h-full bg-emerald-500 transition-all duration-300 ease-out"
+                  [style.width.%]="uploadProgress">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar Footer -->
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-emerald-600">info</span>
+            <span>Los campos marcados con <strong class="text-red-500">*</strong> son obligatorios</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <button 
+              type="button" 
+              (click)="closeMaterialModal()" 
+              [disabled]="isUploading"
+              class="px-5 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors rounded-none flex items-center gap-2 disabled:opacity-40">
+              <span class="material-symbols-outlined text-sm">cancel</span>
+              <span>Cancelar</span>
+            </button>
+            <button 
+              type="submit" 
+              [disabled]="isFormSubmitting" 
+              class="px-6 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
+              <span *ngIf="isFormSubmitting" class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+              <span *ngIf="!isFormSubmitting" class="material-symbols-outlined text-sm">{{ isEditMode ? 'save' : 'cloud_upload' }}</span>
+              <span>{{ isUploading ? 'Subiendo ' + uploadProgress + '%...' : (isEditMode ? 'Guardar Cambios' : 'Subir Material') }}</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm modal -->
+  <app-confirm-modal
+    [visible]="showConfirmModal"
+    [type]="confirmModalType"
+    [title]="confirmModalTitle"
+    [message]="confirmModalMessage"
+    confirmText="Confirmar"
+    (onConfirm)="confirmAction()"
+    (onCancel)="showConfirmModal = false">
+  </app-confirm-modal>
+
+</div>

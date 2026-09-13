@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "playwright": "^1.60.0",
+    "selenium-webdriver": "^4.22.0"
+  }
+}

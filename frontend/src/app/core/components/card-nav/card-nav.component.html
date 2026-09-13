@@ -1,0 +1,162 @@
+﻿<div class="nav-wrapper" #navbarRef (mouseleave)="scheduleHide()">
+  <nav class="card-nav">
+    <!-- Left: Logo + Brand -->
+    <a routerLink="/inicio" class="nav-brand">
+      <img [src]="getLogoSrc()" alt="Plataforma LMS" class="nav-logo" />
+    </a>
+
+    <!-- Center: Nav Items (Desktop only) -->
+    <div class="nav-items">
+      <div *ngFor="let item of navItems; let i = index"
+           class="nav-item-wrapper"
+           (mouseenter)="item.links && item.links.length > 0 ? showDropdown(i) : null; cancelHide()"
+           (mouseleave)="scheduleHide()">
+        <!-- Button trigger for dropdown items -->
+        <button *ngIf="item.links && item.links.length > 0"
+                type="button"
+                class="nav-item-btn"
+                [class.active]="hasActiveRoute(item)"
+                (click)="toggleDropdown(i)"
+                [attr.aria-expanded]="activeDropdown === i">
+          {{ item.label }}
+          <span class="material-symbols-outlined nav-item-chevron">expand_more</span>
+        </button>
+
+        <!-- Direct anchor link for single pages -->
+        <a *ngIf="!item.links || item.links.length === 0"
+           class="nav-item-btn"
+           [class.active]="hasActiveRoute(item)"
+           [routerLink]="item.route"
+           (click)="hideDropdown()">
+          {{ item.label }}
+        </a>
+
+        <!-- Mega Dropdown Card (hidden by default, shown by GSAP) -->
+        <div *ngIf="item.links && item.links.length > 0"
+             class="dropdown-card"
+             style="display: none"
+             [attr.data-index]="i">
+          <div class="dropdown-card-label">{{ item.label }}</div>
+          <div class="dropdown-card-grid">
+            <a *ngFor="let link of item.links"
+               class="dropdown-card-link"
+               [routerLink]="link.route"
+               [attr.aria-label]="link.ariaLabel"
+               (click)="hideDropdown()">
+              <div class="dropdown-link-icon-wrapper">
+                <span class="material-symbols-outlined dropdown-link-icon">{{ link.icon }}</span>
+              </div>
+              <div class="dropdown-link-content">
+                <span class="dropdown-link-title">{{ link.label }}</span>
+                <span class="dropdown-link-desc">{{ link.description }}</span>
+              </div>
+            </a>
+          </div>
+
+          <!-- CTA card: solo para ítems con ctaRoute definido -->
+          <a *ngIf="item.ctaRoute"
+             [routerLink]="item.ctaRoute"
+             class="dropdown-cta-card"
+             (click)="hideDropdown()">
+            <span class="material-symbols-outlined">
+              {{ item.label === 'Cursos Presenciales' ? 'location_on' : 'devices' }}
+            </span>
+            <span>{{ item.label === 'Cursos Presenciales' ? 'Ver más cursos presenciales' : 'Ver más cursos online' }}</span>
+            <span class="material-symbols-outlined dropdown-cta-arrow">arrow_outward</span>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Login (Desktop) & Hamburger (Mobile) -->
+    <div class="nav-actions">
+      <!-- Login button -->
+      <a routerLink="/login" class="nav-login-btn">
+        <span class="material-symbols-outlined login-btn-icon">login</span>
+        <span>Ingresar</span>
+      </a>
+
+      <!-- Hamburger Button (Mobile triggers) -->
+      <button class="mobile-menu-btn" (click)="toggleMobileMenu()" [class.active]="isMobileMenuOpen" aria-label="Menú principal">
+        <span class="hamburger-line line-1"></span>
+        <span class="hamburger-line line-2"></span>
+        <span class="hamburger-line line-3"></span>
+      </button>
+    </div>
+  </nav>
+</div>
+
+<!-- Mobile Menu Drawer (Overlay & Panel) -->
+<div class="mobile-drawer-overlay" [class.open]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+<div class="mobile-drawer" [class.open]="isMobileMenuOpen">
+  <div class="mobile-drawer-header">
+    <a routerLink="/inicio" class="mobile-brand" (click)="closeMobileMenu()">
+      <img [src]="getLogoSrc()" alt="Plataforma LMS" class="mobile-logo" />
+    </a>
+    <button class="mobile-close-btn" (click)="closeMobileMenu()" aria-label="Cerrar menú">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  
+  <div class="mobile-drawer-content">
+    <div class="mobile-nav-items">
+      <div *ngFor="let item of navItems; let i = index" class="mobile-nav-item-group">
+        <!-- Accordion Header (For items with links) -->
+        <button *ngIf="item.links && item.links.length > 0" class="mobile-accordion-header" (click)="toggleMobileDropdown(i)" [class.expanded]="activeMobileDropdown === i">
+          <span>{{ item.label }}</span>
+          <span class="material-symbols-outlined mobile-accordion-chevron">expand_more</span>
+        </button>
+        
+        <!-- Accordion Content (For items with links) -->
+        <div *ngIf="item.links && item.links.length > 0" class="mobile-accordion-content" [class.open]="activeMobileDropdown === i">
+          <div class="mobile-accordion-links">
+            <a *ngFor="let link of item.links"
+               class="mobile-drawer-link"
+               [routerLink]="link.route"
+               [attr.aria-label]="link.ariaLabel"
+               (click)="closeMobileMenu()">
+               <div class="mobile-link-icon-wrapper">
+                 <span class="material-symbols-outlined mobile-link-icon">{{ link.icon }}</span>
+               </div>
+               <div class="mobile-link-text-group">
+                 <div class="mobile-link-title">{{ link.label }}</div>
+                 <div class="mobile-link-description">{{ link.description }}</div>
+               </div>
+            </a>
+          </div>
+
+          <!-- CTA card mobile: solo para ítems con ctaRoute -->
+          <a *ngIf="item.ctaRoute"
+             [routerLink]="item.ctaRoute"
+             class="dropdown-cta-card mobile-cta-card"
+             (click)="closeMobileMenu()">
+            <span class="material-symbols-outlined">
+              {{ item.label === 'Cursos Presenciales' ? 'location_on' : 'devices' }}
+            </span>
+            <span>{{ item.label === 'Cursos Presenciales' ? 'Ver más cursos presenciales' : 'Ver más cursos online' }}</span>
+            <span class="material-symbols-outlined dropdown-cta-arrow">arrow_outward</span>
+          </a>
+        </div>
+
+
+        <!-- Direct Link (For items with NO links) -->
+        <a *ngIf="!item.links || item.links.length === 0" 
+           class="mobile-direct-link" 
+           [class.active]="hasActiveRoute(item)"
+           [routerLink]="item.route" 
+           (click)="closeMobileMenu()">
+          <span>{{ item.label }}</span>
+          <span class="material-symbols-outlined mobile-direct-link-icon">chevron_right</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mobile-drawer-footer">
+    <a routerLink="/login" class="mobile-login-btn-full" (click)="closeMobileMenu()">
+      <span class="material-symbols-outlined">login</span>
+      <span>Ingresar al Campus</span>
+    </a>
+  </div>
+</div>

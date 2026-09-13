@@ -1,0 +1,319 @@
+﻿<app-navbar></app-navbar>
+<main class="pt-20">
+  <!-- Certification Banner (Preserved) -->
+<section class="bg-primary text-on-primary py-20 relative overflow-hidden" id="certification">
+  <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz4=')]"></div>
+  <div class="absolute -right-40 -top-40 w-96 h-96 bg-secondary/20 rounded-full blur-[100px] pointer-events-none"></div>
+  
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
+    <div class="flex flex-col lg:flex-row items-center justify-between gap-16">
+      <div class="flex-1 lg:pr-12 space-y-6">
+        <div class="flex items-center gap-3 bg-white/10 px-4 py-1.5 rounded-full w-fit border border-white/10">
+          <span class="material-symbols-outlined text-2xl text-secondary-fixed">public</span>
+          <span class="font-label-md text-secondary-fixed text-xs tracking-wider uppercase font-semibold">Convenio Internacional</span>
+        </div>
+        <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-6 leading-tight">Obtén una Certificación Internacional que impulse tu desarrollo profesional</h2>
+        <p class="font-body-lg text-lg text-on-primary/80 mb-6 max-w-2xl leading-relaxed">
+          En el <strong>Instituto de Terapias Integrales Perú (Plataforma LMS)</strong> seguimos comprometidos con brindar una formación de excelencia. Por ello, gracias a nuestro <strong>convenio con Florida Global University</strong>, nuestros estudiantes pueden acceder a una <strong>Certificación Internacional</strong>, fortaleciendo el reconocimiento de su preparación académica.
+        </p>
+        
+        <div class="space-y-4">
+          <h4 class="font-bold text-base text-secondary-fixed">Esta certificación está disponible para los siguientes programas:</h4>
+          <ul class="space-y-3 mb-6">
+            <li class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-secondary-fixed text-xl">verified</span>
+              <span class="font-body-md text-base">Auriculoterapia</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-secondary-fixed text-xl">verified</span>
+              <span class="font-body-md text-base">Acupuntura y Microsistemas</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-secondary-fixed text-xl">verified</span>
+              <span class="font-body-md text-base">Digitopresión Mecánica</span>
+            </li>
+          </ul>
+        </div>
+
+        <p class="font-body-md text-base text-on-primary/80 leading-relaxed max-w-2xl">
+          🌟 Una certificación internacional fortalece tu perfil profesional, amplía tus oportunidades laborales y respalda tus conocimientos con reconocimiento académico internacional.
+        </p>
+        
+        <p class="font-body-md text-base text-on-primary/80 leading-relaxed max-w-2xl">
+          💼 Da el siguiente paso en tu crecimiento profesional y estudia con una institución comprometida con la calidad y la excelencia.
+        </p>
+        
+        <div class="pt-4">
+          <a class="flex items-center gap-2 px-6 py-3 bg-secondary text-on-secondary rounded-lg font-bold w-fit hover:bg-secondary/90 transition-all" 
+             href="https://wa.me/51939371250?text=Hola%2C%20deseo%20m%C3%A1s%20informaci%C3%B3n%20sobre%20la%20Certificaci%C3%B3n%20Internacional%20con%20FGU" 
+             target="_blank" rel="noopener noreferrer">
+            <span class="material-symbols-outlined">mail</span>
+            Solicitar información de la certificación
+          </a>
+        </div>
+      </div>
+      
+      <div class="flex-1 w-full max-w-md flex justify-center perspective-3d">
+        <!-- Stylized Certificate Mockup -->
+        <div class="relative w-full group cursor-pointer" (click)="openLightbox('assets/certificacion_florida.jpg')">
+          <div class="absolute -top-4 -right-4 bg-secondary text-on-secondary w-16 h-16 rounded-full flex items-center justify-center shadow-lg transform rotate-12 z-20">
+            <span class="material-symbols-outlined text-3xl" aria-hidden="true">verified</span>
+          </div>
+          <img src="assets/certificacion_florida.jpg" alt="Certificación Internacional Florida Global University"
+            class="rounded-xl shadow-2xl border border-surface-variant w-full object-contain transform hover:scale-[1.02] transition-transform duration-500" />
+          
+          <button type="button" (click)="openLightbox('assets/certificacion_florida.jpg'); $event.stopPropagation()" class="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/75 hover:bg-slate-950 text-white rounded-md text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm transition-all shadow-lg active:scale-95 border border-white/10">
+            <span class="material-symbols-outlined text-[12px] block">zoom_in</span>
+            Ampliar Certificado
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+  <!-- Official Plataforma LMS Certification Section -->
+  <section class="bg-surface-container-lowest py-20 border-b border-surface-variant/40">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="flex flex-col lg:flex-row-reverse items-center justify-between gap-16">
+        <div class="flex-1 space-y-6">
+          <div class="flex items-center gap-3 bg-secondary/10 px-4 py-1.5 rounded-full w-fit border border-secondary/10">
+            <span class="material-symbols-outlined text-2xl text-secondary">verified_user</span>
+            <span class="font-label-md text-secondary text-xs tracking-wider uppercase font-semibold">Respaldo Institucional</span>
+          </div>
+          <h2 class="font-headline-lg text-[#003466] font-extrabold tracking-tight text-3xl md:text-4xl leading-tight">Certificación Oficial Plataforma LMS para ejercer profesionalmente</h2>
+          <p class="font-body-lg text-on-surface-variant text-base leading-relaxed">
+            Al finalizar satisfactoriamente cualquiera de nuestras formaciones académicas (cursos cortos o diplomados), recibirás el <strong>Certificado Oficial de Finalización</strong> otorgado por el <strong>Instituto de Terapias Integrales Perú (Plataforma LMS)</strong>.
+          </p>
+          <p class="font-body-md text-base text-on-surface-variant/80 leading-relaxed">
+            Este diploma acredita tu preparación académica, el cumplimiento de las horas académicas exigidas y te faculta para ejercer de forma independiente como especialista en terapias holísticas y complementarias en consultorio propio o a domicilio.
+          </p>
+          
+          <div class="space-y-4">
+            <h4 class="font-bold text-base text-primary">Características de tu certificado oficial:</h4>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-on-surface-variant">
+              <li class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-base">verified</span>
+                <span>Código de registro único oficial</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-base">verified</span>
+                <span>Firma digital criptográfica</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-base">verified</span>
+                <span>Sello dorado de excelencia</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-base">verified</span>
+                <span>Código QR de validación en línea</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="flex-1 w-full max-w-lg flex justify-center perspective-3d">
+          <!-- Stylized Certificate Mockup -->
+          <div class="relative w-full group cursor-pointer" (click)="openLightbox('assets/certificacion_florida_2.jpg')">
+            <div class="absolute -top-4 -right-4 bg-secondary text-on-secondary w-16 h-16 rounded-full flex items-center justify-center shadow-lg transform rotate-12 z-20">
+              <span class="material-symbols-outlined text-3xl" aria-hidden="true">workspace_premium</span>
+            </div>
+            <img src="assets/certificacion_florida_2.jpg" alt="Certificación Oficial Plataforma LMS"
+              class="rounded-xl shadow-2xl border border-surface-variant w-full object-contain transform hover:scale-[1.02] transition-transform duration-500" />
+            
+            <button type="button" (click)="openLightbox('assets/certificacion_florida_2.jpg'); $event.stopPropagation()" class="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/75 hover:bg-slate-950 text-white rounded-md text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm transition-all shadow-lg active:scale-95 border border-white/10">
+              <span class="material-symbols-outlined text-[12px] block">zoom_in</span>
+              Ampliar Certificado
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step-by-Step Certification Process -->
+  <section class="bg-surface py-20 border-b border-surface-variant/40">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center mb-16 space-y-3">
+        <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">El Proceso</span>
+        <h2 class="font-headline-lg text-primary text-3xl font-extrabold tracking-tight">¿Cómo obtener tu certificación?</h2>
+        <p class="text-on-surface-variant text-base max-w-xl mx-auto">Nuestra metodología de formación clínico-práctica garantiza un aprendizaje seguro y altamente profesional.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Timeline Steps (Left - 7 cols) -->
+        <div class="lg:col-span-7 space-y-8 relative before:absolute before:top-2 before:bottom-2 before:left-[17px] before:w-[2px] before:bg-slate-200 dark:before:bg-slate-800">
+          
+          <!-- Step 1 -->
+          <div class="flex gap-6 relative items-start">
+            <span class="w-9 h-9 bg-primary text-white font-extrabold text-sm flex items-center justify-center rounded-full shadow-md z-10 shrink-0">1</span>
+            <div class="space-y-1.5 mt-1">
+              <h4 class="font-bold text-primary dark:text-primary-fixed text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-lg">school</span>
+                Formación Teórico-Práctica
+              </h4>
+              <p class="text-xs text-on-surface-variant dark:text-slate-400 leading-relaxed">
+                Asiste a las clases presenciales en nuestro centro clínico de Lince o completa el contenido y guías de estudio desde nuestra aula virtual interactiva.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex gap-6 relative items-start">
+            <span class="w-9 h-9 bg-primary text-white font-extrabold text-sm flex items-center justify-center rounded-full shadow-md z-10 shrink-0">2</span>
+            <div class="space-y-1.5 mt-1">
+              <h4 class="font-bold text-primary dark:text-primary-fixed text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-lg">healing</span>
+                Prácticas en Pacientes Reales
+              </h4>
+              <p class="text-xs text-on-surface-variant dark:text-slate-400 leading-relaxed">
+                Realiza sesiones prácticas de aplicación (digitopresión, reflexología o auriculoterapia) guiadas y supervisadas por docentes especialistas en ambientes reales.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex gap-6 relative items-start">
+            <span class="w-9 h-9 bg-primary text-white font-extrabold text-sm flex items-center justify-center rounded-full shadow-md z-10 shrink-0">3</span>
+            <div class="space-y-1.5 mt-1">
+              <h4 class="font-bold text-primary dark:text-primary-fixed text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-lg">rate_review</span>
+                Evaluación de Casos Clínicos
+              </h4>
+              <p class="text-xs text-on-surface-variant dark:text-slate-400 leading-relaxed">
+                Presenta un protocolo de tratamiento personalizado para un caso real, demostrando el criterio clínico y la efectividad de las terapias aplicadas.
+              </p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flex gap-6 relative items-start">
+            <span class="w-9 h-9 bg-secondary text-white font-extrabold text-sm flex items-center justify-center rounded-full shadow-md z-10 shrink-0">4</span>
+            <div class="space-y-1.5 mt-1">
+              <h4 class="font-bold text-primary dark:text-primary-fixed text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-lg">verified</span>
+                Entrega y Registro Oficial
+              </h4>
+              <p class="text-xs text-on-surface-variant dark:text-slate-400 leading-relaxed">
+                Recibe tu certificado oficial en físico o digital, registrado en nuestra base nacional para ejercer formalmente tu nueva profesión con total respaldo.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Image Showcase (Right - 5 cols) -->
+        <div class="lg:col-span-5 w-full flex justify-center perspective-3d">
+          <div class="relative w-full group cursor-pointer" (click)="openLightbox('assets/certificacion_florida_3.jpg')">
+            <div class="absolute -top-4 -right-4 bg-secondary text-on-secondary w-16 h-16 rounded-full flex items-center justify-center shadow-lg transform rotate-12 z-20">
+              <span class="material-symbols-outlined text-3xl" aria-hidden="true">workspace_premium</span>
+            </div>
+            <img src="assets/certificacion_florida_3.jpg" alt="Obtención de Certificación Oficial"
+              class="rounded-xl shadow-2xl border border-surface-variant w-full object-contain transform hover:scale-[1.02] transition-transform duration-500" />
+            
+            <button type="button" (click)="openLightbox('assets/certificacion_florida_3.jpg'); $event.stopPropagation()" class="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/75 hover:bg-slate-950 text-white rounded-md text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm transition-all shadow-lg active:scale-95 border border-white/10">
+              <span class="material-symbols-outlined text-[12px] block">zoom_in</span>
+              Ampliar Imagen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- International Endorsements (Commented Out)
+  <section class="bg-surface-container-low py-20 border-b border-surface-variant/40">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center space-y-12">
+      <div class="space-y-3">
+        <span class="inline-block bg-secondary/10 text-secondary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Respaldo</span>
+        <h2 class="font-headline-lg text-primary text-3xl font-extrabold tracking-tight">Avales e Integración Profesional</h2>
+        <p class="text-on-surface-variant text-base max-w-xl mx-auto">Nuestros egresados son reconocidos y avalados por asociaciones mundiales líderes de terapias.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-surface-variant/30 dark:border-slate-800 flex flex-col items-center text-center space-y-4 shadow-sm">
+          <span class="material-symbols-outlined text-primary text-4xl">public</span>
+          <h4 class="font-bold text-primary text-sm">Global Therapy Alliance</h4>
+          <p class="text-[11px] text-on-surface-variant dark:text-slate-400 leading-relaxed">Validación curricular internacional bajo estándares éticos europeos y americanos.</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-surface-variant/30 dark:border-slate-800 flex flex-col items-center text-center space-y-4 shadow-sm">
+          <span class="material-symbols-outlined text-primary text-4xl">spa</span>
+          <h4 class="font-bold text-primary text-sm">Asoc. de Terapias Holísticas</h4>
+          <p class="text-[11px] text-on-surface-variant dark:text-slate-400 leading-relaxed">Respaldo gremial oficial para la práctica independiente de masajes y terapias alternativas.</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-surface-variant/30 dark:border-slate-800 flex flex-col items-center text-center space-y-4 shadow-sm">
+          <span class="material-symbols-outlined text-primary text-4xl">badge</span>
+          <h4 class="font-bold text-primary text-sm">Registro RMTC</h4>
+          <p class="text-[11px] text-on-surface-variant dark:text-slate-400 leading-relaxed">Incorporación automática de egresados al Registro Mundial de Terapeutas Complementarios.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  -->
+
+  <!-- FAQ Section -->
+  <section class="bg-surface py-20">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+      <div class="text-center mb-16 space-y-3">
+        <span class="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Preguntas Frecuentes</span>
+        <h2 class="font-headline-lg text-primary text-3xl font-extrabold tracking-tight">Dudas sobre la Certificación</h2>
+      </div>
+
+      <div class="max-w-3xl mx-auto space-y-4">
+        <details class="group bg-white dark:bg-slate-900 rounded-2xl border border-surface-variant/30 dark:border-slate-800 p-6 [&_summary::-webkit-details-marker]:hidden">
+          <summary class="flex items-center justify-between cursor-pointer focus:outline-none">
+            <h4 class="font-bold text-primary dark:text-primary-fixed text-base">¿Tengo que pagar un costo adicional por los certificados?</h4>
+            <span class="material-symbols-outlined text-primary/60 transition group-open:-rotate-180">expand_more</span>
+          </summary>
+          <p class="mt-4 text-xs text-on-surface-variant dark:text-slate-400 leading-relaxed border-t border-surface-variant/10 dark:border-slate-800 pt-4">
+            No. Todos los cursos y diplomados de Plataforma LMS incluyen la emisión del diploma digital oficial de doble certificación (tanto el institucional de Plataforma LMS como el del gremio internacional correspondiente) sin ningún tipo de cargo adicional.
+          </p>
+        </details>
+
+        <details class="group bg-white dark:bg-slate-900 rounded-2xl border border-surface-variant/30 dark:border-slate-800 p-6 [&_summary::-webkit-details-marker]:hidden">
+          <summary class="flex items-center justify-between cursor-pointer focus:outline-none">
+            <h4 class="font-bold text-primary dark:text-primary-fixed text-base">¿Cómo funciona la validación del código QR?</h4>
+            <span class="material-symbols-outlined text-primary/60 transition group-open:-rotate-180">expand_more</span>
+          </summary>
+          <p class="mt-4 text-xs text-on-surface-variant dark:text-slate-400 leading-relaxed border-t border-surface-variant/10 dark:border-slate-800 pt-4">
+            Cada diploma cuenta con un código QR y una firma criptográfica única. Al escanear el código QR con cualquier smartphone, redirigirá de forma inmediata al sistema de validación digital de Plataforma LMS, confirmando el nombre del alumno, curso completado, fecha y estado de vigencia de forma segura.
+          </p>
+        </details>
+
+        <details class="group bg-white dark:bg-slate-900 rounded-2xl border border-surface-variant/30 dark:border-slate-800 p-6 [&_summary::-webkit-details-marker]:hidden">
+          <summary class="flex items-center justify-between cursor-pointer focus:outline-none">
+            <h4 class="font-bold text-primary dark:text-primary-fixed text-base">¿Puedo solicitar el diploma impreso en físico?</h4>
+            <span class="material-symbols-outlined text-primary/60 transition group-open:-rotate-180">expand_more</span>
+          </summary>
+          <p class="mt-4 text-xs text-on-surface-variant dark:text-slate-400 leading-relaxed border-t border-surface-variant/10 dark:border-slate-800 pt-4">
+            Sí. Al graduarte, de manera opcional puedes solicitar el envío del certificado impreso en cartulina especial texturizada de alto gramaje, con sellos holográficos y firmas de puño y letra. Esta solicitud tiene un costo adicional que cubre los cargos de imprenta y envío postal según tu país de residencia.
+          </p>
+        </details>
+
+        <details class="group bg-white dark:bg-slate-900 rounded-2xl border border-surface-variant/30 dark:border-slate-800 p-6 [&_summary::-webkit-details-marker]:hidden">
+          <summary class="flex items-center justify-between cursor-pointer focus:outline-none">
+            <h4 class="font-bold text-primary dark:text-primary-fixed text-base">¿Tienen respaldo nacional para ejercer mi profesión?</h4>
+            <span class="material-symbols-outlined text-primary/60 transition group-open:-rotate-180">expand_more</span>
+          </summary>
+          <p class="mt-4 text-xs text-on-surface-variant dark:text-slate-400 leading-relaxed border-t border-surface-variant/10 dark:border-slate-800 pt-4">
+            Sí. Nuestras certificaciones te acreditan como Terapeuta Complementario a través de gremios y alianzas internacionales. En la mayoría de países de habla hispana, las terapias alternativas/holísticas se regulan como actividades independientes de bienestar, permitiéndote abrir tu propio consultorio u ofrecer servicios a domicilio de forma legal con tus diplomas de Plataforma LMS.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+<app-footer></app-footer>
+
+<!-- Lightbox Modal Overlay -->
+<div *ngIf="showLightbox" role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-opacity duration-300" (click)="closeLightbox()">
+  <!-- Close Button -->
+  <button type="button" (click)="closeLightbox()" class="absolute top-6 right-6 text-white/75 hover:text-white transition-all p-2 rounded-full hover:bg-white/10 flex z-50">
+    <span class="material-symbols-outlined text-2xl">close</span>
+  </button>
+  
+  <!-- Image Container -->
+  <div class="max-w-4xl max-h-[85vh] w-full flex items-center justify-center relative" (click)="$event.stopPropagation()">
+    <img [src]="lightboxImage" alt="Certificación ampliada" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/15 animate-[fadeIn_0.2s_ease-out]" />
+  </div>
+</div>

@@ -1,0 +1,13 @@
+/* ── Iconos hover en alumnos ── */
+
+/* Estado base: transition siempre activa para ida y vuelta */
+button .material-symbols-outlined {
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+              filter 0.25s ease;
+}
+
+/* Hover: solo transform + filter */
+button:hover .material-symbols-outlined {
+  transform: scale(1.2) rotate(-5deg);
+  filter: drop-shadow(0 3px 8px rgba(51, 95, 153, 0.3));
+}

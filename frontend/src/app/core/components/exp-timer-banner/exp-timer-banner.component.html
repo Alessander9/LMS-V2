@@ -1,0 +1,68 @@
+﻿<div 
+  class="exp-banner-container"
+  [class.is-urgent]="isUrgent"
+  [class.is-critical]="isCritical"
+>
+  <!-- Left Side: Live Badge + Timer Text + Digital Pill -->
+  <div class="exp-left-group">
+    <!-- Live Status Pill -->
+    <span class="exp-badge">
+      <span class="exp-dot-container">
+        <span class="exp-dot-ping"></span>
+        <span class="exp-dot-solid"></span>
+      </span>
+      EXP Plataforma LMS
+    </span>
+
+    <!-- Text & Countdown -->
+    <div class="exp-timer-text">
+      <span class="exp-hourglass">⏳</span>
+      <span class="exp-label">Tu experiencia finaliza en:</span>
+      
+      <!-- Digital Clock Display Box -->
+      <div class="exp-clock-box">
+        <span class="material-symbols-outlined exp-clock-icon">timer</span>
+        <span>{{ formattedTime }}</span>
+      </div>
+
+      <span class="exp-remaining-unit">
+        {{ remainingSeconds <= 60 ? 'segundos restantes' : 'minutos restantes' }}
+      </span>
+
+      <!-- Urgent / Critical Warning Badge -->
+      <span *ngIf="isUrgent" class="exp-alert-tag warning">
+        <span class="material-symbols-outlined text-[13px]">warning</span>
+        ¡Últimos minutos!
+      </span>
+
+      <span *ngIf="isCritical" class="exp-alert-tag danger">
+        <span class="material-symbols-outlined text-[13px]">alarm</span>
+        ¡Expira pronto!
+      </span>
+    </div>
+  </div>
+
+  <!-- Right Side: Action CTA Button -->
+  <div class="exp-right-group">
+    <a 
+      [href]="whatsappUrl" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="exp-cta-btn"
+      title="Contactar por WhatsApp para matrícula"
+    >
+      <span class="exp-btn-icon">💬</span>
+      <span class="hidden sm:inline">Matricularme ahora</span>
+      <span class="sm:hidden">Matricularme</span>
+      <span class="material-symbols-outlined exp-btn-arrow">arrow_forward</span>
+    </a>
+  </div>
+
+  <!-- Bottom Slim Progress Bar -->
+  <div class="exp-progress-track">
+    <div 
+      class="exp-progress-fill"
+      [style.width.%]="progressPercentage"
+    ></div>
+  </div>
+</div>

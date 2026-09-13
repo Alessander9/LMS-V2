@@ -1,0 +1,309 @@
+﻿<app-navbar></app-navbar>
+
+<main class="job-page">
+  <!-- HERO SECTION -->
+  <header class="job-hero">
+    <div class="job-hero__glow job-hero__glow--one" aria-hidden="true"></div>
+    <div class="job-hero__glow job-hero__glow--two" aria-hidden="true"></div>
+
+    <div class="job-shell">
+      <div class="job-hero__content">
+        <div class="job-kicker">
+          <span class="job-kicker__pulse"></span>
+          <span>💼 CONVENIOS Y OPORTUNIDADES LABORALES</span>
+          <span class="job-kicker__separator"></span>
+          <span>Plataforma LMS 2026</span>
+        </div>
+
+        <h1 class="job-title">
+          Bolsa de <span>Trabajo</span>
+        </h1>
+
+        <div class="job-intro-box">
+          <span class="material-symbols-outlined job-intro-box__icon">handshake</span>
+          <p class="job-intro-box__text">
+            Agradecemos la confianza de las muchas empresas que nos tienen como referentes terapéuticos y que nos solicitan con frecuencia personal para diversos puestos de terapia. A continuación compartimos algunos de los puestos más solicitados en <strong>Lima (Miraflores)</strong>, <strong>Cusco</strong> y la <strong>Amazonía</strong>.
+          </p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="job-stats-bar">
+          <div class="job-stat-card">
+            <span class="material-symbols-outlined">hotel</span>
+            <div>
+              <strong>Cadenas Hoteleras & Spas</strong>
+              <small>Ecoturismo de lujo y bienestar</small>
+            </div>
+          </div>
+          <div class="job-stat-card">
+            <span class="material-symbols-outlined">spa</span>
+            <div>
+              <strong>Centros de Salud</strong>
+              <small>Clínicas y centros de terapia</small>
+            </div>
+          </div>
+          <div class="job-stat-card">
+            <span class="material-symbols-outlined">verified</span>
+            <div>
+              <strong>Postulación Directa</strong>
+              <small>Contacto oficial con empleadores</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTROLS & FILTER SECTION -->
+  <section class="job-controls-section">
+    <div class="job-shell">
+      <div class="job-controls-card">
+        <div class="job-filter-pills" role="tablist" aria-label="Filtrar puestos por ubicación">
+          <button type="button" (click)="setFiltro('TODOS')" [class.is-active]="filtroUbicacion === 'TODOS'">
+            <span class="material-symbols-outlined">work</span>
+            Todos los puestos ({{ trabajos.length }})
+          </button>
+          <button type="button" (click)="setFiltro('CUSCO')" [class.is-active]="filtroUbicacion === 'CUSCO'">
+            <span class="material-symbols-outlined">location_on</span>
+            Cusco / Machu Picchu
+          </button>
+          <button type="button" (click)="setFiltro('AMAZONIA')" [class.is-active]="filtroUbicacion === 'AMAZONIA'">
+            <span class="material-symbols-outlined">forest</span>
+            Amazonía / Tambopata
+          </button>
+          <button type="button" (click)="setFiltro('LIMA')" [class.is-active]="filtroUbicacion === 'LIMA'">
+            <span class="material-symbols-outlined">domain</span>
+            Lima / Miraflores
+          </button>
+        </div>
+
+        <div class="job-search-box">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" [(ngModel)]="busqueda" placeholder="Buscar por puesto, empresa o requisito..." aria-label="Buscar puesto de trabajo" />
+          <button *ngIf="busqueda" (click)="busqueda = ''" class="job-search-clear" aria-label="Limpiar búsqueda">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOBS LIST (DIVIDED AND STRUCTURED) -->
+  <section class="job-listings-section" id="vacantes">
+    <div class="job-shell">
+      <div class="job-section-header">
+        <div>
+          <span class="job-eyebrow"><span class="material-symbols-outlined">local_fire_department</span> Convocatorias Activas</span>
+          <h2>Ofertas laborales <span>disponibles</span></h2>
+        </div>
+        <p>Postula directamente a través de los canales oficiales de cada empresa adjuntando tu CV y certificaciones.</p>
+      </div>
+
+      <!-- GRID / CARDS -->
+      <div class="job-cards-container">
+        <article *ngFor="let t of trabajosFiltrados; let idx = index" class="job-card" [class.job-card--featured]="t.destacado" [id]="t.id">
+          
+          <!-- Top Tag / Badge -->
+          <div class="job-card__header">
+            <div class="job-card__header-main">
+              <div class="job-badge-wrapper">
+                <span class="job-location-badge">
+                  <span class="material-symbols-outlined">location_on</span>
+                  {{ t.ubicacion }}
+                </span>
+                <span class="job-regime-badge">
+                  <span class="material-symbols-outlined">schedule</span>
+                  {{ t.tipoContrato }}
+                </span>
+                <span *ngIf="t.destacado" class="job-featured-badge">
+                  <span class="material-symbols-outlined">star</span>
+                  Destacado
+                </span>
+              </div>
+              <h3 class="job-card__title">{{ t.puesto }}</h3>
+              <p class="job-card__company">
+                <span class="material-symbols-outlined">apartment</span>
+                <strong>{{ t.empresa }}</strong>
+                <span class="job-dot-divider">·</span>
+                <small>{{ t.tagline }}</small>
+              </p>
+            </div>
+          </div>
+
+          <!-- Main Body: 2 Columns (Image on side, content on other) -->
+          <div class="job-card__body-grid">
+            <!-- Col 1: Visual Media -->
+            <div class="job-card__visual">
+              <div class="job-card__image-wrap cursor-pointer" (click)="abrirLightbox(t.imagen)">
+                <img [src]="t.imagen" [alt]="t.imagenAlt" loading="lazy" />
+                <div class="job-card__image-overlay"></div>
+                <button type="button" class="job-card__zoom-btn" (click)="abrirLightbox(t.imagen); $event.stopPropagation()">
+                  <span class="material-symbols-outlined">zoom_in</span>
+                  Ampliar foto
+                </button>
+              </div>
+
+              <!-- Quick Info Block under image -->
+              <div class="job-quick-info">
+                <div class="job-quick-info__row">
+                  <span class="material-symbols-outlined">business</span>
+                  <div>
+                    <small>Empresa</small>
+                    <strong>{{ t.informacionGeneral.hotel || t.empresa }}</strong>
+                  </div>
+                </div>
+                <div class="job-quick-info__row">
+                  <span class="material-symbols-outlined">map</span>
+                  <div>
+                    <small>Ubicación</small>
+                    <strong>{{ t.informacionGeneral.ubicacionDetalle }}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Direct Application Callout -->
+              <div class="job-card__cta-box">
+                <span class="job-card__cta-title">¿Cumples con el perfil?</span>
+                <p>Comunícate de inmediato y envía tu CV indicando que eres egresado/a de Plataforma LMS:</p>
+
+                <div class="job-card__action-buttons">
+                  <a [href]="t.contacto.whatsapp" target="_blank" rel="noopener noreferrer" class="job-btn job-btn--whatsapp">
+                    <span class="material-symbols-outlined">chat</span>
+                    <span>Postular por WhatsApp <strong>{{ t.contacto.whatsappNumero }}</strong></span>
+                  </a>
+
+                  <a *ngIf="t.contacto.email" [href]="'mailto:' + t.contacto.email + '?subject=Postulación ' + t.puesto + ' - Plataforma LMS'" class="job-btn job-btn--email">
+                    <span class="material-symbols-outlined">mail</span>
+                    <span>Enviar CV a <strong>{{ t.contacto.email }}</strong></span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Col 2: Structured Details -->
+            <div class="job-card__details">
+              
+              <!-- SECTION: Requisitos -->
+              <div class="job-detail-block">
+                <h4 class="job-detail-block__heading">
+                  <span class="material-symbols-outlined text-brand-blue">checklist</span>
+                  📋 Requisitos y Perfil Requerido
+                </h4>
+                <ul class="job-checklist">
+                  <li *ngFor="let req of t.requisitos">
+                    <span class="material-symbols-outlined job-check-icon">check_circle</span>
+                    <span>{{ req }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- SECTION: Funciones -->
+              <div class="job-detail-block" *ngIf="t.funciones && t.funciones.length > 0">
+                <h4 class="job-detail-block__heading">
+                  <span class="material-symbols-outlined text-amber-600">construction</span>
+                  🛠️ Funciones Principales
+                </h4>
+                <ul class="job-functions-list">
+                  <li *ngFor="let fun of t.funciones">
+                    <span class="material-symbols-outlined job-arrow-icon">arrow_forward</span>
+                    <span>{{ fun }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- SECTION: Beneficios -->
+              <div class="job-detail-block">
+                <h4 class="job-detail-block__heading">
+                  <span class="material-symbols-outlined text-emerald-600">card_giftcard</span>
+                  💼 Qué Ofrecen (Beneficios)
+                </h4>
+                <div class="job-benefits-grid">
+                  <div *ngFor="let ben of t.beneficios" class="job-benefit-tag">
+                    <span class="material-symbols-outlined">verified</span>
+                    <span>{{ ben }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION: Turnos (si existen) -->
+              <div class="job-detail-block" *ngIf="t.turnos && t.turnos.length > 0">
+                <h4 class="job-detail-block__heading">
+                  <span class="material-symbols-outlined text-indigo-600">schedule</span>
+                  ⏰ Turnos Disponibles
+                </h4>
+                <div class="job-shifts-grid">
+                  <div *ngFor="let turno of t.turnos" class="job-shift-tag">
+                    <span class="material-symbols-outlined">access_time</span>
+                    <span>{{ turno }}</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Footer Bar of the Card -->
+          <div class="job-card__footer">
+            <span class="job-card__footer-info">
+              <span class="material-symbols-outlined">school</span>
+              Formación y certificación avalada por Plataforma LMS
+            </span>
+            <a [href]="t.contacto.whatsapp" target="_blank" rel="noopener noreferrer" class="job-card__footer-link">
+              Contactar para esta vacante
+              <span class="material-symbols-outlined">north_east</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Empty state when searching -->
+        <div *ngIf="trabajosFiltrados.length === 0" class="job-empty-state">
+          <span class="material-symbols-outlined job-empty-icon">search_off</span>
+          <h3>No se encontraron vacantes con los filtros seleccionados</h3>
+          <p>Prueba cambiando el término de búsqueda o seleccionando "Todos los puestos".</p>
+          <button type="button" (click)="setFiltro('TODOS'); busqueda = ''" class="job-btn job-btn--primary">
+            Restablecer filtros
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANNER: EMPRESAS Y CONVENIOS -->
+  <section class="job-company-cta">
+    <div class="job-shell">
+      <div class="job-company-card">
+        <div class="job-company-card__glow" aria-hidden="true"></div>
+        <div class="job-company-card__content">
+          <span class="job-eyebrow job-eyebrow--light">
+            <span class="material-symbols-outlined">handshake</span> Alianzas Estratégicas
+          </span>
+          <h2>¿Eres una empresa, clínica o spa y buscas terapeutas calificados?</h2>
+          <p>
+            En Plataforma LMS formamos terapeutas con sólida base clínica, práctica supervisada y ética profesional. Contáctanos para publicar tus requerimientos en nuestra bolsa laboral y conectar con nuestros egresados.
+          </p>
+          <div class="job-company-card__actions">
+            <a href="https://wa.me/51939371250?text=Hola%2C%20represento%20a%20una%20empresa%20y%20deseo%20publicar%20una%20oferta%20laboral%20con%20Plataforma LMS" target="_blank" rel="noopener noreferrer" class="job-btn job-btn--company">
+              <span class="material-symbols-outlined">add_business</span>
+              Publicar una vacante con Plataforma LMS
+            </a>
+            <a routerLink="/programas" class="job-btn job-btn--company-ghost">
+              Conocer nuestros programas formativos
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
+
+<!-- LIGHTBOX MODAL -->
+<div *ngIf="showLightbox" role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-opacity duration-300" (click)="cerrarLightbox()">
+  <button type="button" (click)="cerrarLightbox()" class="absolute top-6 right-6 text-white/75 hover:text-white transition-all p-2 rounded-full hover:bg-white/10 flex z-50">
+    <span class="material-symbols-outlined text-2xl">close</span>
+  </button>
+  <div class="max-w-4xl max-h-[85vh] w-full flex items-center justify-center relative" (click)="$event.stopPropagation()">
+    <img [src]="imagenLightbox" alt="Imagen del centro de trabajo ampliada" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/15 animate-[fadeIn_0.2s_ease-out]" />
+  </div>
+</div>

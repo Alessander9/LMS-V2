@@ -1,0 +1,452 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ====================================================================
+   GLOBAL STYLES — Campus Virtual Plataforma LMS
+   ==================================================================== */
+
+/* ── Reset y Base ── */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  background-color: #faf9fa;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+  font: inherit;
+}
+
+html.dark,
+html.dark body {
+  background-color: #020617;
+  color: #f1f5f9;
+  color-scheme: dark;
+}
+
+body {
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+/* ── Material Symbols ── */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ── Sombras corporativas ── */
+.corporate-shadow {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+/* ── Hero Pattern (público) ── */
+.hero-pattern {
+    background-color: #f8faf8;
+    background-image: radial-gradient(#d8dad9 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* ====================================================================
+   ANIMACIONES GLOBALES
+   ==================================================================== */
+
+/* Float */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-12px); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* FadeIn */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Scale */
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Shimmer (skeleton loading) */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ── Clases de utilidad de animación ── */
+.animate-float          { animation: float 6s ease-in-out infinite; }
+.animate-float-delayed  { animation: float-delayed 7s ease-in-out infinite; animation-delay: 2s; }
+.animate-fade-in-up     { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-in-right  { animation: fadeInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-scale-up       { animation: scaleUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Staggered delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Shimmer */
+.shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+.dark .shimmer {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+  background-size: 200% 100%;
+}
+
+/* ====================================================================
+   GLASSMORPHISM
+   ==================================================================== */
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-panel-dark {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ====================================================================
+   EFECTOS 3D (público)
+   ==================================================================== */
+@media (min-width: 768px) {
+  .perspective-3d { perspective: 1000px; }
+
+  .certificate-card {
+    transform: perspective(1200px) rotateY(-8deg) rotateX(5deg) rotateZ(-1deg);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s ease;
+    transform-style: preserve-3d;
+  }
+  .certificate-card:hover {
+    transform: perspective(1200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1.04);
+    box-shadow: 0 30px 60px -15px rgba(0, 52, 102, 0.15);
+  }
+
+  .book-card {
+    transform: perspective(1200px) rotateY(12deg) rotateX(2deg) rotateZ(1deg);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s ease;
+  }
+  .book-card:hover {
+    transform: perspective(1200px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1.03);
+    box-shadow: 0 30px 60px -15px rgba(0, 110, 28, 0.15);
+  }
+}
+
+@media (max-width: 767px) {
+  .certificate-card, .book-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .certificate-card:hover, .book-card:hover {
+    transform: scale(1.02);
+  }
+}
+
+@media (max-width: 640px) {
+  .acu-page {
+    overflow-x: clip;
+  }
+
+  .acu-page .ac-shell,
+  .acu-page .acu-shell {
+    width: min(calc(100% - 2rem), 1180px);
+  }
+
+  .acu-page .ac-visual__card {
+    min-width: 0;
+    max-width: min(10.8rem, 44vw);
+    padding: 0.6rem;
+    gap: 0.5rem;
+  }
+
+  .acu-page .ac-visual__card--top {
+    right: 0;
+    transform: translate(0, -10%);
+  }
+
+  .acu-page .ac-visual__card--bottom {
+    left: 0;
+    transform: translate(0, 10%);
+  }
+
+  .acu-page .ac-hero__shell,
+  .acu-page .ac-section-heading,
+  .acu-page .ac-benefit-showcase,
+  .acu-page .ac-journey > .ac-shell,
+  .acu-page .ac-audience > .ac-shell,
+  .acu-page .ac-cta__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .acu-page .ac-hero__visual {
+    width: min(100%, 24rem);
+    justify-self: center;
+  }
+
+  .acu-page .ac-actions {
+    flex-direction: column;
+  }
+
+  .acu-page .ac-button,
+  .acu-page .ac-cta__action,
+  .acu-page .ac-cta__action .ac-button--primary {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .acu-page .ac-visual__card strong,
+  .acu-page .ac-visual__card small,
+  .acu-page .ac-profile,
+  .acu-page .ac-module,
+  .acu-page .ac-journey__panel,
+  .acu-page .ac-benefit-copy {
+    overflow-wrap: anywhere;
+  }
+
+  .acu-page .ac-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .acu-page .ac-journey__tabs,
+  .acu-page .acu-phase-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .acu-page .ac-journey__tabs button,
+  .acu-page .acu-phase-tabs button {
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .acu-page .ac-journey__panel,
+  .acu-page .acu-phase-panel {
+    min-width: 0;
+  }
+
+  .acu-page .ac-journey__tabs,
+  .acu-page .acu-phase-tabs {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .acu-page .ac-journey__tabs button,
+  .acu-page .acu-phase-tabs button {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 380px) {
+  .acu-page .ac-shell,
+  .acu-page .acu-shell {
+    width: calc(100% - 1.5rem);
+  }
+
+  .acu-page .ac-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .acu-page .ac-visual__card {
+    max-width: 42vw;
+    font-size: 0.72rem;
+  }
+}
+
+/* ====================================================================
+   GLOBAL SCROLLBAR (Ultra-modern custom styling for all elements)
+   ==================================================================== */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+html.dark *,
+.dark * {
+  scrollbar-color: #334155 transparent;
+}
+
+/* Chrome, Edge, Safari, WebKit */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #64748b;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Dark Mode WebKit */
+html.dark ::-webkit-scrollbar-thumb,
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover,
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+  background-clip: padding-box;
+}
+
+html.dark ::-webkit-scrollbar-thumb:active,
+.dark ::-webkit-scrollbar-thumb:active {
+  background: #64748b;
+  background-clip: padding-box;
+}
+
+/* ====================================================================
+   DASHBOARD — Hover en filas de tablas
+   ==================================================================== */
+.curso-row,
+.dashboard-row {
+  transition: background-color 0.18s ease,
+              box-shadow 0.18s ease,
+              transform 0.18s ease;
+  position: relative;
+}
+
+.curso-row:hover,
+.dashboard-row:hover {
+  background-color: rgba(238, 242, 255, 0.6) !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), inset 3px 0 0 0 rgba(99, 120, 200, 0.3);
+  transform: translateX(2px);
+}
+
+.dark .curso-row:hover,
+.dark .dashboard-row:hover {
+  background-color: rgba(30, 41, 59, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), inset 3px 0 0 0 rgba(99, 120, 200, 0.25);
+}
+
+tr[class*="hover:bg-slate-50"]:hover {
+  background-color: rgba(238, 242, 255, 0.6) !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), inset 3px 0 0 0 rgba(99, 120, 200, 0.3) !important;
+  transform: translateX(2px);
+}
+
+.dark tr[class*="hover:bg-slate-50"]:hover {
+  background-color: rgba(30, 41, 59, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), inset 3px 0 0 0 rgba(99, 120, 200, 0.25) !important;
+}
+
+/* ====================================================================
+   DASHBOARD — Badge circular de progreso (play-curso)
+   ==================================================================== */
+.progress-ring {
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ====================================================================
+   3D BOOKSHELF MODE — Auto-hide Floating UI (Navbar, Social Bar, FAB)
+   ==================================================================== */
+.nav-wrapper {
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body.in-bookshelf-zone .nav-wrapper,
+body.in-bookshelf-zone app-navbar .nav-wrapper {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-120%) !important;
+}
+
+body.in-bookshelf-zone .sidebar-container,
+body.in-bookshelf-zone app-social-sidebar .sidebar-container {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-50%) translateX(-120px) !important;
+  transition: opacity 0.4s ease, transform 0.4s ease !important;
+}
+
+@media (max-width: 767px) {
+  body.in-bookshelf-zone .sidebar-container,
+  body.in-bookshelf-zone app-social-sidebar .sidebar-container {
+    transform: translateX(-50%) translateY(140px) !important;
+  }
+}
+
+body.in-bookshelf-zone .chatbot-fab-container,
+body.in-bookshelf-zone app-chatbot-widget .chatbot-fab-container,
+body.in-bookshelf-zone app-chatbot-widget {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(60px) scale(0.85) !important;
+  transition: opacity 0.4s ease, transform 0.4s ease !important;
+}
+
+body.in-bookshelf-zone .scroll-to-top-btn,
+body.in-bookshelf-zone app-scroll-to-top .scroll-to-top-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(60px) !important;
+  transition: opacity 0.4s ease, transform 0.4s ease !important;
+}
+

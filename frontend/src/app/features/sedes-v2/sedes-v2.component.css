@@ -1,0 +1,1103 @@
+:host {
+  display: block;
+}
+
+.sedes-page {
+  --sp-navy: #06264a;
+  --sp-blue: #0b63b5;
+  --sp-blue-2: #1685dc;
+  --sp-cyan: #58c7e8;
+  --sp-ink: #14263a;
+  --sp-muted: #637487;
+  --sp-line: rgba(6, 38, 74, 0.1);
+  --sp-soft: #f2f8fd;
+  --sp-card: rgba(255, 255, 255, 0.85);
+  --sp-shadow: 0 30px 70px rgba(6, 38, 74, 0.08);
+
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--sp-ink);
+  font-family: 'Manrope', sans-serif;
+  background:
+    radial-gradient(circle at 5% 10%, rgba(22, 133, 220, 0.12), transparent 28rem),
+    radial-gradient(circle at 95% 25%, rgba(88, 199, 232, 0.15), transparent 30rem),
+    linear-gradient(180deg, #f7faff 0%, #edf5fc 50%, #f7faff 100%);
+}
+
+/* Decoraciones */
+.sedes-page__grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(6, 38, 74, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 38, 74, 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+}
+
+.sedes-page__orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sedesOrbFloatV2 18s ease-in-out infinite;
+}
+
+.sedes-page__orb--one {
+  top: 6rem;
+  right: -15rem;
+  width: 38rem;
+  height: 38rem;
+  background: radial-gradient(circle, rgba(22, 133, 220, 0.15), transparent 70%);
+}
+
+.sedes-page__orb--two {
+  top: 38rem;
+  left: -18rem;
+  width: 32rem;
+  height: 32rem;
+  background: radial-gradient(circle, rgba(88, 199, 232, 0.16), transparent 70%);
+  animation-delay: -6s;
+}
+
+@keyframes sedesOrbFloatV2 {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  50% { transform: translateY(-40px) scale(1.06) rotate(10deg); }
+}
+
+.sedes-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, calc(100% - clamp(2rem, 6vw, 6rem)));
+  margin-inline: auto;
+}
+
+.sedes-hero {
+  position: relative;
+  padding: clamp(7rem, 10vw, 11rem) 0 clamp(2.5rem, 5vw, 4rem);
+}
+
+.sedes-breadcrumbs {
+  display: flex;
+  aria-hidden: false;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--sp-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sedes-breadcrumbs a {
+  color: var(--sp-muted);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+
+.sedes-breadcrumbs a:hover {
+  color: var(--sp-blue);
+}
+
+.sedes-breadcrumbs span {
+  font-size: 0.9rem;
+}
+
+.sedes-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--sp-blue);
+  margin-bottom: 1.25rem;
+}
+
+.sedes-hero__copy h1 {
+  font-size: clamp(2.25rem, 6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--sp-navy);
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+}
+
+.sedes-hero__copy h1 span {
+  color: var(--sp-blue);
+  background: linear-gradient(135deg, var(--sp-blue) 20%, var(--sp-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sedes-hero__copy p {
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  line-height: 1.65;
+  color: var(--sp-muted);
+  max-width: 42rem;
+}
+
+/* Sección de Sedes */
+.sedes-section {
+  padding-bottom: 8rem;
+}
+
+/* Barra de Pestañas Estilo Cápsula Flotante */
+.sedes-tabs-nav-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3.5rem;
+}
+
+.sedes-tabs-nav {
+  display: flex;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(6, 38, 74, 0.08);
+  padding: 0.45rem;
+  border-radius: 9999px;
+  box-shadow: 0 8px 30px rgba(6, 38, 74, 0.04);
+}
+
+.sedes-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 2rem;
+  background: transparent;
+  border: none;
+  color: var(--sp-muted);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 9999px;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sedes-tab-btn span.material-symbols-outlined {
+  font-size: 1.3rem;
+  transition: transform 300ms ease;
+}
+
+.sedes-tab-btn:hover {
+  color: var(--sp-navy);
+}
+
+.sedes-tab-btn:hover span.material-symbols-outlined {
+  transform: scale(1.1);
+}
+
+.sedes-tab-btn.active {
+  background: var(--sp-blue);
+  color: white;
+  box-shadow: 0 4px 15px rgba(11, 99, 181, 0.3);
+}
+
+/* Tarjeta Layout */
+.sedes-card-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 4rem;
+  align-items: start;
+}
+
+.sedes-info-card {
+  background: var(--sp-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  padding: clamp(2rem, 5vw, 4rem);
+  box-shadow: var(--sp-shadow);
+}
+
+.sedes-badge {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  background: rgba(22, 133, 220, 0.08);
+  color: var(--sp-blue);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 9999px;
+  margin-bottom: 1.75rem;
+}
+
+.sedes-info-card h2 {
+  font-size: clamp(1.85rem, 4vw, 2.5rem);
+  font-weight: 800;
+  color: var(--sp-navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 1.35rem;
+}
+
+.sedes-description {
+  font-size: 1.08rem;
+  line-height: 1.75;
+  color: #334e68;
+  margin-bottom: 2.5rem;
+}
+
+/* Caja de Representante Premium V2 */
+.representative-box {
+  display: flex;
+  gap: 1.75rem;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(22, 133, 220, 0.12);
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin-bottom: 2.75rem;
+  box-shadow: 0 10px 30px rgba(22, 133, 220, 0.03);
+  transition: all 300ms ease;
+}
+
+.representative-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(22, 133, 220, 0.06);
+  border-color: rgba(22, 133, 220, 0.25);
+}
+
+.representative-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sp-blue-2) 0%, var(--sp-cyan) 100%);
+  color: white;
+}
+
+.avatar-glow {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sp-blue-2), var(--sp-cyan));
+  filter: blur(6px);
+  opacity: 0.4;
+  z-index: -1;
+}
+
+.representative-details h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--sp-navy);
+  margin-bottom: 0.15rem;
+}
+
+.rep-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--sp-blue);
+  background: rgba(11, 99, 181, 0.08);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.representative-role {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--sp-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.85rem;
+}
+
+.representative-details p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #486581;
+}
+
+/* Caja CTA Premium V2 */
+.sedes-cta-box-premium {
+  background: linear-gradient(135deg, var(--sp-navy) 0%, #0d1e39 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2.25rem;
+  color: white;
+  box-shadow: 0 15px 45px rgba(6, 38, 74, 0.18);
+}
+
+.sedes-cta-box-premium h4 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.sedes-cta-box-premium p {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
+.sedes-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem 1.8rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary-custom {
+  background: var(--sp-blue-2);
+  color: white;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 14px rgba(22, 133, 220, 0.3);
+}
+
+.btn-primary-custom:hover {
+  background: #0d71be;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(22, 133, 220, 0.45);
+}
+
+.btn-secondary-custom {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.btn-secondary-custom:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Tarjeta Lateral de Visuals */
+.sedes-visual-card {
+  position: sticky;
+  top: 8rem;
+}
+
+.visual-decor {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--sp-shadow);
+  margin-bottom: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background-color: var(--sp-navy);
+}
+
+.visual-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(6, 38, 74, 0.95) 100%);
+  z-index: 1;
+}
+
+.visual-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(22, 133, 220, 0.9);
+  backdrop-filter: blur(8px);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  z-index: 2;
+}
+
+.visual-content-bottom {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  right: 2rem;
+  z-index: 2;
+  color: white;
+}
+
+.visual-content-bottom h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.visual-content-bottom p {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sedes-bento-features {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.bento-feature-item {
+  display: flex;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.bento-feature-item span.material-symbols-outlined {
+  font-size: 1.65rem;
+  color: var(--sp-blue-2);
+  background: rgba(22, 133, 220, 0.08);
+  padding: 0.65rem;
+  border-radius: 12px;
+}
+
+.bento-feature-item h4 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--sp-navy);
+  margin-bottom: 0.25rem;
+}
+
+.bento-feature-item p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--sp-muted);
+}
+
+/* LIMA CENTRAL: Grid de Tarjetas de Ubicación Interactivas */
+.contact-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.contact-card-item {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: white;
+  border: 1px solid rgba(6, 38, 74, 0.07);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(6, 38, 74, 0.02);
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.contact-card-item:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(22, 133, 220, 0.25);
+  box-shadow: 0 15px 35px rgba(22, 133, 220, 0.06);
+}
+
+.card-icon {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(22, 133, 220, 0.08);
+  color: var(--sp-blue);
+  transition: all 300ms ease;
+}
+
+.contact-card-item:hover .card-icon {
+  background: var(--sp-blue);
+  color: white;
+}
+
+.card-text span {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--sp-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.card-text h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--sp-navy);
+  margin-bottom: 0.15rem;
+}
+
+.card-text p {
+  font-size: 0.85rem;
+  color: var(--sp-muted);
+}
+
+/* Tarjeta del Mapa Premium */
+.sedes-map-card {
+  position: sticky;
+  top: 8rem;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--sp-shadow);
+  border: 1px solid var(--sp-line);
+  padding: 0.65rem;
+}
+
+.window-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem 0.85rem;
+  border-bottom: 1px solid rgba(6, 38, 74, 0.05);
+}
+
+.window-dots {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.window-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e2e8f0;
+}
+
+.window-dots span:nth-child(1) { background: #ff5f56; }
+.window-dots span:nth-child(2) { background: #ffbd2e; }
+.window-dots span:nth-child(3) { background: #27c93f; }
+
+.window-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--sp-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.map-container {
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* PIURA: Bento Grid de Actividades Proyectadas */
+.piura-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.piura-bento-item {
+  background: white;
+  border: 1px solid rgba(6, 38, 74, 0.07);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 10px 30px rgba(6, 38, 74, 0.02);
+  transition: all 300ms ease;
+}
+
+.piura-bento-item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(22, 133, 220, 0.2);
+  box-shadow: 0 15px 35px rgba(22, 133, 220, 0.06);
+}
+
+.item-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 12px;
+  background: rgba(22, 133, 220, 0.06);
+  color: var(--sp-blue-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.piura-bento-item h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--sp-navy);
+  margin-bottom: 0.5rem;
+}
+
+.piura-bento-item p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--sp-muted);
+}
+
+.piura-info-box {
+  display: flex;
+  gap: 1.25rem;
+  background: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  border-radius: 18px;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.piura-info-box span.material-symbols-outlined {
+  color: #d97706;
+}
+
+.piura-info-box h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #78350f;
+  margin-bottom: 0.25rem;
+}
+
+.piura-info-box p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #92400e;
+}
+
+/* Animación de entrada de pestaña */
+.animate-fade-in {
+  animation: sedesFadeInV2 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes sedesFadeInV2 {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* SOPORTE MODO OSCURO (Dark Mode) */
+:host-context(.dark) .sedes-page {
+  background:
+    radial-gradient(circle at 5% 10%, rgba(22, 133, 220, 0.08), transparent 28rem),
+    radial-gradient(circle at 95% 25%, rgba(148, 249, 144, 0.06), transparent 30rem),
+    linear-gradient(180deg, #0b1329 0%, #070b18 50%, #03050a 100%);
+  color: #cbd5e1;
+}
+
+:host-context(.dark) .sedes-page__grid {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+:host-context(.dark) .sedes-hero__copy h1 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-hero__copy h1 span {
+  background: linear-gradient(135deg, #38bdf8 20%, #4ade80 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+:host-context(.dark) .sedes-breadcrumbs {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .sedes-tabs-nav {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(.dark) .sedes-tab-btn:hover {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-tab-btn.active {
+  background: #38bdf8;
+  color: #0b1329;
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+}
+
+:host-context(.dark) .sedes-info-card {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+:host-context(.dark) .sedes-info-card h2 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-description {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .representative-box {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:host-context(.dark) .representative-box:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+:host-context(.dark) .representative-details h3 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .rep-tag {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+:host-context(.dark) .representative-details p {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .sedes-cta-box-premium {
+  background: linear-gradient(135deg, #0f172a 0%, #0d1e39 100%);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+:host-context(.dark) .btn-primary-custom {
+  background: #0284c7;
+}
+
+:host-context(.dark) .btn-primary-custom:hover {
+  background: #0369a1;
+}
+
+:host-context(.dark) .btn-secondary-custom {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+:host-context(.dark) .btn-secondary-custom:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:host-context(.dark) .visual-decor {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:host-context(.dark) .bento-feature-item span.material-symbols-outlined {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+:host-context(.dark) .bento-feature-item h4 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .bento-feature-item p {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .contact-card-item {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+:host-context(.dark) .contact-card-item:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+:host-context(.dark) .card-text h3 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-map-card {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+:host-context(.dark) .window-top-bar {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:host-context(.dark) .piura-bento-item {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+:host-context(.dark) .piura-bento-item:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+:host-context(.dark) .piura-bento-item h3 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .piura-bento-item p {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .piura-info-box {
+  background: rgba(245, 158, 11, 0.02);
+  border-color: rgba(245, 158, 11, 0.1);
+}
+
+:host-context(.dark) .piura-info-box h3 {
+  color: #fcd34d;
+}
+
+:host-context(.dark) .piura-info-box p {
+  color: #fbbf24;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .sedes-hero {
+    padding: 6.5rem 0 2rem;
+  }
+
+  .sedes-hero__copy h1 {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .sedes-hero__copy p {
+    font-size: 0.95rem;
+  }
+  
+  .sedes-card-layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  
+  .sedes-tabs-nav-container {
+    margin-bottom: 2.5rem;
+    width: 100%;
+  }
+
+  .sedes-tabs-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+    padding: 0.25rem;
+    width: 100%;
+    background: rgba(6, 38, 74, 0.03);
+    border-radius: 14px;
+    border: 1px solid rgba(6, 38, 74, 0.05);
+  }
+  
+  .sedes-tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.75rem 0.25rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--sp-muted);
+    border-radius: 10px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    transition: all 250ms ease;
+  }
+
+  .sedes-tab-btn span.material-symbols-outlined {
+    font-size: 1.25rem;
+  }
+
+  .sedes-tab-btn.active {
+    background: var(--sp-blue);
+    color: white;
+    box-shadow: 0 4px 12px rgba(11, 99, 181, 0.2);
+  }
+
+  :host-context(.dark) .sedes-tabs-nav {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  :host-context(.dark) .sedes-tab-btn.active {
+    background: #38bdf8;
+    color: #0b1329;
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+  }
+  
+  .sedes-visual-card, .sedes-map-card {
+    position: static;
+  }
+
+  .sedes-info-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .representative-box {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+
+  .representative-avatar {
+    margin-inline: auto;
+  }
+
+  .sedes-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .sedes-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .contact-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .contact-card-item {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .card-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 10px;
+  }
+}
+
+/* Carrusel de Lima V2 */
+.sedes-carousel-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  width: 100%;
+}
+
+.carousel-slides {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  color: white;
+  border: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 300ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.carousel-btn:hover {
+  background: var(--sp-blue-2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.prev {
+  left: 1.25rem;
+}
+
+.carousel-btn.next {
+  right: 1.25rem;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.6rem;
+  z-index: 10;
+}
+
+.carousel-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.carousel-dots span.active {
+  background: white;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Botón flotante Ver más grande V2 */
+.btn-zoom-image {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.9;
+  transition: all 300ms ease;
+}
+
+.btn-zoom-image:hover {
+  background: var(--sp-blue-2);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.btn-zoom-image span.material-symbols-outlined {
+  font-size: 1.2rem;
+}
+
+/* Animaciones del Modal V2 */
+@keyframes sedesScaleUpModal {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-scale-up-modal {
+  animation: sedesScaleUpModal 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sedes-visual-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}

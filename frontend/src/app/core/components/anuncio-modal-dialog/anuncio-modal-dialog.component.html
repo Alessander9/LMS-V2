@@ -1,0 +1,145 @@
+<div *ngIf="isVisible && anuncio" 
+  class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300"
+  (click)="cerrar()">
+  
+  <!-- Contenedor del Modal -->
+  <div 
+    class="relative w-full max-w-lg md:max-w-2xl lg:max-w-3xl max-h-[92vh] flex flex-col overflow-hidden rounded-3xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200/80 dark:border-slate-800 animate-in zoom-in-95 duration-200"
+    (click)="$event.stopPropagation()">
+
+    <!-- Botón Cerrar Flotante (X) -->
+    <button 
+      (click)="cerrar()" 
+      class="absolute top-4 right-4 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/60 hover:bg-slate-900/90 text-white backdrop-blur-md transition-all duration-150 focus:outline-none shadow-lg border border-white/10 cursor-pointer"
+      title="Cerrar aviso">
+      <span class="material-symbols-outlined text-xl">close</span>
+    </button>
+
+    <!-- Contenedor con Scroll para todo el modal si es necesario -->
+    <div class="overflow-y-auto max-h-[92vh] flex flex-col">
+
+      <!-- Imagen Flyer / Banner Amplia sin recortes (100% visible) -->
+      <div *ngIf="anuncio.imagenUrl" 
+        (click)="abrirLightbox($event)"
+        class="relative w-full bg-slate-950 flex items-center justify-center overflow-hidden cursor-zoom-in group select-none min-h-[200px] max-h-[55vh] sm:max-h-[480px]">
+        
+        <!-- Fondo difuminado ambiental para marcos laterales si la foto es vertical -->
+        <img 
+          [src]="anuncio.imagenUrl" 
+          alt="" 
+          class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125 pointer-events-none" 
+          aria-hidden="true" />
+        
+        <!-- Imagen Principal 100% Completa (object-contain, sin recortes) -->
+        <img 
+          [src]="anuncio.imagenUrl" 
+          [alt]="anuncio.titulo" 
+          class="relative z-10 max-h-[55vh] sm:max-h-[480px] w-auto max-w-full object-contain object-center transition-transform duration-300 group-hover:scale-[1.02]"
+          (error)="anuncio.imagenUrl = ''" />
+
+        <!-- Overlay con botón para Ampliar a Pantalla Completa -->
+        <div class="absolute inset-0 z-20 bg-gradient-to-t from-black/70 via-transparent to-black/20 opacity-90 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4 pointer-events-none">
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-primary text-white shadow-md">
+              <span class="material-symbols-outlined text-sm">campaign</span>
+              <span>Novedad Especial</span>
+            </span>
+          </div>
+
+          <div class="flex items-center justify-center">
+            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/70 hover:bg-black/90 text-white text-xs font-bold backdrop-blur-md transition-all shadow-xl pointer-events-auto border border-white/20 transform group-hover:scale-105 cursor-pointer">
+              <span class="material-symbols-outlined text-base text-amber-400">zoom_in</span>
+              <span>Ver imagen en tamaño completo</span>
+            </span>
+          </div>
+
+          <div class="text-[11px] text-slate-300 font-medium text-center">
+            Haz clic en la imagen para ampliarla en alta definición
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido del Mensaje -->
+      <div class="p-6 sm:p-8 space-y-4">
+        <div *ngIf="!anuncio.imagenUrl" class="flex items-center gap-2">
+          <span class="p-2 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-xl">campaign</span>
+          </span>
+          <span class="text-xs font-bold uppercase tracking-wider text-primary">Comunicado Oficial</span>
+        </div>
+
+        <h2 
+          class="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white leading-tight"
+          [innerHTML]="getFormattedHtml(anuncio.titulo)">
+        </h2>
+
+        <div 
+          *ngIf="anuncio.mensaje" 
+          class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed space-y-2"
+          [innerHTML]="getFormattedHtml(anuncio.mensaje)">
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="pt-4 flex flex-col-reverse sm:flex-row items-center gap-3">
+          <button 
+            (click)="cerrar()"
+            class="w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-bold transition-colors cursor-pointer">
+            Cerrar
+          </button>
+
+          <button 
+            *ngIf="anuncio.imagenUrl"
+            (click)="abrirLightbox($event)"
+            class="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-base">zoom_in</span>
+            <span>Ver Imagen Ampliada</span>
+          </button>
+
+          <button 
+            *ngIf="anuncio.botonUrl"
+            (click)="ejecutarAccion()"
+            class="w-full sm:flex-1 px-6 py-3 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-sm shadow-lg shadow-primary/25 hover:shadow-primary/40 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-0.5 cursor-pointer">
+            <span>{{ anuncio.botonTexto || 'Me interesa' }}</span>
+            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- LIGHTBOX FULLSCREEN VISOR DE IMAGEN AL 100% SIN RECORTES    -->
+<!-- ============================================================ -->
+<div 
+  *ngIf="isLightboxOpen && anuncio?.imagenUrl"
+  class="fixed inset-0 z-[150] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 sm:p-8 animate-in fade-in duration-200 select-none"
+  (click)="cerrarLightbox($event)">
+  
+  <!-- Header con Botón de Cerrar del Lightbox -->
+  <div class="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 flex items-center gap-3">
+    <button 
+      (click)="cerrarLightbox($event)"
+      class="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white backdrop-blur-md transition-all shadow-xl cursor-pointer"
+      title="Cerrar visor ampliado (Esc)">
+      <span class="material-symbols-outlined text-2xl">close</span>
+    </button>
+  </div>
+
+  <!-- Imagen Completa 100% Visible y Grande -->
+  <div class="relative max-w-[95vw] max-h-[92vh] flex items-center justify-center" (click)="$event.stopPropagation()">
+    <img 
+      [src]="anuncio?.imagenUrl" 
+      [alt]="anuncio?.titulo" 
+      class="max-w-[95vw] max-h-[90vh] w-auto h-auto object-contain rounded-xl shadow-2xl transition-transform duration-200" />
+  </div>
+
+  <!-- Caption inferior -->
+  <div class="absolute bottom-4 inset-x-4 text-center pointer-events-none">
+    <span class="inline-block px-4 py-1.5 rounded-full bg-black/70 backdrop-blur-md text-white text-xs font-semibold shadow-lg">
+      {{ anuncio?.titulo }} • Haz clic afuera o en la ✕ para regresar
+    </span>
+  </div>
+</div>

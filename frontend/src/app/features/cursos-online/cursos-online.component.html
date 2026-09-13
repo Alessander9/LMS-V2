@@ -1,0 +1,137 @@
+﻿<app-navbar></app-navbar>
+
+<main class="catalog-page">
+  <div class="catalog-page__grid" aria-hidden="true"></div>
+  <div class="catalog-page__orb catalog-page__orb--one" aria-hidden="true"></div>
+  <div class="catalog-page__orb catalog-page__orb--two" aria-hidden="true"></div>
+
+  <header class="catalog-hero">
+    <div class="catalog-shell">
+      <div class="catalog-topline">
+        <span>Plataforma LMS / CURSOS ONLINE</span>
+        <span>CONVOCATORIA 2026</span>
+      </div>
+
+      <div class="catalog-hero__layout">
+        <div class="catalog-hero__copy">
+          <span class="catalog-kicker"><i></i> Aprende desde casa</span>
+          <h1>Formación online a tu ritmo.</h1>
+          <p>Campus virtual, acceso flexible y acompañamiento académico permanente. Aprende desde cualquier lugar con docentes especializados.</p>
+
+          <div class="catalog-hero__actions" aria-label="Accesos rápidos">
+            <a href="#cursos-online-title">
+              <span class="material-symbols-outlined">devices</span>
+              Ver programas
+            </a>
+            <a href="https://wa.me/51910610096?text=Hola%2C%20quiero%20información%20sobre%20los%20cursos%20online%20de%20Plataforma LMS"
+               target="_blank" rel="noopener noreferrer">
+              <span class="material-symbols-outlined">support_agent</span>
+              Consultar asesor
+            </a>
+          </div>
+        </div>
+
+        <div class="catalog-hero__panel" aria-label="Resumen del catálogo online">
+          <div class="catalog-hero__panel-head catalog-bento-card catalog-bento-card--wide">
+            <span class="material-symbols-outlined">devices</span>
+            <div><small>Modalidad</small><strong>Formación 100% Online</strong></div>
+          </div>
+          <div class="catalog-bento-card catalog-bento-card--metric"><strong>{{ cursos.length }}</strong><small>Programas</small></div>
+          <div class="catalog-bento-card catalog-bento-card--metric"><strong>{{ filteredCursos().length }}</strong><small>Resultados</small></div>
+          <div class="catalog-bento-card catalog-bento-card--metric catalog-bento-card--highlight">
+            <strong>24/7</strong><small>Acceso</small>
+          </div>
+          <div class="catalog-bento-card catalog-bento-card--wide catalog-bento-card--note">
+            <span class="material-symbols-outlined">wifi</span>
+            <p>Campus virtual con videoclases, materiales descargables y certificación oficial al completar tu formación.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="catalog-content" aria-label="Catálogo de cursos online">
+    <div class="catalog-shell">
+      <div class="catalog-toolbar">
+        <label class="catalog-search">
+          <span class="material-symbols-outlined" aria-hidden="true">search</span>
+          <span class="sr-only">Buscar formación online</span>
+          <input type="search" placeholder="Buscar por nombre o especialidad..." [value]="searchTerm" (input)="onSearch($event)" />
+          <small>{{ filteredCursos().length }} resultados</small>
+        </label>
+
+        <div class="catalog-filters" role="group" aria-label="Filtrar por tipo">
+          <button type="button" (click)="setFilter('TODOS')" [class.is-active]="filter === 'TODOS'" [attr.aria-pressed]="filter === 'TODOS'">Todos</button>
+          <button type="button" (click)="setFilter('CORTOS')" [class.is-active]="filter === 'CORTOS'" [attr.aria-pressed]="filter === 'CORTOS'">Cursos cortos</button>
+          <button type="button" (click)="setFilter('DIPLOMADOS')" [class.is-active]="filter === 'DIPLOMADOS'" [attr.aria-pressed]="filter === 'DIPLOMADOS'">Diplomados</button>
+        </div>
+
+        <label class="catalog-sort">
+          <span>Ordenar</span>
+          <select [value]="sortBy" (change)="onSort($event)">
+            <option value="POPULARIDAD">Popularidad</option>
+            <option value="PRECIO_ASC">Precio: menor a mayor</option>
+            <option value="PRECIO_DESC">Precio: mayor a menor</option>
+          </select>
+          <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
+        </label>
+      </div>
+
+      <div class="catalog-empty" *ngIf="filteredCursos().length === 0">
+        <span class="material-symbols-outlined" aria-hidden="true">search_off</span>
+        <h2><span class="catalog-title-icon material-symbols-outlined">search_off</span>No encontramos coincidencias</h2>
+        <p>Prueba con otro término o selecciona una categoría diferente.</p>
+        <button type="button" (click)="searchTerm = ''; setFilter('TODOS')">Mostrar todo el catálogo</button>
+      </div>
+
+      <section class="course-group" *ngIf="filteredCursos().length > 0" aria-labelledby="cursos-online-title">
+        <header class="course-group__heading">
+          <div>
+            <span class="course-group__index">01</span>
+            <div>
+              <span class="course-group__eyebrow">
+                <span class="material-symbols-outlined">wifi</span> Acceso flexible
+              </span>
+              <h2 id="cursos-online-title">
+                <span class="catalog-title-icon material-symbols-outlined">devices</span>
+                Formaciones online
+              </h2>
+              <p>Campus virtual, videoclases y acompañamiento académico desde donde estés.</p>
+            </div>
+          </div>
+          <span>{{ filteredCursos().length | number:'2.0' }} programas</span>
+        </header>
+
+        <div class="course-grid">
+          <article class="course-card" *ngFor="let curso of filteredCursos(); let i = index">
+            <a [routerLink]="curso.customLink || ('/cursos/' + curso.slug)" class="course-card__media" [attr.aria-label]="'Ver ' + curso.title">
+              <img [src]="curso.image" [alt]="curso.title" loading="lazy" decoding="async" />
+              <span class="course-card__modality"><i></i>ONLINE</span>
+            </a>
+
+            <div class="course-card__body">
+              <div class="course-card__meta"><span class="course-card__inst-badge">Plataforma LMS Oficial</span><strong>{{ curso.duration }}</strong></div>
+              <h3><span class="course-card__title-icon material-symbols-outlined">{{ curso.icon }}</span><a [routerLink]="curso.customLink || ('/cursos/' + curso.slug)">{{ curso.title }}</a></h3>
+              <p>{{ curso.description }}</p>
+              <footer><span><span class="material-symbols-outlined">groups</span>{{ curso.students }} estudiantes</span><strong>{{ curso.price }}</strong><a [routerLink]="curso.customLink || ('/cursos/' + curso.slug)" aria-label="Ver detalles"><span class="course-card__cta-text">Ver curso</span><span class="material-symbols-outlined">arrow_outward</span></a></footer>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <aside class="catalog-guidance">
+        <div>
+          <span class="material-symbols-outlined">support_agent</span>
+          <span>
+            <small>¿No sabes cuál elegir?</small>
+            <strong>Un asesor puede ayudarte a escoger la ruta correcta.</strong>
+          </span>
+        </div>
+        <a href="https://wa.me/51910610096?text=Hola%2C%20necesito%20ayuda%20para%20elegir%20un%20curso%20online%20de%20Plataforma LMS"
+           target="_blank" rel="noopener noreferrer">Recibir orientación</a>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>

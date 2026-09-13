@@ -1,0 +1,18 @@
+/* ── Iconos hover en materiales ── */
+
+/* Estado base: transition siempre activa para ida y vuelta */
+tr .material-symbols-outlined,
+button .material-symbols-outlined {
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+              filter 0.25s ease;
+}
+
+/* Hover: solo transform + filter */
+tr:hover .material-symbols-outlined {
+  transform: scale(1.15) rotate(-4deg);
+  filter: drop-shadow(0 3px 8px rgba(16, 185, 129, 0.2));
+}
+button:hover .material-symbols-outlined {
+  transform: scale(1.2) rotate(-5deg);
+  filter: drop-shadow(0 3px 8px rgba(51, 95, 153, 0.3));
+}

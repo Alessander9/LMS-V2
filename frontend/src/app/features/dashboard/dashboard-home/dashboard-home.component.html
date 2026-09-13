@@ -1,0 +1,653 @@
+﻿<div class="space-y-6 font-body" *ngIf="profile">
+  
+  <!-- ================= SKELETON LOADING STATE ================= -->
+  <ng-container *ngIf="isLoading">
+    <!-- Banner skeleton -->
+    <app-skeleton-loader type="banner"></app-skeleton-loader>
+    
+    <!-- Action cards grid skeleton -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-6">
+      <app-skeleton-loader type="action-card" *ngFor="let _ of [1,2,3,4]"></app-skeleton-loader>
+    </div>
+
+    <!-- Metrics grid skeleton -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6">
+      <app-skeleton-loader type="metric" *ngFor="let _ of [1,2,3]"></app-skeleton-loader>
+    </div>
+
+    <!-- Widgets grid skeleton -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
+      <app-skeleton-loader type="widget" [rows]="4"></app-skeleton-loader>
+      <app-skeleton-loader type="widget" [rows]="4"></app-skeleton-loader>
+    </div>
+  </ng-container>
+
+  <div *ngIf="!isLoading">
+    <!-- ================= ADMINISTRATOR VIEW ================= -->
+    <ng-container *ngIf="profile.rol === 'ADMINISTRADOR'">
+      <!-- Premium Welcome Banner -->
+      <div class="welcome-banner relative overflow-hidden bg-gradient-to-r from-slate-950 via-[#0d1527] to-slate-950 border border-slate-800 p-4 sm:p-5 rounded-none shadow-[6px_6px_0px_0px_rgba(99,102,241,0.1)] text-white">
+        <!-- Abstract light graphic -->
+        <div class="absolute -right-16 -top-16 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div class="flex items-center gap-3 sm:gap-4">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center rounded-none font-black text-xl sm:text-2xl shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] shrink-0">
+              A
+            </div>
+            <div>
+              <span class="text-[9px] font-black tracking-widest text-indigo-400 uppercase">Consola de Control Central</span>
+              <h1 class="text-lg sm:text-2xl font-black tracking-tight uppercase mt-0.5">Campus Virtual Plataforma LMS</h1>
+              <p class="text-slate-400 text-[11px] sm:text-xs mt-1">Supervisión operativa, seguridad de accesos y estado de infraestructura.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-none animate-pulse"></span>
+            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest bg-slate-900 border border-slate-800 px-3 py-1.5">
+              Servidor Activo (8080)
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accesos Rápidos (Acciones Rápidas) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mt-3 sm:mt-4">
+        <a 
+          routerLink="/dashboard/cursos" 
+          class="action-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-none group select-none">
+          <div class="action-icon w-8 h-8 sm:w-9 sm:h-9 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 rounded-none shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+            <span class="material-symbols-outlined text-sm">add_box</span>
+          </div>
+          <div>
+            <span class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase block tracking-wider leading-none">Gestión</span>
+            <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-tight leading-none">Cursos</span>
+          </div>
+        </a>
+
+        <a 
+          routerLink="/dashboard/alumnos" 
+          class="action-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-none group select-none">
+          <div class="action-icon w-8 h-8 sm:w-9 sm:h-9 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 rounded-none shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+            <span class="material-symbols-outlined text-sm">person_add</span>
+          </div>
+          <div>
+            <span class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase block tracking-wider leading-none">Alumnos</span>
+            <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-tight leading-none">Matricular</span>
+          </div>
+        </a>
+
+        <a 
+          routerLink="/dashboard/auditoria" 
+          class="action-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-none group select-none">
+          <div class="action-icon w-8 h-8 sm:w-9 sm:h-9 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 rounded-none shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+            <span class="material-symbols-outlined text-sm">security</span>
+          </div>
+          <div>
+            <span class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase block tracking-wider leading-none">Auditoría</span>
+            <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-tight leading-none">Seguridad</span>
+          </div>
+        </a>
+
+        <a 
+          routerLink="/dashboard/sistema" 
+          class="action-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 rounded-none group select-none">
+          <div class="action-icon w-8 h-8 sm:w-9 sm:h-9 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 rounded-none shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+            <span class="material-symbols-outlined text-sm">settings_suggest</span>
+          </div>
+          <div>
+            <span class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase block tracking-wider leading-none">Sistema</span>
+            <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-tight leading-none">Monitoreo</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Dashboard Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
+        <!-- Metric 1: Total Alumnos -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-none shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Total Alumnos</span>
+            <h3 class="metric-number text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ totalAlumnos }}</h3>
+            <p class="text-[9px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+              Suscripciones Activas
+            </p>
+          </div>
+          <div class="metric-icon w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 rounded-none shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl">group</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Total Cursos -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-none shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Total Cursos</span>
+            <h3 class="metric-number text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ totalCursos }}</h3>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Módulos educativos</p>
+          </div>
+          <div class="metric-icon w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 rounded-none shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl">menu_book</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Total Certificados -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-none shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between sm:col-span-2 md:col-span-1">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Certificados Emitidos</span>
+            <h3 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ totalCertificados }}</h3>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Validación Pública</p>
+          </div>
+          <div class="w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 rounded-none shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl">workspace_premium</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Monitoring and Recent Activities Split Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4">
+        
+        <!-- Distribución de Planes Contratados -->
+        <div class="border border-slate-200 dark:border-slate-800 p-4 sm:p-6 bg-white dark:bg-slate-900 rounded-none shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
+            <h2 class="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-1.5 min-w-0">
+              <span class="material-symbols-outlined text-base text-indigo-600 shrink-0">card_membership</span>
+              <span class="truncate">Distribución de Planes</span>
+            </h2>
+            <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-2 py-0.5 shrink-0 ml-2">
+              {{ totalAlumnos }} Alumnos
+            </span>
+          </div>
+
+          <!-- Plans List -->
+          <div class="space-y-4">
+            <div *ngFor="let plan of planStats" class="border border-slate-200 dark:border-slate-800 p-3 sm:p-4 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col gap-3">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                  <div [class]="plan.cssClass + ' w-9 h-9 flex items-center justify-center rounded-none shrink-0'">
+                    <span class="material-symbols-outlined text-base">{{ plan.icon }}</span>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wide block truncate">{{ plan.name }}</span>
+                    <span class="text-[9px] text-slate-400 dark:text-slate-500 block">Plan de Suscripción</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+                  <span class="text-xs font-black text-slate-900 dark:text-slate-100 font-mono bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-2 py-1">
+                    {{ plan.count }}
+                  </span>
+                  <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider hidden sm:inline">usuarios ({{ plan.percentage }}%)</span>
+                  <span class="text-[9px] font-bold text-slate-400 dark:text-slate-500 sm:hidden">{{ plan.percentage }}%</span>
+                </div>
+              </div>
+              <!-- Percentage Bar -->
+              <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-none overflow-hidden">
+                <div [class]="plan.barClass + ' h-full transition-all duration-500'" [style.width.%]="plan.percentage"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity Logs Widget -->
+        <div class="border border-slate-200 dark:border-slate-800 p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-none shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-3">
+            <h2 class="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-indigo-600 shrink-0">admin_panel_settings</span>
+              Accesos Recientes
+            </h2>
+            <a routerLink="/dashboard/auditoria" class="text-[9px] font-bold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 uppercase tracking-widest shrink-0 ml-2">
+              Ver Todos
+            </a>
+          </div>
+
+          <!-- Loader for Logins -->
+          <div *ngIf="recentLogins.length === 0 && isLoading" class="flex flex-col items-center justify-center py-10 text-slate-400 dark:text-slate-500">
+            <span class="animate-spin inline-block w-6 h-6 border-2 border-slate-300 dark:border-slate-700 border-t-transparent rounded-full mb-2"></span>
+            <span class="text-[9px] font-bold uppercase tracking-widest">Cargando registros...</span>
+          </div>
+
+          <!-- Empty logs -->
+          <div *ngIf="recentLogins.length === 0 && !isLoading" class="text-center py-10 text-slate-400 dark:text-slate-500">
+            <span class="material-symbols-outlined text-3xl mb-1 text-slate-300 dark:text-slate-600">security_update_warning</span>
+            <p class="text-xs">No hay registros de auditoría de accesos disponibles.</p>
+          </div>
+
+          <!-- Activity List -->
+          <div *ngIf="recentLogins.length > 0" class="space-y-3.5">
+            <div *ngFor="let login of recentLogins" class="flex justify-between items-center gap-2 border-b border-slate-50 dark:border-slate-800 pb-2.5 last:border-0 last:pb-0">
+              <div class="flex items-center gap-2 overflow-hidden min-w-0">
+                <span 
+                  [ngClass]="login.exitoso ? 'text-emerald-500 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-100 dark:border-emerald-900/40' : 'text-red-500 dark:text-red-300 bg-red-50 dark:bg-red-950/30 border-red-100 dark:border-red-900/40'" 
+                  class="material-symbols-outlined text-sm font-black p-1 border rounded-none shrink-0 select-none">
+                  {{ login.exitoso ? 'check' : 'close' }}
+                </span>
+                <div class="overflow-hidden min-w-0">
+                  <span class="font-bold text-xs text-slate-800 dark:text-slate-200 block truncate">{{ login.correo }}</span>
+                  <span class="text-[9px] font-mono text-slate-400 dark:text-slate-500 block truncate">IP: {{ login.ip }} • {{ login.userAgent || 'Navegador desconocido' }}</span>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 block uppercase">{{ login.fecha | date:'dd/MM HH:mm' }}</span>
+                <span *ngIf="!login.exitoso" class="text-[8px] bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-200 px-1 py-0.2 rounded-none font-bold uppercase">{{ login.motivo || 'Fallo' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Campus Content and Audit Logs Summary -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4">
+        
+        <!-- Campus Courses list Widget -->
+        <div class="border border-slate-200 dark:border-slate-800 p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-none shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
+            <h2 class="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-indigo-600 shrink-0">auto_stories</span>
+              Cursos Registrados
+            </h2>
+            <a routerLink="/dashboard/cursos" class="text-[9px] font-bold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 uppercase tracking-widest shrink-0 ml-2">
+              Administrar Todos
+            </a>
+          </div>
+
+          <!-- Empty state -->
+          <div *ngIf="coursesList.length === 0" class="text-center py-10 text-slate-400 dark:text-slate-500">
+            <span class="material-symbols-outlined text-3xl mb-1 text-slate-300 dark:text-slate-600">folder_open</span>
+            <p class="text-xs">No hay cursos registrados en el campus virtual.</p>
+          </div>
+
+          <!-- Courses list -->
+          <div *ngIf="coursesList.length > 0" class="space-y-3">
+            <div *ngFor="let c of coursesList" class="flex items-center justify-between gap-3 border-b border-slate-50 dark:border-slate-800 pb-3 last:border-0 last:pb-0">
+              <div class="overflow-hidden min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-bold text-xs text-slate-800 dark:text-slate-200 block truncate">{{ c.nombre }}</span>
+                  <span [ngClass]="c.estado ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-200 border-emerald-100 dark:border-emerald-900/40' : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-200 border-red-100 dark:border-red-900/40'" class="border text-[8px] font-black uppercase px-1.5 py-0.2 shrink-0">
+                    {{ c.estado ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </div>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 block truncate mt-0.5">{{ c.descripcion }}</span>
+              </div>
+              <a 
+                [routerLink]="['/dashboard/cursos', c.id]"
+                class="p-1 border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shrink-0">
+                <span class="material-symbols-outlined text-sm block">edit</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Auditoria Events list Widget -->
+        <div class="border border-slate-200 dark:border-slate-800 p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-none shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-3">
+            <h2 class="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-indigo-600 shrink-0">history</span>
+              Bitácora de Eventos
+            </h2>
+            <a routerLink="/dashboard/auditoria" class="text-[9px] font-bold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 uppercase tracking-widest shrink-0 ml-2">
+              Ver Detalles
+            </a>
+          </div>
+
+          <!-- Empty state -->
+          <div *ngIf="recentEvents.length === 0" class="text-center py-10 text-slate-400 dark:text-slate-500">
+            <span class="material-symbols-outlined text-3xl mb-1 text-slate-300 dark:text-slate-600">receipt_long</span>
+            <p class="text-xs">No hay registros de eventos operativos en el sistema.</p>
+          </div>
+
+          <!-- Events list -->
+          <div *ngIf="recentEvents.length > 0" class="space-y-3.5">
+            <div *ngFor="let ev of recentEvents" class="flex justify-between items-center gap-2 border-b border-slate-50 dark:border-slate-800 pb-2.5 last:border-0 last:pb-0">
+              <div class="flex items-start gap-2 overflow-hidden min-w-0 flex-1">
+                <div class="text-[8px] font-black uppercase px-2 py-0.5 bg-slate-900 dark:bg-slate-800 text-slate-300 dark:text-slate-200 border border-slate-800 dark:border-slate-700 shrink-0 mt-0.5">
+                  {{ ev.modulo }}
+                </div>
+                <div class="overflow-hidden min-w-0">
+                  <span class="font-bold text-xs text-slate-800 dark:text-slate-200 block truncate">{{ ev.descripcion }}</span>
+                  <span class="text-[9px] font-mono text-slate-400 dark:text-slate-500 block truncate">Operación: {{ ev.accion }}</span>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 block uppercase">{{ ev.fecha | date:'dd/MM HH:mm' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </ng-container>
+
+    <!-- ================= DOCENTE VIEW ================= -->
+    <ng-container *ngIf="profile.rol === 'DOCENTE'">
+      <!-- Welcome Banner Docente -->
+      <div class="relative overflow-hidden bg-gradient-to-br from-emerald-950/80 via-slate-950 to-teal-950/70 border border-emerald-900/40 p-4 sm:p-5 shadow-[6px_6px_0px_0px_rgba(16,185,129,0.08)] text-white">
+        <div class="absolute -right-16 -top-16 w-48 h-48 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-teal-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div class="flex items-center gap-3 sm:gap-4">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-black text-xl sm:text-2xl shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] shrink-0">
+              {{ profile.nombres.charAt(0) }}
+            </div>
+            <div>
+              <span class="text-[9px] font-black tracking-widest text-emerald-300 uppercase">Panel del Docente</span>
+              <h1 class="text-lg sm:text-2xl font-black tracking-tight uppercase mt-0.5">Bienvenido, Prof. {{ profile.nombres }}!</h1>
+              <p class="text-slate-300 text-[11px] sm:text-xs mt-1">Gestiona tus cursos asignados, revisa el progreso de tus estudiantes y administra los materiales educativos.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 bg-emerald-500 animate-pulse"></span>
+            <span class="text-[9px] font-black text-slate-200 uppercase tracking-widest bg-emerald-900/30 border border-emerald-500/30 px-3 py-1.5">
+              Docente
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones Rápidas Docente -->
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 mt-3 sm:mt-4">
+        <a
+          routerLink="/dashboard/mis-cursos-docente"
+          class="action-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group select-none">
+          <div class="action-icon w-8 h-8 sm:w-9 sm:h-9 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
+            <span class="material-symbols-outlined text-sm">school</span>
+          </div>
+          <div>
+            <span class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase block tracking-wider leading-none">Mis Cursos</span>
+            <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-tight leading-none">Asignados</span>
+          </div>
+        </a>
+
+        <a
+          routerLink="/dashboard/videos"
+          class="action-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group select-none">
+          <div class="action-icon w-8 h-8 sm:w-9 sm:h-9 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
+            <span class="material-symbols-outlined text-sm">smart_display</span>
+          </div>
+          <div>
+            <span class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase block tracking-wider leading-none">Gestión</span>
+            <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-tight leading-none">Videos</span>
+          </div>
+        </a>
+
+        <a
+          routerLink="/dashboard/materiales"
+          class="action-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 sm:p-3 flex items-center gap-2 sm:gap-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group select-none">
+          <div class="action-icon w-8 h-8 sm:w-9 sm:h-9 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300">
+            <span class="material-symbols-outlined text-sm">description</span>
+          </div>
+          <div>
+            <span class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase block tracking-wider leading-none">Gestión</span>
+            <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-tight leading-none">Materiales</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Dashboard Metrics Grid Docente -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
+        <!-- Metric 1: Cursos Asignados -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Cursos Asignados</span>
+            <h3 class="metric-number text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ docenteTotalCursos }}</h3>
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 font-semibold mt-1">Total de cursos a cargo</p>
+          </div>
+          <div class="metric-icon w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl">menu_book</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Cursos Activos -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Cursos Activos</span>
+            <h3 class="metric-number text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ docenteCursosActivos }}</h3>
+            <p class="text-[9px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+              Publicados y disponibles
+            </p>
+          </div>
+          <div class="metric-icon w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl">play_circle</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Total Alumnos -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Estudiantes</span>
+            <h3 class="metric-number text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ docenteTotalAlumnos }}</h3>
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 font-semibold mt-1">En todos tus cursos</p>
+          </div>
+          <div class="metric-icon w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl">group</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cursos Asignados List -->
+      <div class="mt-3 sm:mt-4 border border-slate-200 dark:border-slate-800 p-3 sm:p-4 bg-white dark:bg-slate-900 shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
+          <h2 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base text-emerald-600 shrink-0">school</span>
+            Tus Cursos Asignados
+          </h2>
+          <a routerLink="/dashboard/mis-cursos-docente" class="text-[9px] font-bold text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300 uppercase tracking-widest shrink-0 ml-2">
+            Ver Todos
+          </a>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="docenteCursos.length === 0" class="text-center py-10 text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+          <span class="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-2">school</span>
+          <p class="text-xs">No tienes cursos asignados actualmente.</p>
+          <p class="text-[9px] text-slate-400 dark:text-slate-500 mt-1">Contacta al administrador para que te asigne cursos.</p>
+        </div>
+
+        <!-- Courses list -->
+        <div *ngIf="docenteCursos.length > 0" class="space-y-3">
+          <div *ngFor="let c of docenteCursos" class="flex items-center justify-between gap-3 border-b border-slate-50 dark:border-slate-800 pb-3 last:border-0 last:pb-0">
+            <div class="overflow-hidden min-w-0 flex-1 flex items-center gap-3">
+              <div class="w-9 h-9 shrink-0 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden">
+                <span class="material-symbols-outlined text-sm text-slate-500 dark:text-slate-400">menu_book</span>
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-bold text-xs text-slate-800 dark:text-slate-200 block truncate">{{ c.nombre }}</span>
+                  <span [ngClass]="c.estado ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-200 border-emerald-100 dark:border-emerald-900/40' : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-200 border-red-100 dark:border-red-900/40'" class="border text-[8px] font-black uppercase px-1.5 py-0.2 shrink-0">
+                    {{ c.estado ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </div>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 block truncate mt-0.5">
+                  {{ (c.nivelesSuscripcion || []).join(', ') || 'Sin niveles' }} — {{ (c.descripcion || '').slice(0, 60) }}
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <a
+                [routerLink]="['/dashboard/mis-alumnos-docente', c.id]"
+                class="p-1.5 border border-slate-200 dark:border-slate-700 hover:border-emerald-400 text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors"
+                title="Ver alumnos">
+                <span class="material-symbols-outlined text-sm block">group</span>
+              </a>
+              <a
+                [routerLink]="['/dashboard/cursos', c.id]"
+                class="p-1.5 border border-slate-200 dark:border-slate-700 hover:border-slate-400 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                title="Editar curso">
+                <span class="material-symbols-outlined text-sm block">edit</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- ================= ALUMNO VIEW ================= -->
+    <ng-container *ngIf="profile.rol === 'ALUMNO'">
+      <!-- Premium Welcome Banner (Student warmer variant) -->
+      <div class="relative overflow-hidden bg-gradient-to-br from-indigo-950/90 via-slate-950 to-blue-950/80 dark:from-indigo-950 dark:via-slate-950 dark:to-blue-950 border border-indigo-900/50 dark:border-slate-800 p-4 sm:p-5 rounded-none shadow-[6px_6px_0px_0px_rgba(99,102,241,0.08)] text-white">
+        <!-- Abstract light graphic -->
+        <div class="absolute -right-16 -top-16 w-48 h-48 bg-indigo-400/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-sky-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div class="flex items-center gap-3 sm:gap-4">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-indigo-400 to-sky-500 flex items-center justify-center rounded-none font-black text-xl sm:text-2xl shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)] shrink-0">
+              {{ profile.nombres.charAt(0) }}
+            </div>
+            <div>
+              <span class="text-[9px] font-black tracking-widest text-indigo-300 uppercase">Panel del Estudiante</span>
+              <h1 class="text-lg sm:text-2xl font-black tracking-tight uppercase mt-0.5">¡Hola de nuevo, {{ profile.nombres }}!</h1>
+              <p class="text-slate-300 text-[11px] sm:text-xs mt-1">Tu espacio académico personalizado. Sigue tu avance y descarga certificados.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2" *ngIf="profile.nivelSuscripcion">
+            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-none animate-pulse"></span>
+            <span class="text-[9px] font-black text-slate-200 uppercase tracking-widest bg-indigo-900/40 border border-indigo-500/30 px-3 py-1.5">
+              Plan: {{ profile.nivelSuscripcion }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Metrics Grid (with metric-card effects) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
+        <!-- Metric 1: Cursos Inscritos -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-none shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Cursos Inscritos</span>
+            <h3 class="metric-number text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ studentCursosInscritos }}</h3>
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 font-semibold mt-1">Matrícula académica activa</p>
+          </div>
+          <div class="metric-icon w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 rounded-none shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl">auto_stories</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Cursos Completados -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-none shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Cursos Completados</span>
+            <h3 class="metric-number text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ studentCursosCompletados }}</h3>
+            <p class="text-[9px] text-emerald-600 font-bold mt-1 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+              Metas alcanzadas
+            </p>
+          </div>
+          <div class="metric-icon w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 rounded-none shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl">task_alt</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Certificados Habilitados -->
+        <div class="metric-card border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 sm:p-4 rounded-none shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between sm:col-span-2 md:col-span-1">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Certificados Logrados</span>
+            <h3 class="metric-number text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-1.5 tracking-tight">{{ studentCertificados }}</h3>
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 font-semibold mt-1">Descargables desde el panel</p>
+          </div>
+          <div class="metric-icon w-10 h-10 sm:w-12 sm:h-12 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 rounded-none shrink-0">
+            <span class="material-symbols-outlined text-xl sm:text-2xl text-amber-500">workspace_premium</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Split Layout: Enrolled Courses & Quick Guide -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
+        
+        <!-- Left: Active Enrolled Courses (2/3 width) -->
+        <div class="lg:col-span-2 border border-slate-200 dark:border-slate-800 p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-none shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
+            <h2 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-indigo-600 shrink-0">bookmark</span>
+              Tus Cursos en Curso
+            </h2>
+            <a routerLink="/dashboard/mis-cursos" class="text-[9px] font-bold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 uppercase tracking-widest shrink-0 ml-2">
+              Ver Todos
+            </a>
+          </div>
+
+          <!-- Empty state -->
+          <div *ngIf="studentCursos.length === 0" class="text-center py-10 text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
+            <span class="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-2">menu_book</span>
+            <p class="text-xs">No te has inscrito en ningún curso actualmente.</p>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 mt-1">Ponte en contacto con el administrador para matricularte.</p>
+          </div>
+
+          <!-- Courses list -->
+          <div *ngIf="studentCursos.length > 0" class="space-y-4">
+            <div *ngFor="let c of studentCursos" class="border border-slate-200 dark:border-slate-800 p-3 sm:p-4 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col gap-3">
+              <div class="space-y-2 overflow-hidden">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs font-bold text-slate-900 dark:text-slate-200 truncate uppercase tracking-tight block">{{ c.nombre }}</span>
+                  <span *ngIf="c.completado" class="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[8px] font-black uppercase px-2 py-0.5 border border-emerald-300 dark:border-emerald-900 shrink-0">
+                    Completado
+                  </span>
+                </div>
+                
+                <!-- Progress bar -->
+                <div class="space-y-1">
+                  <div class="flex justify-between text-[9px] text-slate-400 dark:text-slate-500 font-mono">
+                    <span>Progreso de videos</span>
+                    <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ c.avancePorcentaje | number:'1.0-1' }}%</span>
+                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-none overflow-hidden">
+                    <div class="bg-indigo-600 dark:bg-indigo-500 h-full transition-all duration-500" [style.width.%]="c.avancePorcentaje"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Quick Action -->
+              <div class="flex items-center">
+                <a 
+                  [routerLink]="['/dashboard/cursos-play', c.id]"
+                  class="w-full sm:w-auto px-4 py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-[10px] font-bold uppercase tracking-widest transition-colors rounded-none shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)] flex items-center justify-center gap-1.5 select-none">
+                  <span class="material-symbols-outlined text-xs">play_circle</span>
+                  <span>{{ c.completado ? 'Repasar' : 'Estudiar' }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Guide / Next Steps (1/3 width) -->
+        <div class="border border-slate-200 dark:border-slate-800 p-3 sm:p-4 bg-white dark:bg-slate-900 rounded-none shadow-sm space-y-4">
+          <div class="border-b border-slate-100 dark:border-slate-800 pb-3 mb-4">
+            <h2 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-indigo-600 dark:text-indigo-400">tungsten</span>
+              Guía de Inicio Rápido
+            </h2>
+          </div>
+
+          <div class="space-y-5 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+            <div class="border-l-2 border-indigo-500 pl-3.5 space-y-1.5">
+              <h4 class="font-bold text-slate-900 dark:text-slate-200 uppercase tracking-wide text-[11px] flex items-center gap-2">
+                <span class="material-symbols-outlined text-indigo-500 text-sm">track_changes</span>
+                <span>1. Mis Cursos Activos</span>
+              </h4>
+              <p class="text-slate-500 dark:text-slate-400 text-[11px]">Haz clic en <strong>Estudiar</strong> en cualquier curso de la lista para ir directamente al reproductor de clases, módulos y descargas.</p>
+            </div>
+            
+            <div class="border-l-2 border-emerald-500 pl-3.5 space-y-1.5">
+              <h4 class="font-bold text-slate-900 dark:text-slate-200 uppercase tracking-wide text-[11px] flex items-center gap-2">
+                <span class="material-symbols-outlined text-emerald-500 text-sm">trending_up</span>
+                <span>2. Progreso al 100%</span>
+              </h4>
+              <p class="text-slate-500 dark:text-slate-400 text-[11px]">Al marcar todas las clases como vistas, tu curso se marcará como completado automáticamente.</p>
+            </div>
+
+            <div class="border-l-2 border-amber-500 pl-3.5 space-y-1.5">
+              <h4 class="font-bold text-slate-900 dark:text-slate-200 uppercase tracking-wide text-[11px] flex items-center gap-2">
+                <span class="material-symbols-outlined text-amber-500 text-sm">emoji_events</span>
+                <span>3. Generación de Diploma</span>
+              </h4>
+              <p class="text-slate-500 dark:text-slate-400 text-[11px]">Una vez terminado, dirígete a <strong>Certificados</strong> en la barra lateral o en la pestaña del curso para descargar tu PDF oficial.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </ng-container>
+  </div>
+</div>

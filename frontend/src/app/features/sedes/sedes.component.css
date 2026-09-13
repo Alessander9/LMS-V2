@@ -1,0 +1,1171 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.sedes-page {
+  --sp-navy: #06264a;
+  --sp-blue: #0b63b5;
+  --sp-blue-2: #1685dc;
+  --sp-cyan: #58c7e8;
+  --sp-ink: #14263a;
+  --sp-muted: #637487;
+  --sp-line: rgba(6, 38, 74, 0.13);
+  --sp-soft: #f2f8fd;
+  --sp-card: rgba(255, 255, 255, 0.9);
+  --sp-shadow: 0 22px 60px rgba(6, 38, 74, 0.1);
+
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  max-width: 100%;
+  color: var(--sp-ink);
+  font-family: 'Manrope', sans-serif;
+  background:
+    radial-gradient(circle at 10% 8%, rgba(22, 133, 220, 0.13), transparent 24rem),
+    radial-gradient(circle at 90% 22%, rgba(88, 199, 232, 0.18), transparent 25rem),
+    linear-gradient(180deg, #f8fbff 0%, #edf6fc 52%, #f9fcff 100%);
+}
+
+/* Rejilla y orbes */
+.sedes-page__grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(6, 38, 74, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 38, 74, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 82%);
+}
+
+.sedes-page__orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sedesOrbFloat 15s ease-in-out infinite;
+}
+
+.sedes-page__orb--one {
+  top: 8rem;
+  right: -12rem;
+  width: 35rem;
+  height: 35rem;
+  background: radial-gradient(circle, rgba(22, 133, 220, 0.14), transparent 68%);
+}
+
+.sedes-page__orb--two {
+  top: 40rem;
+  left: -15rem;
+  width: 30rem;
+  height: 30rem;
+  background: radial-gradient(circle, rgba(88, 199, 232, 0.15), transparent 70%);
+  animation-delay: -7s;
+}
+
+@keyframes sedesOrbFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+
+.sedes-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1080px, calc(100% - clamp(1rem, 5vw, 5rem)));
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.sedes-hero {
+  position: relative;
+  padding: clamp(6.5rem, 9vw, 9rem) 0 clamp(2rem, 4vw, 3.5rem);
+}
+
+.sedes-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.35rem;
+  color: var(--sp-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sedes-breadcrumbs a {
+  color: var(--sp-muted);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.sedes-breadcrumbs a:hover {
+  color: var(--sp-blue);
+}
+
+.sedes-breadcrumbs span {
+  font-size: 1rem;
+}
+
+.sedes-hero__copy h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--sp-navy);
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+
+.sedes-hero__copy h1 span {
+  color: var(--sp-blue);
+  background: linear-gradient(120deg, var(--sp-blue) 30%, var(--sp-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sedes-hero__copy p {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--sp-muted);
+  max-width: 38rem;
+}
+
+.sedes-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sp-blue);
+  margin-bottom: 1rem;
+}
+
+/* Sección de pestañas */
+.sedes-section {
+  padding-bottom: 6rem;
+}
+
+.sedes-tabs-nav {
+  display: flex;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--sp-line);
+  padding-bottom: 1px;
+  margin-bottom: 3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sedes-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.sedes-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.75rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--sp-muted);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sedes-tab-btn span.material-symbols-outlined {
+  font-size: 1.35rem;
+  transition: transform 250ms ease;
+}
+
+.sedes-tab-btn:hover {
+  color: var(--sp-navy);
+}
+
+.sedes-tab-btn:hover span.material-symbols-outlined {
+  transform: translateY(-2px);
+}
+
+.sedes-tab-btn.active {
+  color: var(--sp-blue);
+  border-bottom-color: var(--sp-blue);
+}
+
+/* Tarjeta Layout y Pestaña activa */
+.sedes-tab-panel {
+  will-change: opacity, transform;
+}
+
+.sedes-card-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 3.5rem;
+  align-items: start;
+}
+
+.sedes-info-card {
+  background: var(--sp-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: clamp(2rem, 4vw, 3.5rem);
+  box-shadow: var(--sp-shadow);
+}
+
+.sedes-badge {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  background: rgba(22, 133, 220, 0.08);
+  color: var(--sp-blue);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 9999px;
+  margin-bottom: 1.5rem;
+}
+
+.sedes-info-card h2 {
+  font-size: clamp(1.75rem, 3.5vw, 2.35rem);
+  font-weight: 800;
+  color: var(--sp-navy);
+  letter-spacing: -0.015em;
+  margin-bottom: 1.25rem;
+}
+
+.sedes-description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #334e68;
+  margin-bottom: 2.25rem;
+}
+
+/* Caja de representante */
+.representative-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  background: rgba(22, 133, 220, 0.04);
+  border: 1px solid rgba(22, 133, 220, 0.1);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.representative-avatar {
+  flex-shrink: 0;
+  color: var(--sp-blue-2);
+}
+
+.representative-details h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--sp-navy);
+  margin-bottom: 0.25rem;
+}
+
+.representative-role {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--sp-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.representative-details p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #334e68;
+}
+
+/* Caja CTA */
+.sedes-cta-box {
+  background: linear-gradient(135deg, #f0f7ff 0%, #e2effd 100%);
+  border: 1px solid rgba(22, 133, 220, 0.15);
+  border-radius: 16px;
+  padding: 2rem;
+}
+
+.sedes-cta-box h4 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--sp-navy);
+  margin-bottom: 0.5rem;
+}
+
+.sedes-cta-box p {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #486581;
+  margin-bottom: 1.75rem;
+}
+
+.sedes-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.6rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.btn-primary-custom {
+  background: var(--sp-blue);
+  color: white;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 14px rgba(11, 99, 181, 0.25);
+}
+
+.btn-primary-custom:hover {
+  background: #094f92;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(11, 99, 181, 0.35);
+}
+
+.btn-secondary-custom {
+  background: white;
+  color: var(--sp-navy);
+  border: 1px solid var(--sp-line);
+}
+
+.btn-secondary-custom:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+}
+
+/* Tarjeta Visual */
+.sedes-visual-card {
+  position: sticky;
+  top: 7.5rem;
+}
+
+.visual-decor {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--sp-shadow);
+  margin-bottom: 2.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  aspect-ratio: 1 / 1;
+}
+
+.sedes-visual-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.visual-badge {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(6, 38, 74, 0.85);
+  backdrop-filter: blur(8px);
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+}
+
+.features-list {
+  display: grid;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.features-list li {
+  display: flex;
+  gap: 1.15rem;
+  align-items: start;
+}
+
+.features-list li span.material-symbols-outlined {
+  font-size: 1.5rem;
+  padding-top: 0.15rem;
+}
+
+.features-list li strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--sp-navy);
+  margin-bottom: 0.25rem;
+}
+
+.features-list li span {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--sp-muted);
+}
+
+/* Detalles de Contacto Lima */
+.contact-details-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.contact-detail-item {
+  display: flex;
+  gap: 1.15rem;
+  align-items: start;
+}
+
+.contact-detail-item span.material-symbols-outlined {
+  font-size: 1.5rem;
+  color: var(--sp-blue-2);
+  background: rgba(22, 133, 220, 0.08);
+  padding: 0.75rem;
+  border-radius: 12px;
+}
+
+.contact-detail-item h3 {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--sp-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.contact-detail-item p {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sp-navy);
+}
+
+/* Tarjeta del Mapa */
+.sedes-map-card {
+  position: sticky;
+  top: 7.5rem;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--sp-shadow);
+  border: 1px solid var(--sp-line);
+  padding: 0.5rem;
+}
+
+.map-container {
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.map-caption {
+  display: block;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--sp-muted);
+  padding: 0.75rem 0 0.35rem;
+}
+
+/* Info Box Piura */
+.piura-info-box {
+  display: flex;
+  gap: 1.25rem;
+  align-items: start;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.piura-info-box h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #78350f;
+  margin-bottom: 0.35rem;
+}
+
+.piura-info-box p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #92400e;
+}
+
+/* Animaciones */
+.animate-fade-in {
+  animation: sedesFadeIn 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sedesFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Soporte Dark Mode */
+:host-context(.dark) .sedes-page {
+  background:
+    radial-gradient(circle at 10% 8%, rgba(22, 133, 220, 0.08), transparent 26rem),
+    radial-gradient(circle at 90% 22%, rgba(148, 249, 144, 0.06), transparent 28rem),
+    linear-gradient(180deg, #0b1329 0%, #080c18 60%, #03050a 100%);
+  color: #cbd5e1;
+}
+
+:host-context(.dark) .sedes-page__grid {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+:host-context(.dark) .sedes-hero__copy h1 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-hero__copy h1 span {
+  background: linear-gradient(120deg, #38bdf8 30%, #4ade80 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+:host-context(.dark) .sedes-breadcrumbs {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .sedes-tab-btn:hover {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-tab-btn.active {
+  color: #38bdf8;
+  border-bottom-color: #38bdf8;
+}
+
+:host-context(.dark) .sedes-info-card {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.45);
+}
+
+:host-context(.dark) .sedes-info-card h2 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-description {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .representative-box {
+  background: rgba(56, 189, 248, 0.03);
+  border-color: rgba(56, 189, 248, 0.08);
+}
+
+:host-context(.dark) .representative-details h3 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .representative-details p {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .sedes-cta-box {
+  background: linear-gradient(135deg, #0c152a 0%, #0d1e39 100%);
+  border-color: rgba(56, 189, 248, 0.12);
+}
+
+:host-context(.dark) .sedes-cta-box h4 {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-cta-box p {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .btn-primary-custom {
+  background: #0284c7;
+}
+
+:host-context(.dark) .btn-primary-custom:hover {
+  background: #0369a1;
+}
+
+:host-context(.dark) .btn-secondary-custom {
+  background: rgba(255, 255, 255, 0.04);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+:host-context(.dark) .btn-secondary-custom:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:host-context(.dark) .features-list li strong {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .features-list li span {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .contact-detail-item span.material-symbols-outlined {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+:host-context(.dark) .contact-detail-item p {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .sedes-map-card {
+  background: #0f172a;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:host-context(.dark) .piura-info-box {
+  background: rgba(245, 158, 11, 0.03);
+  border-color: rgba(245, 158, 11, 0.08);
+}
+
+:host-context(.dark) .piura-info-box h3 {
+  color: #fcd34d;
+}
+
+:host-context(.dark) .piura-info-box p {
+  color: #fbbf24;
+}
+
+/* =====================================================
+   AVATAR BOX — Imagen del Representante
+   ===================================================== */
+.avatar-box {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(6, 38, 74, 0.18);
+  flex-shrink: 0;
+}
+
+.avatar-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-zoom-btn {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  background: rgba(9, 17, 34, 0.85);
+  backdrop-filter: blur(6px);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+
+.avatar-zoom-btn:hover {
+  background: rgba(9, 17, 34, 1);
+}
+
+.avatar-zoom-btn .material-symbols-outlined {
+  font-size: 1rem;
+}
+
+/* =====================================================
+   RESPONSIVE — Tablet (≤ 1024px)
+   ===================================================== */
+@media (max-width: 1024px) {
+  .sedes-card-layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .sedes-visual-card {
+    position: static;
+  }
+
+  .sedes-map-card {
+    position: static;
+  }
+
+  .avatar-box {
+    width: 280px;
+    height: 280px;
+    margin-inline: auto;
+  }
+
+  .representative-box {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .representative-details {
+    text-align: center;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE — Mobile (≤ 768px)
+   ===================================================== */
+@media (max-width: 768px) {
+
+  /* Hero */
+  .sedes-hero {
+    padding: 6.5rem 0 2rem;
+  }
+
+  .sedes-hero__copy h1 {
+    font-size: clamp(1.6rem, 6vw, 2rem);
+    margin-bottom: 0.75rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .sedes-hero__copy p {
+    font-size: 0.9rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Shell - reduce padding lateral */
+  .sedes-shell {
+    width: calc(100% - 2rem);
+  }
+
+  /* Card layout — una sola columna */
+  .sedes-card-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* Tarjeta info */
+  .sedes-info-card {
+    padding: 1.25rem;
+    border-radius: 14px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .sedes-info-card h2 {
+    font-size: clamp(1.35rem, 5vw, 1.75rem);
+    word-break: break-word;
+  }
+
+  .sedes-description {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    word-break: break-word;
+  }
+
+  /* Pestañas en grid 3 columnas */
+  .sedes-tabs-nav {
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+    padding: 0.25rem;
+    border-bottom: none;
+    background: rgba(6, 38, 74, 0.03);
+    border-radius: 12px;
+    overflow: visible;
+  }
+
+  .sedes-tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.6rem 0.2rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--sp-muted);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: all 200ms ease;
+  }
+
+  .sedes-tab-btn span.material-symbols-outlined {
+    font-size: 1.2rem;
+  }
+
+  .sedes-tab-btn.active {
+    background: white;
+    color: var(--sp-blue);
+    border-bottom: 2px solid var(--sp-blue);
+    box-shadow: 0 4px 12px rgba(6, 38, 74, 0.05);
+  }
+
+  /* Tarjetas visuales */
+  .sedes-visual-card {
+    position: static;
+  }
+
+  .sedes-map-card {
+    position: static;
+  }
+
+  /* Avatar del representante — se adapta al ancho disponible */
+  .avatar-box {
+    width: min(280px, calc(100vw - 4rem));
+    height: min(280px, calc(100vw - 4rem));
+    margin-inline: auto;
+    border-radius: 12px;
+  }
+
+  /* Caja del representante — columna centrada */
+  .representative-box {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+    padding: 1.25rem 1rem;
+  }
+
+  .representative-details {
+    text-align: center;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .representative-details h3 {
+    font-size: 1rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .representative-details p {
+    font-size: 0.85rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Botones de acción apilados */
+  .sedes-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .sedes-actions .btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Grid de contacto Lima */
+  .contact-details-grid {
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .contact-detail-item {
+    gap: 0.75rem;
+  }
+
+  .contact-detail-item span.material-symbols-outlined {
+    padding: 0.55rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .contact-detail-item p {
+    font-size: 0.92rem;
+    word-break: break-word;
+  }
+
+  /* Caja de info Piura */
+  .piura-info-box {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    align-items: flex-start;
+  }
+
+  .piura-info-box h3 {
+    font-size: 0.95rem;
+  }
+
+  .piura-info-box p {
+    font-size: 0.85rem;
+  }
+
+  /* CTA box */
+  .sedes-cta-box {
+    padding: 1.25rem 1rem;
+  }
+
+  .sedes-cta-box h4 {
+    font-size: 0.95rem;
+    word-break: break-word;
+  }
+
+  .sedes-cta-box p {
+    font-size: 0.85rem;
+    word-break: break-word;
+  }
+
+  /* Features list */
+  .features-list {
+    gap: 1rem;
+  }
+
+  .features-list li {
+    gap: 0.75rem;
+  }
+
+  .features-list li strong {
+    font-size: 0.9rem;
+  }
+
+  .features-list li span:not(.material-symbols-outlined) {
+    font-size: 0.82rem;
+    word-break: break-word;
+  }
+
+  /* Carrusel de Lima */
+  .sedes-carousel-container {
+    border-radius: 12px;
+  }
+
+  .carousel-btn {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .carousel-btn.prev {
+    left: 0.5rem;
+  }
+
+  .carousel-btn.next {
+    right: 0.5rem;
+  }
+
+  /* Badge de sede */
+  .sedes-badge {
+    font-size: 0.68rem;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE — Pantallas muy pequeñas (≤ 380px)
+   ===================================================== */
+@media (max-width: 380px) {
+  .sedes-hero__copy h1 {
+    font-size: 1.5rem;
+  }
+
+  .avatar-box {
+    width: calc(100vw - 3rem);
+    height: calc(100vw - 3rem);
+  }
+
+  .sedes-tab-btn {
+    font-size: 0.65rem;
+    padding: 0.5rem 0.15rem;
+  }
+
+  .sedes-info-card {
+    padding: 1rem;
+  }
+
+  .representative-box {
+    padding: 1rem 0.75rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.65rem 1rem;
+  }
+}
+
+
+/* Carrusel de Lima */
+.sedes-carousel-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  width: 100%;
+}
+
+.carousel-slides {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(6, 38, 74, 0.7);
+  backdrop-filter: blur(4px);
+  color: white;
+  border: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 250ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.carousel-btn:hover {
+  background: var(--sp-blue);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.prev {
+  left: 1rem;
+}
+
+.carousel-btn.next {
+  right: 1rem;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.carousel-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.carousel-dots span.active {
+  background: white;
+  width: 20px;
+  border-radius: 4px;
+}
+
+/* Botón flotante Ver más grande */
+.btn-zoom-image {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(6, 38, 74, 0.75);
+  backdrop-filter: blur(6px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.9;
+  transition: all 250ms ease;
+}
+
+.btn-zoom-image:hover {
+  background: var(--sp-blue);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.btn-zoom-image span.material-symbols-outlined {
+  font-size: 1.1rem;
+}
+
+/* Animaciones del Modal */
+@keyframes sedesScaleUpModal {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-scale-up-modal {
+  animation: sedesScaleUpModal 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* =====================================================
+   BLOQUEO DE DESPLAZAMIENTO HORIZONTAL — Mobile
+   Asegura que ningún elemento interno provoque scroll-x
+   en pantallas pequeñas.
+   ===================================================== */
+@media (max-width: 768px) {
+  :host,
+  .sedes-page,
+  .sedes-hero,
+  .sedes-section,
+  .sedes-shell,
+  .sedes-tabs-content,
+  .sedes-tab-panel,
+  .sedes-card-layout,
+  .sedes-info-card,
+  .sedes-visual-card,
+  .sedes-cta-box,
+  .representative-box,
+  .representative-details,
+  .features-list,
+  .contact-details-grid,
+  .piura-info-box {
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  /* Los orbes decorativos no generan scroll */
+  .sedes-page__orb {
+    max-width: 100vw;
+    overflow: hidden;
+  }
+}

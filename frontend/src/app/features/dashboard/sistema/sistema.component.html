@@ -1,0 +1,435 @@
+<div class="space-y-6 font-body text-slate-800 dark:text-slate-200 transition-colors duration-300">
+  
+  <!-- Banner Header & Tab Navigation -->
+  <div class="border border-slate-200 dark:border-slate-800 p-5 sm:p-6 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.25)] flex flex-col gap-5 transition-colors duration-300">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight uppercase leading-none flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-primary text-2xl">settings_suggest</span>
+          <span>Panel de Sistema & Auditoría</span>
+        </h1>
+        <p class="text-slate-500 dark:text-slate-400 text-xs mt-1.5">Monitoreo de infraestructura, base de datos, trazabilidad operativa y registros de acceso.</p>
+      </div>
+
+      <div class="flex items-center gap-2 self-stretch sm:self-auto">
+        <button 
+          *ngIf="activeTab === 'monitoreo'"
+          (click)="loadStatus()" 
+          class="w-full sm:w-auto px-4 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer">
+          <span class="material-symbols-outlined text-sm">refresh</span>
+          <span>Actualizar Estado</span>
+        </button>
+
+        <button 
+          *ngIf="activeTab !== 'monitoreo'"
+          (click)="loadAuditoriaData()" 
+          class="w-full sm:w-auto px-4 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer">
+          <span class="material-symbols-outlined text-sm">sync</span>
+          <span>Recargar Registros</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 border-t border-slate-100 dark:border-slate-800 pt-4">
+      <button 
+        type="button" 
+        (click)="setTab('monitoreo')" 
+        class="px-4 py-2.5 text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-2 cursor-pointer shrink-0"
+        [ngClass]="activeTab === 'monitoreo' ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-md' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'">
+        <span class="material-symbols-outlined text-base">dns</span>
+        <span>Monitoreo & Servidor</span>
+      </button>
+
+      <button 
+        type="button" 
+        (click)="setTab('logins')" 
+        class="px-4 py-2.5 text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-2 cursor-pointer shrink-0"
+        [ngClass]="activeTab === 'logins' ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-md' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'">
+        <span class="material-symbols-outlined text-base">vpn_key</span>
+        <span>Auditoría de Logins</span>
+      </button>
+
+      <button 
+        type="button" 
+        (click)="setTab('eventos')" 
+        class="px-4 py-2.5 text-xs font-black uppercase tracking-wider border transition-all flex items-center gap-2 cursor-pointer shrink-0"
+        [ngClass]="activeTab === 'eventos' ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-md' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800'">
+        <span class="material-symbols-outlined text-base">history_edu</span>
+        <span>Eventos del Sistema</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= TAB 1: MONITOREO DEL SISTEMA ================= -->
+  <div *ngIf="activeTab === 'monitoreo'" class="space-y-6">
+    
+    <ng-container *ngIf="isLoading">
+      <app-skeleton-loader type="custom"></app-skeleton-loader>
+    </ng-container>
+
+    <!-- Error message -->
+    <div *ngIf="errorMsg" class="flex items-start gap-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-red-800 dark:text-red-200 p-4 text-xs font-semibold">
+      <span class="material-symbols-outlined text-red-600 text-base">warning</span>
+      <div class="flex-grow">
+        <span class="block font-bold">Error de Monitoreo</span>
+        <span class="block font-normal mt-0.5">{{ errorMsg }}</span>
+      </div>
+    </div>
+
+    <!-- Success message for Backup -->
+    <div *ngIf="backupSuccessMsg" class="flex items-start gap-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40 text-emerald-800 dark:text-emerald-200 p-4 text-xs font-semibold">
+      <span class="material-symbols-outlined text-emerald-600 text-base">check_circle</span>
+      <div class="flex-grow">
+        <span class="block font-bold">Copia de Seguridad Completada</span>
+        <span class="block font-normal mt-0.5">{{ backupSuccessMsg }}</span>
+      </div>
+    </div>
+
+    <!-- Main System Info Cards -->
+    <div *ngIf="!isLoading && statusData" class="space-y-6">
+      
+      <!-- Row 1: Vital Stats Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        
+        <!-- Backend health -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.02)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] flex flex-col justify-between transition-colors duration-300">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-emerald-500/70 dark:text-emerald-400/50 text-sm">dns</span>
+              <span>Servidor Backend</span>
+            </span>
+            <h3 class="text-lg font-black text-slate-900 dark:text-slate-100 uppercase mt-1">Servicio Web</h3>
+          </div>
+          <div class="mt-6 flex items-center gap-2">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span class="text-xs font-black uppercase text-emerald-700 dark:text-emerald-400 tracking-wider">
+              {{ statusData.backendStatus }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Database health -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.02)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] flex flex-col justify-between transition-colors duration-300">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sky-500/70 dark:text-sky-400/50 text-sm">storage</span>
+              <span>Base de Datos</span>
+            </span>
+            <h3 class="text-lg font-black text-slate-900 dark:text-slate-100 uppercase mt-1">PostgreSQL</h3>
+          </div>
+          <div class="mt-6">
+            <span [ngClass]="statusData.databaseStatus === 'CONECTADO' ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'" class="text-xs font-black uppercase tracking-wider">
+              {{ statusData.databaseStatus }}
+            </span>
+          </div>
+        </div>
+
+        <!-- CPU load -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.02)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] flex flex-col justify-between transition-colors duration-300">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-violet-500/70 dark:text-violet-400/50 text-sm">memory</span>
+              <span>Carga de Procesador</span>
+            </span>
+            <h3 class="text-lg font-black text-slate-900 dark:text-slate-100 uppercase mt-1">Uso de CPU</h3>
+          </div>
+          <div class="mt-6">
+            <span class="text-base font-black text-slate-900 dark:text-slate-100 font-mono">
+              {{ statusData.cpuLoad }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Backups control -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.02)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] flex flex-col justify-between transition-colors duration-300">
+          <div>
+            <span class="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-amber-500/70 dark:text-amber-400/50 text-sm">backup</span>
+              <span>Copia de Seguridad</span>
+            </span>
+            <h3 class="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase mt-1 leading-tight">Último: <span class="font-mono block text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{{ statusData.ultimoBackup }}</span></h3>
+          </div>
+          <div class="mt-4">
+            <button 
+              (click)="triggerBackup()"
+              [disabled]="isBackupLoading"
+              class="w-full flex items-center justify-center gap-1.5 py-2 bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-bold text-[9px] uppercase tracking-widest transition-colors rounded-none disabled:opacity-50 cursor-pointer">
+              <span class="material-symbols-outlined text-xs">backup</span>
+              <span>{{ isBackupLoading ? 'Generando...' : 'Backup Ahora' }}</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 2: Resources Gauges -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Disk Usage details -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+          <h3 class="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-6">Uso de Disco (Servidor)</h3>
+          
+          <div class="space-y-4">
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-3 overflow-hidden border border-slate-200 dark:border-slate-700">
+              <div 
+                [style.width.%]="statusData.discoPorcentajeUsado"
+                class="bg-blue-600 h-full transition-all duration-500">
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-3 text-center divide-x divide-slate-200 dark:divide-slate-800 pt-2">
+              <div>
+                <span class="block text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Total</span>
+                <span class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">{{ statusData.discoTotalGb }}</span>
+              </div>
+              <div>
+                <span class="block text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Usado</span>
+                <span class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">{{ statusData.discoUsadoGb }} ({{ statusData.discoPorcentajeUsado | number:'1.0-1' }}%)</span>
+              </div>
+              <div>
+                <span class="block text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Disponible</span>
+                <span class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">{{ statusData.discoLibreGb }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- JVM Memory Usage details -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+          <h3 class="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-6">Memoria de la JVM (Java)</h3>
+          
+          <div class="space-y-4">
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-3 overflow-hidden border border-slate-200 dark:border-slate-700">
+              <div 
+                [style.width.%]="statusData.jvmPorcentajeUsado"
+                class="bg-indigo-600 h-full transition-all duration-500">
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 text-center divide-x divide-slate-200 dark:divide-slate-800 pt-2">
+              <div>
+                <span class="block text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Límite Max</span>
+                <span class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">{{ statusData.jvmMaxMb }} MB</span>
+              </div>
+              <div>
+                <span class="block text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Reservada</span>
+                <span class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">{{ statusData.jvmAllocatedMb }} MB</span>
+              </div>
+              <div>
+                <span class="block text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">En Uso</span>
+                <span class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">{{ statusData.jvmUsedMb }} MB ({{ statusData.jvmPorcentajeUsado | number:'1.0-1' }}%)</span>
+              </div>
+              <div>
+                <span class="block text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Libre</span>
+                <span class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">{{ statusData.jvmFreeMb }} MB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TABS 2 & 3: AUDITORÍA & LOGINS ================= -->
+  <div *ngIf="activeTab === 'logins' || activeTab === 'eventos'" class="space-y-6">
+
+    <!-- KPI Summary Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+        <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">check_circle</span>
+          <span>Logins exitosos</span>
+        </p>
+        <h3 class="text-3xl font-black text-slate-900 dark:text-slate-100 mt-2">{{ totalExitosos }}</h3>
+      </div>
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+        <p class="text-[10px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">cancel</span>
+          <span>Logins fallidos</span>
+        </p>
+        <h3 class="text-3xl font-black text-slate-900 dark:text-slate-100 mt-2">{{ totalFallidos }}</h3>
+      </div>
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+        <p class="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">block</span>
+          <span>Bloqueados</span>
+        </p>
+        <h3 class="text-3xl font-black text-slate-900 dark:text-slate-100 mt-2">{{ usuariosBloqueados }}</h3>
+      </div>
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+        <p class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">event_note</span>
+          <span>Eventos Totales</span>
+        </p>
+        <h3 class="text-3xl font-black text-slate-900 dark:text-slate-100 mt-2">{{ eventosSistema.length }}</h3>
+      </div>
+    </div>
+
+    <!-- Loading State Auditoria -->
+    <div *ngIf="isLoadingAuditoria" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center transition-colors duration-300">
+      <span class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Cargando registros de auditoría...</span>
+    </div>
+
+    <!-- Error message Auditoria -->
+    <div *ngIf="auditoriaErrorMsg" class="border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 p-4 text-xs text-red-800 dark:text-red-200 font-semibold">
+      {{ auditoriaErrorMsg }}
+    </div>
+
+    <!-- ================= SUB-VIEW: LOGINS AUDITORIA ================= -->
+    <div *ngIf="!isLoadingAuditoria && !auditoriaErrorMsg && activeTab === 'logins'" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div class="relative w-full md:max-w-sm">
+          <input [(ngModel)]="loginSearch" (input)="onLoginFilterChange()" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400" placeholder="Buscar por usuario, IP, motivo...">
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-400">Orden:</span>
+          <select [(ngModel)]="loginSortOrder" (change)="onLoginFilterChange()" class="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold uppercase text-slate-900 dark:text-slate-100 cursor-pointer">
+            <option value="desc">Fecha más reciente</option>
+            <option value="asc">Fecha más antigua</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs min-w-max">
+          <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black">
+            <tr>
+              <th class="p-3">Fecha y Hora</th>
+              <th class="p-3">Usuario / Correo</th>
+              <th class="p-3">Dirección IP</th>
+              <th class="p-3">Navegador / Agente</th>
+              <th class="p-3">Resultado</th>
+              <th class="p-3">Motivo / Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pagedLoginAuditoria" class="border-t border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+              <td class="p-3 whitespace-nowrap font-mono text-slate-600 dark:text-slate-400">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">schedule</span>
+                  <span>{{ item.fecha | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+                </div>
+              </td>
+              <td class="p-3 font-semibold text-slate-900 dark:text-slate-100">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">person</span>
+                  <span>{{ item.correo || ('Usuario #' + item.usuarioId) }}</span>
+                </div>
+              </td>
+              <td class="p-3 font-mono text-slate-600 dark:text-slate-400">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">lan</span>
+                  <span>{{ item.ip || '-' }}</span>
+                </div>
+              </td>
+              <td class="p-3 text-slate-500 dark:text-slate-400">
+                <span class="truncate max-w-[180px] block" [title]="item.userAgent || ''">{{ item.userAgent || '-' }}</span>
+              </td>
+              <td class="p-3">
+                <span [ngClass]="item.exitoso ? 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800' : 'text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 border-red-200 dark:border-red-800'"
+                  class="px-2.5 py-1 border text-[10px] font-black uppercase tracking-widest inline-block">
+                  {{ item.exitoso ? 'Exitoso' : 'Fallido' }}
+                </span>
+              </td>
+              <td class="p-3 text-slate-600 dark:text-slate-400 font-medium">{{ item.motivo || '-' }}</td>
+            </tr>
+            <tr *ngIf="filteredLoginAuditoria.length === 0">
+              <td colspan="6" class="p-8 text-center text-slate-500 dark:text-slate-400">No se encontraron registros de login con los filtros especificados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="filteredLoginAuditoria.length > pageSize" class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <button (click)="previousLoginPage()" [disabled]="loginPage === 1" class="px-3 py-1.5 border border-slate-300 dark:border-slate-700 text-xs font-bold uppercase disabled:opacity-40 cursor-pointer">Anterior</button>
+        <div class="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">Página {{ loginPage }} de {{ loginTotalPages }} ({{ filteredLoginAuditoria.length }} registros)</div>
+        <button (click)="nextLoginPage()" [disabled]="loginPage === loginTotalPages" class="px-3 py-1.5 border border-slate-300 dark:border-slate-700 text-xs font-bold uppercase disabled:opacity-40 cursor-pointer">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- ================= SUB-VIEW: EVENTOS DEL SISTEMA ================= -->
+    <div *ngIf="!isLoadingAuditoria && !auditoriaErrorMsg && activeTab === 'eventos'" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <input [(ngModel)]="eventosSearch" (input)="onEventosFilterChange()" class="w-full md:max-w-sm px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400" placeholder="Buscar por módulo, acción, usuario...">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-400">Orden:</span>
+          <select [(ngModel)]="eventosSortOrder" (change)="onEventosFilterChange()" class="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold uppercase text-slate-900 dark:text-slate-100 cursor-pointer">
+            <option value="desc">Fecha más reciente</option>
+            <option value="asc">Fecha más antigua</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs min-w-max">
+          <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black">
+            <tr>
+              <th class="p-3">Fecha y Hora</th>
+              <th class="p-3">Módulo</th>
+              <th class="p-3">Acción</th>
+              <th class="p-3">ID Usuario</th>
+              <th class="p-3">Descripción / Registro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pagedEventosSistema" class="border-t border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+              <td class="p-3 whitespace-nowrap font-mono text-slate-600 dark:text-slate-400">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">schedule</span>
+                  <span>{{ item.fecha | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+                </div>
+              </td>
+              <td class="p-3 font-bold uppercase text-slate-900 dark:text-slate-100">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-indigo-500 text-sm shrink-0">view_module</span>
+                  <span>{{ item.modulo }}</span>
+                </div>
+              </td>
+              <td class="p-3">
+                <span class="px-2 py-0.5 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase text-slate-700 dark:text-slate-300">
+                  {{ item.accion }}
+                </span>
+              </td>
+              <td class="p-3 text-slate-600 dark:text-slate-400 font-mono">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">person</span>
+                  <span>{{ item.usuarioId || '-' }}</span>
+                </div>
+              </td>
+              <td class="p-3 text-slate-600 dark:text-slate-300 font-medium">{{ item.descripcion || '-' }}</td>
+            </tr>
+            <tr *ngIf="filteredEventosSistema.length === 0">
+              <td colspan="5" class="p-8 text-center text-slate-500 dark:text-slate-400">No hay eventos registrados con los filtros especificados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="filteredEventosSistema.length > pageSize" class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <button (click)="previousEventosPage()" [disabled]="eventosPage === 1" class="px-3 py-1.5 border border-slate-300 dark:border-slate-700 text-xs font-bold uppercase disabled:opacity-40 cursor-pointer">Anterior</button>
+        <div class="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">Página {{ eventosPage }} de {{ eventosTotalPages }} ({{ filteredEventosSistema.length }} registros)</div>
+        <button (click)="nextEventosPage()" [disabled]="eventosPage === eventosTotalPages" class="px-3 py-1.5 border border-slate-300 dark:border-slate-700 text-xs font-bold uppercase disabled:opacity-40 cursor-pointer">Siguiente</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Confirm modal -->
+  <app-confirm-modal
+    [visible]="showConfirmModal"
+    [type]="confirmModalType"
+    [title]="confirmModalTitle"
+    [message]="confirmModalMessage"
+    confirmText="Confirmar"
+    (onConfirm)="confirmAction()"
+    (onCancel)="showConfirmModal = false">
+  </app-confirm-modal>
+
+</div>

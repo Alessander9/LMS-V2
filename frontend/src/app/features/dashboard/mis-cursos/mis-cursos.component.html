@@ -1,0 +1,252 @@
+<div class="space-y-8 font-body text-slate-800 dark:text-slate-200 transition-colors duration-300">
+  <div class="border border-slate-200 dark:border-slate-800 p-5 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight uppercase leading-none">Mis Cursos</h1>
+      <p class="text-slate-500 dark:text-slate-400 text-xs mt-2">Explora tus cursos activos, filtra por texto y ordena por fecha de matrícula.</p>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+      <label class="flex items-center gap-2 border border-slate-200 dark:border-slate-700 px-3 py-2 bg-slate-50 dark:bg-slate-800 w-full sm:w-72">
+        <span class="material-symbols-outlined text-sm text-slate-400">search</span>
+        <input [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" type="text" placeholder="Buscar curso, plan o fecha" class="w-full bg-transparent outline-none text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400">
+      </label>
+      <button (click)="toggleDateSort()" class="px-4 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">schedule</span>
+        <span>Fecha {{ dateSortOrder === 'desc' ? '↓' : '↑' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isLoading">
+    <app-skeleton-loader type="custom"></app-skeleton-loader>
+  </ng-container>
+
+  <div *ngIf="!isLoading && filteredCursos.length === 0" class="border border-slate-200 dark:border-slate-800 p-12 text-center bg-white dark:bg-slate-900">
+    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-2">auto_stories</span>
+    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase">Sin resultados</h3>
+    <p class="text-slate-500 dark:text-slate-400 text-xs mt-1.5 max-w-sm mx-auto">No encontramos cursos con esos criterios.</p>
+  </div>
+
+  <div *ngIf="!isLoading && pagedCursos.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div *ngFor="let curso of pagedCursos" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,0.04)]">
+      <div>
+        <!-- Preventative Expiration Alert Banners (30 and 7 days) -->
+        <div *ngIf="curso.alertaExpiracion === 'URGENTE_7_DIAS'" class="bg-red-600 text-white px-3 py-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider animate-pulse">
+          <span class="material-symbols-outlined text-sm shrink-0">notification_important</span>
+          <span class="truncate">¡Urgente! Vence en {{ curso.diasRestantes }} días ({{ curso.fechaExpiracion | date:'dd/MM/yyyy' }})</span>
+        </div>
+        <div *ngIf="curso.alertaExpiracion === 'PROXIMO_30_DIAS'" class="bg-amber-500 text-white px-3 py-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider">
+          <span class="material-symbols-outlined text-sm shrink-0">hourglass_top</span>
+          <span class="truncate">Aviso: Vence en {{ curso.diasRestantes }} días ({{ curso.fechaExpiracion | date:'dd/MM/yyyy' }})</span>
+        </div>
+        <div *ngIf="curso.alertaExpiracion === 'EXPIRADO'" class="bg-slate-800 text-white px-3 py-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider">
+          <span class="material-symbols-outlined text-sm shrink-0">block</span>
+          <span class="truncate">Matrícula expirada el {{ curso.fechaExpiracion | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <div class="relative h-36 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-800 overflow-hidden">
+          <img [src]="curso.imagenPortada || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3'" class="w-full h-full object-cover" alt="Portada Curso">
+          <span class="absolute top-3 right-3 text-[9px] font-black uppercase tracking-widest border px-2 py-0.5 bg-white/90 dark:bg-slate-900/90">{{ curso.nivelSuscripcion }}</span>
+        </div>
+        <div class="p-4">
+          <div class="flex items-center justify-between text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+            <div class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">event</span>
+              <span>{{ curso.fechaMatricula | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div *ngIf="curso.diasRestantes !== undefined" class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">timer</span>
+              <span [ngClass]="{
+                'text-red-600 dark:text-red-400 font-black': curso.alertaExpiracion === 'URGENTE_7_DIAS' || curso.alertaExpiracion === 'EXPIRADO',
+                'text-amber-600 dark:text-amber-400 font-black': curso.alertaExpiracion === 'PROXIMO_30_DIAS',
+                'text-slate-500': curso.alertaExpiracion === 'OK'
+              }">
+                {{ curso.alertaExpiracion === 'EXPIRADO' ? 'Expirado' : (curso.diasRestantes + 'd vigencia') }}
+              </span>
+            </div>
+          </div>
+          <h2 class="text-sm font-black text-slate-900 dark:text-slate-100 uppercase tracking-tight leading-snug line-clamp-1">{{ curso.nombre }}</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-xs mt-2 line-clamp-3 leading-relaxed">{{ curso.descripcion }}</p>
+        </div>
+      </div>
+      <div class="p-4 pt-0 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+        <div class="mt-4">
+          <div class="flex justify-between items-center text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+            <span class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-sm">trending_up</span>
+              <span>Progreso</span>
+            </span>
+            <span class="font-mono text-slate-900 dark:text-slate-100">{{ curso.avancePorcentaje }}%</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-800 h-2.5 border border-slate-300 dark:border-slate-700 overflow-hidden">
+            <div 
+              class="h-full transition-all duration-700 ease-out"
+              [ngClass]="{
+                'bg-gradient-to-r from-red-500 to-amber-400': curso.avancePorcentaje < 25,
+                'bg-gradient-to-r from-amber-400 to-yellow-400': curso.avancePorcentaje >= 25 && curso.avancePorcentaje < 50,
+                'bg-gradient-to-r from-yellow-400 to-blue-500': curso.avancePorcentaje >= 50 && curso.avancePorcentaje < 75,
+                'bg-gradient-to-r from-blue-500 to-emerald-500': curso.avancePorcentaje >= 75 && curso.avancePorcentaje < 100,
+                'bg-gradient-to-r from-emerald-500 to-emerald-400': curso.avancePorcentaje >= 100
+              }"
+              [style.width.%]="curso.avancePorcentaje">
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 space-y-2">
+          <div class="grid grid-cols-2 gap-2">
+            <button (click)="continueCourse(curso.id)" class="w-full py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors">
+              <span class="material-symbols-outlined text-sm">play_circle</span>
+              <span>{{ curso.avancePorcentaje > 0 ? 'Continuar' : 'Iniciar' }}</span>
+            </button>
+            <button (click)="verCurso(curso.id)" class="w-full py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <span class="material-symbols-outlined text-sm">menu_book</span>
+              <span>Ver Curso</span>
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button 
+              (click)="descargarMiFicha(curso, $event)" 
+              title="Descargar Ficha Consolidada en PDF"
+              class="w-full py-2 border border-emerald-300 dark:border-emerald-800/80 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/50 transition-colors">
+              <span class="material-symbols-outlined text-sm text-emerald-600 dark:text-emerald-400">picture_as_pdf</span>
+              <span>Ficha Matrícula</span>
+            </button>
+            <a [routerLink]="['/dashboard/mis-tareas']" [queryParams]="{ cursoId: curso.id }" class="w-full py-2 border border-indigo-200 dark:border-indigo-800/80 bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300 font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-indigo-100/70 dark:hover:bg-indigo-900/50 transition-colors">
+              <span class="material-symbols-outlined text-sm">assignment</span>
+              <span>Mis Tareas</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && totalPages > 1" class="flex items-center justify-between border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
+    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Página {{ currentPage }} de {{ totalPages }}</p>
+    <div class="flex items-center gap-2">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-3 py-2 border text-xs font-bold uppercase disabled:opacity-40">Anterior</button>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="px-3 py-2 border text-xs font-bold uppercase disabled:opacity-40">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- ====== MODAL VER CURSO ====== -->
+  <div *ngIf="showVerCursoModal" class="fixed inset-0 bg-slate-900/70 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden relative transition-colors duration-300 max-h-[90vh] flex flex-col">
+      
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 flex items-center justify-between shrink-0">
+        <div class="overflow-hidden">
+          <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider truncate">
+            {{ selectedCursoPlay?.nombre || 'Cargando...' }}
+          </h3>
+          <p class="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+            Contenido del Curso
+          </p>
+        </div>
+        <button (click)="cerrarModal()" class="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors shrink-0 ml-4">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 overflow-y-auto flex-1">
+        <!-- Loading state -->
+        <div *ngIf="isLoadingCursoDetalle" class="flex flex-col items-center justify-center py-16">
+          <span class="animate-spin inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full mb-3"></span>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cargando contenido...</span>
+        </div>
+
+        <!-- Curso info -->
+        <div *ngIf="!isLoadingCursoDetalle && selectedCursoPlay" class="space-y-1 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="text-[9px] font-black bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900 px-2 py-0.5 uppercase tracking-wider">
+              {{ selectedCursoPlay.nivelSuscripcion }}
+            </span>
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+              {{ (selectedCursoPlay.modulos || []).length }} módulos
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">{{ selectedCursoPlay.descripcion }}</p>
+        </div>
+
+        <!-- Módulos accordion -->
+        <div *ngIf="!isLoadingCursoDetalle && selectedCursoPlay" class="space-y-3">
+          <div *ngFor="let mod of selectedCursoPlay.modulos" 
+               class="border border-slate-200 dark:border-slate-800 overflow-hidden">
+            
+            <!-- Módulo header (clickable) -->
+            <button 
+              (click)="toggleModuloAccordion(mod.id)"
+              class="w-full px-4 py-3 flex items-center justify-between gap-3 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors text-left">
+              <div class="flex items-center gap-3 overflow-hidden">
+                <span class="flex items-center justify-center w-8 h-8 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 text-indigo-700 dark:text-indigo-400 text-[9px] font-black shrink-0">
+                  {{ mod.orden }}
+                </span>
+                <div class="overflow-hidden">
+                  <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{{ mod.nombre }}</h4>
+                  <p class="text-[9px] text-slate-400 dark:text-slate-500 truncate">{{ (mod.videos || []).length }} clases</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-base text-slate-400 dark:text-slate-500 transition-transform duration-200 shrink-0" 
+                    [ngClass]="{'rotate-180': expandedModuloId === mod.id}">
+                expand_more
+              </span>
+            </button>
+
+            <!-- Videos del módulo (expandible) -->
+            <div *ngIf="expandedModuloId === mod.id" class="border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+              <div *ngIf="mod.videos && mod.videos.length > 0" class="p-3 space-y-2">
+                <button 
+                  *ngFor="let vid of mod.videos"
+                  (click)="irAlCurso(selectedCursoPlay.id, vid.id)"
+                  class="w-full flex items-center gap-3 p-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-left hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/20 transition-all group">
+                  <span class="material-symbols-outlined text-sm text-slate-400 dark:text-slate-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 shrink-0">
+                    {{ vid.completado ? 'check_circle' : 'radio_button_unchecked' }}
+                  </span>
+                  <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 truncate flex-1">
+                    {{ vid.titulo }}
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-400 dark:text-slate-500 shrink-0">
+                    {{ vid.duracionSegundos ? (vid.duracionSegundos / 60 | number:'1.0-0') + 'm' : '' }}
+                  </span>
+                  <span class="material-symbols-outlined text-sm text-indigo-500 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-all shrink-0">
+                    play_circle
+                  </span>
+                </button>
+              </div>
+              <div *ngIf="!mod.videos || mod.videos.length === 0" class="p-6 text-center">
+                <p class="text-[10px] text-slate-400 italic">Este módulo no tiene clases disponibles.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state: no modules -->
+          <div *ngIf="!selectedCursoPlay.modulos || selectedCursoPlay.modulos.length === 0" class="p-12 text-center">
+            <span class="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-700 mb-2">auto_stories</span>
+            <p class="text-xs font-bold text-slate-400 uppercase">Este curso no tiene módulos</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 flex justify-between items-center shrink-0">
+        <button (click)="cerrarModal()" class="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-wider hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+          Cerrar
+        </button>
+        <div class="flex items-center gap-2">
+          <button 
+            *ngIf="selectedCursoPlay"
+            (click)="descargarMiFicha(selectedCursoPlay)"
+            class="px-4 py-2 border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 font-bold text-xs uppercase tracking-wider hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-colors flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-emerald-600 dark:text-emerald-400">picture_as_pdf</span>
+            <span>Descargar Ficha PDF</span>
+          </button>
+          <button (click)="irAlCurso(selectedCursoPlay?.id || 0)" class="px-4 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs uppercase tracking-wider hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">play_circle</span>
+            Ir al Curso
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

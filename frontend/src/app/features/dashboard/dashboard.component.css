@@ -1,0 +1,39 @@
+/* =====================================================
+   DASHBOARD LAYOUT — Animations & Hover FX
+   ===================================================== */
+
+/* ── Sidebar nav link: icono se ilumina, escala y desplaza ── */
+aside a .material-symbols-outlined,
+aside a span.material-symbols-outlined {
+  transition: color 0.25s ease, transform 0.25s ease, text-shadow 0.25s ease;
+}
+aside a:hover .material-symbols-outlined {
+  transform: translateX(3px) scale(1.2);
+  text-shadow: 0 0 16px rgba(99, 120, 200, 0.7), 0 0 32px rgba(99, 120, 200, 0.3);
+  color: #fff;
+}
+
+/* ── Mobile bottom nav hover ── */
+nav a {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+nav a:hover {
+  transform: translateY(-2px);
+}
+nav a .material-symbols-outlined {
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
+              filter 0.25s ease;
+}
+nav a:hover .material-symbols-outlined {
+  transform: scale(1.25);
+  filter: drop-shadow(0 2px 6px rgba(99,120,200,0.4));
+}
+
+/* ── Status pill shimmer ── */
+@keyframes statusShimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.status-active {
+  animation: statusShimmer 2.5s ease-in-out infinite;
+}

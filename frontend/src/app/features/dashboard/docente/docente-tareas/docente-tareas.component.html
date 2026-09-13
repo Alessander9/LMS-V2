@@ -1,0 +1,1023 @@
+<div class="space-y-6 pb-12 animate-fadeIn font-body">
+
+  <!-- ==================== 1. HEADER ==================== -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+    <div>
+      <span class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block">
+        Panel del Docente • Gestión Académica
+      </span>
+      <h1 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mt-0.5 flex items-center gap-2.5">
+        <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-2xl">assignment</span>
+        <span>Gestión de Tareas y SpeedGrader</span>
+      </h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        Publica tareas con archivos, enlaces e imágenes, y califica las entregas de tus alumnos en tiempo récord.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+      <button 
+        (click)="recargarTareasActuales()" 
+        [disabled]="isLoadingTareas || isLoadingCursos"
+        class="inline-flex items-center gap-2 px-3.5 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-wider hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm disabled:opacity-50">
+        <span class="material-symbols-outlined text-sm" [ngClass]="{'animate-spin': isLoadingTareas}">refresh</span>
+        <span>Actualizar</span>
+      </button>
+
+      <button
+        (click)="abrirModalCrearTarea()"
+        [disabled]="cursos.length === 0"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+        <span class="material-symbols-outlined text-base">add_circle</span>
+        <span>Nueva Tarea</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 2. COUNTER METRIC CARDS ==================== -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+    
+    <!-- Total Tareas -->
+    <div 
+      (click)="setFiltroEstado('TODAS')"
+      [ngClass]="filtroEstado === 'TODAS' ? 'border-indigo-600 bg-indigo-50/40 dark:bg-indigo-950/30 ring-1 ring-indigo-600' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'"
+      class="p-4 border transition-all cursor-pointer shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Total Tareas</span>
+        <span class="material-symbols-outlined text-slate-400 text-base">format_list_bulleted</span>
+      </div>
+      <span class="text-2xl font-black text-slate-900 dark:text-white font-mono mt-2">{{ totalTareasCount }}</span>
+    </div>
+
+    <!-- Con Entregas / Por Calificar -->
+    <div 
+      (click)="setFiltroEstado('PENDIENTES')"
+      [ngClass]="filtroEstado === 'PENDIENTES' ? 'border-amber-500 bg-amber-50/40 dark:bg-amber-950/30 ring-1 ring-amber-500' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'"
+      class="p-4 border transition-all cursor-pointer shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Con Entregas</span>
+        <span class="material-symbols-outlined text-amber-500 text-base">inbox</span>
+      </div>
+      <span class="text-2xl font-black text-amber-600 dark:text-amber-400 font-mono mt-2">{{ totalEntregasPendientesCount }}</span>
+    </div>
+
+    <!-- Activas -->
+    <div 
+      (click)="setFiltroEstado('ACTIVAS')"
+      [ngClass]="filtroEstado === 'ACTIVAS' ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/30 ring-1 ring-emerald-500' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'"
+      class="p-4 border transition-all cursor-pointer shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Activas</span>
+        <span class="material-symbols-outlined text-emerald-500 text-base">check_circle</span>
+      </div>
+      <span class="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-2">{{ totalActivasCount }}</span>
+    </div>
+
+    <!-- Vencidas -->
+    <div 
+      (click)="setFiltroEstado('VENCIDAS')"
+      [ngClass]="filtroEstado === 'VENCIDAS' ? 'border-rose-500 bg-rose-50/40 dark:bg-rose-950/30 ring-1 ring-rose-500' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'"
+      class="p-4 border transition-all cursor-pointer shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400">Vencidas</span>
+        <span class="material-symbols-outlined text-rose-500 text-base">event_busy</span>
+      </div>
+      <span class="text-2xl font-black text-rose-600 dark:text-rose-400 font-mono mt-2">{{ totalVencidasCount }}</span>
+    </div>
+
+    <!-- Participación / SpeedGrader -->
+    <div 
+      class="p-4 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Participación</span>
+        <span class="material-symbols-outlined text-indigo-500 text-base">trending_up</span>
+      </div>
+      <div class="flex items-baseline gap-1.5 mt-2">
+        <span class="text-2xl font-black text-slate-900 dark:text-white font-mono">{{ tasaCumplimientoPorcentaje }}%</span>
+        <span class="text-[9px] text-slate-400 uppercase font-bold">entregas</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== 3. SEARCH & FILTER TOOLBAR ==================== -->
+  <div class="space-y-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+    
+    <!-- Top Row: Course & Module Selectors + Search (Responsive Grid, NO horizontal scroll) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      
+      <!-- Selector / Buscador de Curso -->
+      <div *ngIf="cursos.length > 0" class="relative">
+        <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
+          <span class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-indigo-600">school</span>
+            <span>Curso:</span>
+          </span>
+          <span class="text-[8px] font-mono text-slate-400" *ngIf="selectedCursoId !== 'TODOS'">Filtrado</span>
+        </label>
+        
+        <div class="relative">
+          <input 
+            type="text"
+            [value]="cursoSearchTerm"
+            (input)="onCursoSearchInput($any($event.target).value)"
+            (focus)="showCursoDropdown = true"
+            (blur)="onBlurCurso()"
+            placeholder="Buscar curso (máx 2 opciones)..."
+            class="w-full pl-3 pr-14 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-slate-100 rounded-none focus:outline-none focus:border-indigo-600 transition-colors"
+          />
+          
+          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 text-slate-400">
+            <button 
+              *ngIf="cursoSearchTerm || selectedCursoId !== 'TODOS'"
+              type="button"
+              (mousedown)="$event.preventDefault(); limpiarCursoSearch()"
+              class="p-0.5 hover:text-slate-600 dark:hover:text-slate-200"
+              title="Limpiar filtro">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+            <button 
+              type="button"
+              (mousedown)="$event.preventDefault(); showCursoDropdown = !showCursoDropdown"
+              class="p-0.5 hover:text-indigo-600">
+              <span class="material-symbols-outlined text-base">expand_more</span>
+            </button>
+          </div>
+
+          <!-- Dropdown con máximo 2 coincidencias -->
+          <div 
+            *ngIf="showCursoDropdown" 
+            class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl z-30 divide-y divide-slate-100 dark:divide-slate-800">
+            
+            <button 
+              *ngFor="let c of cursosFiltradosCoincidencias"
+              type="button"
+              (mousedown)="$event.preventDefault(); seleccionarCurso(c)"
+              [ngClass]="selectedCursoId === c.id ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-bold' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'"
+              class="w-full px-3 py-2 text-left text-xs flex items-center justify-between gap-2 transition-colors">
+              <span class="truncate flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-xs text-indigo-500 flex-shrink-0">
+                  {{ c.id === 'TODOS' ? 'select_all' : 'school' }}
+                </span>
+                <span class="truncate">{{ c.nombre }}</span>
+              </span>
+              <span class="text-[10px] font-mono px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-slate-500 dark:text-slate-400 flex-shrink-0">
+                {{ c.count }} {{ c.count === 1 ? 'tarea' : 'tareas' }}
+              </span>
+            </button>
+
+            <div *ngIf="cursosFiltradosCoincidencias.length === 0" class="px-3 py-2.5 text-xs text-slate-400 text-center italic">
+              Sin coincidencias (escribe otro curso)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selector / Buscador de Módulo (when a course is selected) -->
+      <div *ngIf="selectedCursoId !== 'TODOS' && modulos.length > 0" class="relative">
+        <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
+          <span class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-indigo-500">view_module</span>
+            <span>Módulo:</span>
+          </span>
+          <span class="text-[8px] font-mono text-slate-400" *ngIf="selectedModuloId !== 'TODOS'">Filtrado</span>
+        </label>
+        
+        <div class="relative">
+          <input 
+            type="text"
+            [value]="moduloSearchTerm"
+            (input)="onModuloSearchInput($any($event.target).value)"
+            (focus)="showModuloDropdown = true"
+            (blur)="onBlurModulo()"
+            placeholder="Buscar módulo (máx 2 opciones)..."
+            class="w-full pl-3 pr-14 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-slate-100 rounded-none focus:outline-none focus:border-indigo-600 transition-colors"
+          />
+          
+          <div class="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1 text-slate-400">
+            <button 
+              *ngIf="moduloSearchTerm || selectedModuloId !== 'TODOS'"
+              type="button"
+              (mousedown)="$event.preventDefault(); limpiarModuloSearch()"
+              class="p-0.5 hover:text-slate-600 dark:hover:text-slate-200"
+              title="Limpiar filtro">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+            <button 
+              type="button"
+              (mousedown)="$event.preventDefault(); showModuloDropdown = !showModuloDropdown"
+              class="p-0.5 hover:text-indigo-600">
+              <span class="material-symbols-outlined text-base">expand_more</span>
+            </button>
+          </div>
+
+          <!-- Dropdown con máximo 2 coincidencias -->
+          <div 
+            *ngIf="showModuloDropdown" 
+            class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl z-30 divide-y divide-slate-100 dark:divide-slate-800">
+            
+            <button 
+              *ngFor="let m of modulosFiltradosCoincidencias"
+              type="button"
+              (mousedown)="$event.preventDefault(); seleccionarModulo(m)"
+              [ngClass]="selectedModuloId === m.id ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-bold' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'"
+              class="w-full px-3 py-2 text-left text-xs flex items-center justify-between gap-2 transition-colors">
+              <span class="truncate flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-xs text-indigo-500 flex-shrink-0">
+                  {{ m.id === 'TODOS' ? 'select_all' : 'view_module' }}
+                </span>
+                <span class="truncate">{{ m.nombre }}</span>
+              </span>
+            </button>
+
+            <div *ngIf="modulosFiltradosCoincidencias.length === 0" class="px-3 py-2.5 text-xs text-slate-400 text-center italic">
+              Sin coincidencias (escribe otro módulo)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative" [ngClass]="selectedCursoId === 'TODOS' || modulos.length === 0 ? 'sm:col-span-1 lg:col-span-2' : ''">
+        <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1 flex items-center gap-1">
+          <span class="material-symbols-outlined text-xs text-slate-400">search</span>
+          <span>Búsqueda:</span>
+        </label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none">
+            search
+          </span>
+          <input 
+            type="text" 
+            [(ngModel)]="searchQuery" 
+            (ngModelChange)="currentPage = 1"
+            placeholder="Buscar por tarea, curso, módulo..."
+            class="w-full pl-9 pr-8 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 rounded-none focus:outline-none focus:border-indigo-500">
+          <button 
+            *ngIf="searchQuery" 
+            (click)="searchQuery = ''; currentPage = 1"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Row: Status Filter Pills (Wrap gracefully) + View Switcher -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+      
+      <!-- Filter Tabs -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button 
+          (click)="setFiltroEstado('TODAS')"
+          [ngClass]="filtroEstado === 'TODAS' ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          class="px-3 py-1.5 text-xs uppercase tracking-wider transition-colors rounded-none">
+          Todas ({{ totalTareasCount }})
+        </button>
+        <button 
+          (click)="setFiltroEstado('PENDIENTES')"
+          [ngClass]="filtroEstado === 'PENDIENTES' ? 'bg-amber-500 text-white font-bold' : 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          class="px-3 py-1.5 text-xs uppercase tracking-wider transition-colors rounded-none">
+          Con Entregas ({{ totalEntregasPendientesCount }})
+        </button>
+        <button 
+          (click)="setFiltroEstado('ACTIVAS')"
+          [ngClass]="filtroEstado === 'ACTIVAS' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          class="px-3 py-1.5 text-xs uppercase tracking-wider transition-colors rounded-none">
+          Activas ({{ totalActivasCount }})
+        </button>
+        <button 
+          (click)="setFiltroEstado('VENCIDAS')"
+          [ngClass]="filtroEstado === 'VENCIDAS' ? 'bg-rose-600 text-white font-bold' : 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'"
+          class="px-3 py-1.5 text-xs uppercase tracking-wider transition-colors rounded-none">
+          Vencidas ({{ totalVencidasCount }})
+        </button>
+      </div>
+
+      <!-- View Mode Switcher -->
+      <div class="flex items-center border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-0.5 shrink-0 self-start sm:self-auto">
+        <button 
+          (click)="vistaModo = 'cards'" 
+          [ngClass]="vistaModo === 'cards' ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs font-bold' : 'text-slate-400 hover:text-slate-600'"
+          title="Vista Cuadrícula / Tarjetas"
+          class="p-1.5 transition-colors flex items-center">
+          <span class="material-symbols-outlined text-base">grid_view</span>
+        </button>
+        <button 
+          (click)="vistaModo = 'list'" 
+          [ngClass]="vistaModo === 'list' ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow-xs font-bold' : 'text-slate-400 hover:text-slate-600'"
+          title="Vista Listado Normal"
+          class="p-1.5 transition-colors flex items-center">
+          <span class="material-symbols-outlined text-base">view_list</span>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ==================== 4. LOADING SKELETON ==================== -->
+  <div *ngIf="isLoadingTareas || isLoadingCursos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div *ngFor="let i of [1,2,3,4,5,6]" class="p-5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 animate-pulse space-y-4">
+      <div class="flex justify-between items-center">
+        <div class="h-4 bg-slate-200 dark:bg-slate-800 w-24"></div>
+        <div class="h-4 bg-slate-200 dark:bg-slate-800 w-16"></div>
+      </div>
+      <div class="h-5 bg-slate-200 dark:bg-slate-800 w-3/4"></div>
+      <div class="h-12 bg-slate-100 dark:bg-slate-800/60 w-full"></div>
+      <div class="h-8 bg-slate-200 dark:bg-slate-800 w-full"></div>
+    </div>
+  </div>
+
+  <!-- ==================== 5. EMPTY STATE ==================== -->
+  <div *ngIf="!isLoadingTareas && !isLoadingCursos && tareasFiltradas.length === 0" class="border border-dashed border-slate-300 dark:border-slate-800 p-12 text-center bg-white dark:bg-slate-900">
+    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-600 mb-2">assignment_late</span>
+    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase">Sin tareas encontradas</h3>
+    <p class="text-slate-500 dark:text-slate-400 text-xs mt-1.5 max-w-sm mx-auto">
+      {{ searchQuery ? 'No hay tareas que coincidan con "' + searchQuery + '"' : 'No tienes tareas creadas para el filtro o curso seleccionado.' }}
+    </p>
+    <div class="mt-4 flex items-center justify-center gap-3">
+      <button 
+        *ngIf="searchQuery || filtroEstado !== 'TODAS'"
+        (click)="searchQuery = ''; setFiltroEstado('TODAS')"
+        class="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+        Limpiar Filtros
+      </button>
+      <button 
+        (click)="abrirModalCrearTarea()"
+        [disabled]="cursos.length === 0"
+        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-sm">
+        + Crear Tarea con Recursos
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 6. VISTA 1: CARDS / CUADRÍCULA ==================== -->
+  <div *ngIf="!isLoadingTareas && !isLoadingCursos && tareasFiltradas.length > 0 && vistaModo === 'cards'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div 
+      *ngFor="let t of tareasPaginadas" 
+      class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between overflow-hidden shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+      
+      <!-- Top Content -->
+      <div class="p-5 space-y-3">
+        
+        <!-- Header: Course & Status Badges -->
+        <div class="flex items-start justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div class="overflow-hidden space-y-1">
+            <div class="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-wider">
+              <span class="material-symbols-outlined text-xs shrink-0">school</span>
+              <span class="truncate">{{ t.cursoNombre || selectedCursoNombre || 'Curso Asignado' }}</span>
+            </div>
+            <div class="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-[9px] font-bold uppercase tracking-wider">
+              <span class="material-symbols-outlined text-xs shrink-0">auto_stories</span>
+              <span class="truncate">Módulo {{ t.moduloOrden || 1 }}{{ t.moduloNombre ? ': ' + t.moduloNombre : '' }}</span>
+            </div>
+          </div>
+
+          <span 
+            [ngClass]="t.estado ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700'"
+            class="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider border shrink-0">
+            {{ t.estado ? 'Activa' : 'Pausada' }}
+          </span>
+        </div>
+
+        <!-- Title -->
+        <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight leading-snug line-clamp-2">
+          {{ t.titulo }}
+        </h3>
+
+        <!-- Instructions Preview -->
+        <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+          {{ parsearDescripcion(t.descripcion).instrucciones || 'Sin instrucciones adicionales de texto.' }}
+        </p>
+
+        <!-- Attached Resources Chips -->
+        <div *ngIf="parsearDescripcion(t.descripcion).recursos.length > 0" class="pt-2 border-t border-slate-100 dark:border-slate-800/80 space-y-1.5">
+          <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 block">
+            Recursos Adjuntos ({{ parsearDescripcion(t.descripcion).recursos.length }}):
+          </span>
+          <div class="flex flex-wrap gap-1.5">
+            <button 
+              *ngFor="let rec of parsearDescripcion(t.descripcion).recursos"
+              (click)="abrirRecurso(rec)"
+              type="button"
+              class="inline-flex items-center gap-1 px-2 py-1 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-slate-700 dark:text-slate-300 hover:text-indigo-600 border border-slate-200 dark:border-slate-700 text-[10px] font-bold transition-colors truncate max-w-full">
+              <span *ngIf="rec.tipo === 'link'" class="material-symbols-outlined text-xs text-blue-500">link</span>
+              <span *ngIf="rec.tipo === 'imagen'" class="material-symbols-outlined text-xs text-purple-500">image</span>
+              <span *ngIf="rec.tipo === 'archivo'" class="material-symbols-outlined text-xs text-emerald-500">description</span>
+              <span class="truncate">{{ rec.titulo }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Deadline & Resubmission Badges -->
+        <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+          <div class="flex items-center gap-1" [ngClass]="{'text-rose-500 font-bold': t.fechaLimite && (t.fechaLimite < ('' + totalTareasCount))}">
+            <span class="material-symbols-outlined text-xs text-amber-500">event</span>
+            <span>{{ t.fechaLimite ? (t.fechaLimite | date:'dd/MM/yyyy HH:mm') : 'Sin fecha límite' }}</span>
+          </div>
+          <span class="text-[9px] px-1.5 py-0.5 bg-slate-100 dark:bg-slate-800 font-sans uppercase font-bold text-slate-500">
+            {{ t.permitirReenvio ? 'Reenvío ON' : 'Reenvío OFF' }}
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Card Action Footer -->
+      <div class="p-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+        <!-- SpeedGrader / Entregas -->
+        <button 
+          (click)="abrirModalEntregas(t)"
+          class="flex-1 py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors shadow-xs">
+          <span class="material-symbols-outlined text-sm">bolt</span>
+          <span>SpeedGrader</span>
+          <span class="ml-1 px-1.5 py-0.2 bg-white/20 rounded-full font-mono text-[9px] font-black">
+            {{ t.totalEntregas || 0 }}
+          </span>
+        </button>
+
+        <!-- Edit -->
+        <button 
+          (click)="abrirModalEditarTarea(t)"
+          title="Editar Tarea"
+          class="p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+          <span class="material-symbols-outlined text-sm block">edit</span>
+        </button>
+
+        <!-- Pause / Activate -->
+        <button 
+          (click)="toggleEstadoTarea(t)"
+          [title]="t.estado ? 'Pausar Tarea' : 'Activar Tarea'"
+          [ngClass]="t.estado ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30' : 'text-slate-400 hover:bg-slate-100'"
+          class="p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 transition-colors">
+          <span class="material-symbols-outlined text-sm block">{{ t.estado ? 'toggle_on' : 'toggle_off' }}</span>
+        </button>
+
+        <!-- Delete -->
+        <button 
+          (click)="eliminarTarea(t)"
+          title="Eliminar Tarea"
+          class="p-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
+          <span class="material-symbols-outlined text-sm block">delete</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== 7. VISTA 2: LISTADO / TABLA NORMAL ==================== -->
+  <div *ngIf="!isLoadingTareas && !isLoadingCursos && tareasFiltradas.length > 0 && vistaModo === 'list'" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-800 text-slate-500 uppercase tracking-widest text-[9px] font-black">
+          <tr>
+            <th class="p-4">Tarea & Detalles</th>
+            <th class="p-4">Curso & Módulo</th>
+            <th class="p-4">Recursos</th>
+            <th class="p-4">Fecha Límite</th>
+            <th class="p-4 text-center">Entregas</th>
+            <th class="p-4 text-center">Estado</th>
+            <th class="p-4 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+          <tr *ngFor="let t of tareasPaginadas" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+            
+            <!-- Tarea & Detalles -->
+            <td class="p-4 max-w-xs">
+              <span class="font-black text-slate-900 dark:text-white uppercase tracking-tight block truncate">{{ t.titulo }}</span>
+              <span class="text-[10px] text-slate-400 line-clamp-1 mt-0.5">{{ parsearDescripcion(t.descripcion).instrucciones || 'Sin instrucciones' }}</span>
+            </td>
+
+            <!-- Curso & Módulo -->
+            <td class="p-4 whitespace-nowrap">
+              <span class="font-bold text-slate-800 dark:text-slate-200 block truncate">{{ t.cursoNombre || selectedCursoNombre || 'Curso' }}</span>
+              <span class="text-[10px] text-slate-400 font-mono">Mód {{ t.moduloOrden || 1 }}: {{ t.moduloNombre || '' }}</span>
+            </td>
+
+            <!-- Recursos -->
+            <td class="p-4 whitespace-nowrap">
+              <span *ngIf="parsearDescripcion(t.descripcion).recursos.length === 0" class="text-slate-400 text-[10px] font-mono">-</span>
+              <div *ngIf="parsearDescripcion(t.descripcion).recursos.length > 0" class="flex items-center gap-1">
+                <span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-bold text-[10px] border border-indigo-200 dark:border-indigo-800">
+                  {{ parsearDescripcion(t.descripcion).recursos.length }} adjuntos
+                </span>
+              </div>
+            </td>
+
+            <!-- Fecha Límite -->
+            <td class="p-4 whitespace-nowrap font-mono text-[11px] text-slate-600 dark:text-slate-400">
+              {{ t.fechaLimite ? (t.fechaLimite | date:'dd/MM/yyyy HH:mm') : 'Sin fecha límite' }}
+            </td>
+
+            <!-- Entregas -->
+            <td class="p-4 whitespace-nowrap text-center">
+              <span class="px-2.5 py-1 bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 font-black text-xs font-mono border border-amber-200 dark:border-amber-800">
+                {{ t.totalEntregas || 0 }}
+              </span>
+            </td>
+
+            <!-- Estado -->
+            <td class="p-4 whitespace-nowrap text-center">
+              <span 
+                [ngClass]="t.estado ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'"
+                class="px-2 py-0.5 text-[9px] font-black uppercase tracking-wider inline-block">
+                {{ t.estado ? 'Activa' : 'Pausada' }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="p-4 whitespace-nowrap text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button 
+                  (click)="abrirModalEntregas(t)"
+                  class="px-2.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 transition-colors shadow-xs">
+                  <span class="material-symbols-outlined text-xs">bolt</span>
+                  <span>Calificar</span>
+                </button>
+                <button 
+                  (click)="abrirModalEditarTarea(t)"
+                  title="Editar Tarea"
+                  class="p-1.5 border border-slate-200 dark:border-slate-700 text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                  <span class="material-symbols-outlined text-sm block">edit</span>
+                </button>
+                <button 
+                  (click)="toggleEstadoTarea(t)"
+                  [title]="t.estado ? 'Pausar' : 'Activar'"
+                  class="p-1.5 border border-slate-200 dark:border-slate-700 text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                  <span class="material-symbols-outlined text-sm block">{{ t.estado ? 'toggle_on' : 'toggle_off' }}</span>
+                </button>
+                <button 
+                  (click)="eliminarTarea(t)"
+                  title="Eliminar"
+                  class="p-1.5 border border-slate-200 dark:border-slate-700 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
+                  <span class="material-symbols-outlined text-sm block">delete</span>
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ==================== 8. PAGINACIÓN (MÁXIMO 10 ITEMS) ==================== -->
+  <div *ngIf="!isLoadingTareas && !isLoadingCursos && totalPages > 1" class="flex flex-col sm:flex-row items-center justify-between gap-4 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 shadow-xs">
+    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">
+      Página {{ currentPage }} de {{ totalPages }} <span class="text-slate-400 font-normal">({{ tareasFiltradas.length }} tareas)</span>
+    </p>
+
+    <div class="flex items-center gap-1">
+      <button 
+        (click)="cambiarPagina(currentPage - 1)" 
+        [disabled]="currentPage === 1"
+        class="px-3 py-1.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+        Anterior
+      </button>
+
+      <button 
+        *ngFor="let p of pagesArray"
+        (click)="cambiarPagina(p)"
+        [ngClass]="currentPage === p ? 'bg-indigo-600 text-white font-bold border-indigo-600' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'"
+        class="w-8 h-8 border text-xs font-mono flex items-center justify-center transition-colors">
+        {{ p }}
+      </button>
+
+      <button 
+        (click)="cambiarPagina(currentPage + 1)" 
+        [disabled]="currentPage === totalPages"
+        class="px-3 py-1.5 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+        Siguiente
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 9. MODAL CREAR / EDITAR TAREA CON RECURSOS ADJUNTOS                        -->
+  <!-- ========================================================================= -->
+  <div *ngIf="showTareaModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fadeIn">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-2xl overflow-hidden shadow-2xl my-8">
+      
+      <!-- Modal Header -->
+      <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 flex items-center justify-between">
+        <div>
+          <span class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block">
+            {{ isEditMode ? 'Editar Tarea Existente' : 'Nueva Asignación Práctica' }}
+          </span>
+          <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">
+            {{ isEditMode ? 'Actualizar Tarea y Recursos' : 'Publicar Tarea para Estudiantes' }}
+          </h2>
+        </div>
+        <button (click)="cerrarModalTarea()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+        
+        <!-- Selector de Módulo -->
+        <div>
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">
+            Módulo de Destino *
+          </label>
+          <select 
+            [(ngModel)]="modalModuloId" 
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
+            <option *ngFor="let m of modulos" [ngValue]="m.id">
+              Módulo {{ m.orden }}: {{ m.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Título -->
+        <div>
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">
+            Título de la Tarea *
+          </label>
+          <input 
+            type="text" 
+            [(ngModel)]="tareaTitulo" 
+            placeholder="Ej: Práctica Calificada 01: Caso de Estudio Clínico"
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <!-- Instrucciones -->
+        <div>
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">
+            Pautas e Instrucciones
+          </label>
+          <textarea 
+            [(ngModel)]="tareaInstrucciones" 
+            rows="3"
+            placeholder="Describe las consignas, criterios de evaluación y formato de entrega..."
+            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
+        </div>
+
+        <!-- Fecha Límite & Configuración -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">
+              Fecha y Hora Límite (Opcional)
+            </label>
+            <input 
+              type="datetime-local" 
+              [(ngModel)]="tareaFechaLimite" 
+              class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 font-mono">
+          </div>
+
+          <div class="flex flex-col justify-end space-y-2">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-300">
+              <input type="checkbox" [(ngModel)]="tareaPermitirReenvio" class="accent-indigo-600">
+              <span>Permitir Reenvíos de Tarea</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-300">
+              <input type="checkbox" [(ngModel)]="tareaEstado" class="accent-indigo-600">
+              <span>Publicar como Activa</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- SECCIÓN: ADJUNTAR RECURSOS (LINKS, ARCHIVOS LOCALES, IMÁGENES) -->
+        <div class="border border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-800/40 space-y-3">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-indigo-600">attach_file</span>
+            <span>Adjuntar Recursos de Referencia (Enlaces, Archivos, Guías)</span>
+          </span>
+
+          <!-- Formulario rápido de enlace -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+            <div class="sm:col-span-3">
+              <select 
+                [(ngModel)]="nuevoRecursoTipo" 
+                class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 text-xs text-slate-800 dark:text-slate-200">
+                <option value="link">Enlace Web</option>
+                <option value="archivo">Documento / PDF</option>
+                <option value="imagen">Imagen / Diagrama</option>
+              </select>
+            </div>
+            <div class="sm:col-span-4">
+              <input 
+                type="text" 
+                [(ngModel)]="nuevoRecursoTitulo" 
+                placeholder="Título del recurso..."
+                class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 text-xs text-slate-900 dark:text-white">
+            </div>
+            <div class="sm:col-span-3">
+              <input 
+                type="text" 
+                [(ngModel)]="nuevoRecursoUrl" 
+                placeholder="https://drive.google... o URL"
+                class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 text-xs text-slate-900 dark:text-white font-mono">
+            </div>
+            <div class="sm:col-span-2">
+              <button 
+                type="button"
+                (click)="agregarRecursoManual()"
+                class="w-full py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold uppercase tracking-wider hover:bg-slate-800 transition-colors">
+                + Añadir
+              </button>
+            </div>
+          </div>
+
+          <!-- Subir archivo local directamente -->
+          <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center gap-3">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0">
+              O subir desde tu equipo:
+            </label>
+            <input 
+              type="file" 
+              (change)="onLocalFileSelected($event)"
+              [disabled]="isUploadingLocalFile || !modalModuloId"
+              class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:border-0 file:text-xs file:font-bold file:bg-slate-200 dark:file:bg-slate-700 file:text-slate-800 dark:file:text-white cursor-pointer">
+          </div>
+
+          <!-- Lista de recursos adjuntados -->
+          <div *ngIf="recursosAdjuntos.length > 0" class="pt-2 space-y-1.5">
+            <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 block">Recursos en esta tarea:</span>
+            <div class="flex flex-wrap gap-2">
+              <div 
+                *ngFor="let r of recursosAdjuntos; let idx = index" 
+                class="inline-flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-800 dark:text-slate-200">
+                <span *ngIf="r.tipo === 'link'" class="material-symbols-outlined text-xs text-blue-500">link</span>
+                <span *ngIf="r.tipo === 'imagen'" class="material-symbols-outlined text-xs text-purple-500">image</span>
+                <span *ngIf="r.tipo === 'archivo'" class="material-symbols-outlined text-xs text-emerald-500">description</span>
+                <span class="truncate max-w-[180px]">{{ r.titulo }}</span>
+                <button (click)="eliminarRecursoAdjunto(idx)" type="button" class="text-rose-500 hover:text-rose-700">
+                  <span class="material-symbols-outlined text-xs">close</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 flex items-center justify-between">
+        <button 
+          (click)="cerrarModalTarea()" 
+          class="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+          Cancelar
+        </button>
+        <button 
+          (click)="guardarTarea()"
+          [disabled]="isSavingTarea || !tareaTitulo.trim() || !modalModuloId"
+          class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50">
+          <span>{{ isSavingTarea ? 'Guardando...' : (isEditMode ? 'Actualizar Tarea' : 'Publicar Tarea') }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 10. MODAL SPEEDGRADER / EVALUADOR EXPRESS DE ENTREGAS                       -->
+  <!-- ========================================================================= -->
+  <div *ngIf="showEntregasModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs overflow-y-auto animate-fadeIn">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-5xl overflow-hidden shadow-2xl my-6 flex flex-col max-h-[90vh]">
+      
+      <!-- SpeedGrader Top Bar -->
+      <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-indigo-600 text-white flex items-center justify-center">
+            <span class="material-symbols-outlined text-base">bolt</span>
+          </div>
+          <div>
+            <span class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block">
+              SpeedGrader • Calificación Rápida
+            </span>
+            <h2 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight truncate max-w-lg">
+              {{ selectedTareaParaEntregas?.titulo }}
+            </h2>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button 
+            (click)="exportarActaNotasCSV()" 
+            [disabled]="entregas.length === 0"
+            class="px-3 py-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-wider flex items-center gap-1 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-40">
+            <span class="material-symbols-outlined text-sm">download</span>
+            <span>Exportar CSV</span>
+          </button>
+          <button (click)="cerrarModalEntregas()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+            <span class="material-symbols-outlined text-lg">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SpeedGrader Body (Split Left: Students list, Right: Active Grade pane) -->
+      <div class="flex-1 overflow-hidden grid grid-cols-1 md:grid-cols-12">
+        
+        <!-- Left Panel: Alumnos List (4 cols) -->
+        <div class="md:col-span-4 border-r border-slate-200 dark:border-slate-800 overflow-y-auto bg-slate-50/50 dark:bg-slate-950/40 p-3 space-y-2">
+          <div class="flex items-center justify-between px-1 pb-1">
+            <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Entregas de Alumnos ({{ entregas.length }})</span>
+          </div>
+
+          <div *ngIf="isLoadingEntregas" class="p-6 text-center text-slate-400 text-xs">
+            <span class="animate-spin material-symbols-outlined text-lg">progress_activity</span>
+            <p class="mt-1">Cargando entregas...</p>
+          </div>
+
+          <div *ngIf="!isLoadingEntregas && entregas.length === 0" class="p-8 text-center text-slate-400">
+            <span class="material-symbols-outlined text-3xl mb-1 text-slate-300">inbox</span>
+            <p class="text-xs font-bold uppercase">Sin entregas</p>
+            <p class="text-[10px] mt-0.5">Ningún estudiante ha subido esta tarea aún.</p>
+          </div>
+
+          <div *ngFor="let e of entregas; let idx = index" 
+               (click)="seleccionarEntrega(idx)"
+               [ngClass]="currentEntregaIndex === idx ? 'border-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/40 ring-1 ring-indigo-600' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300'"
+               class="p-3 border cursor-pointer transition-all space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{{ e.alumnoNombre }}</span>
+              <span *ngIf="e.calificacion !== null && e.calificacion !== undefined" class="font-mono text-xs font-black text-indigo-600 dark:text-indigo-400">
+                {{ e.calificacion }}/20
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+              <span>{{ e.fechaEntrega | date:'dd/MM HH:mm' }}</span>
+              <span 
+                [ngClass]="{
+                  'text-emerald-600 font-bold': e.estado === 'APROBADO',
+                  'text-rose-600 font-bold': e.estado === 'DESAPROBADO',
+                  'text-blue-600': e.estado === 'ENTREGADO'
+                }" class="uppercase text-[9px] font-sans">
+                {{ e.estado }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel: Grading Pane (8 cols) -->
+        <div class="md:col-span-8 overflow-y-auto p-6 space-y-5 bg-white dark:bg-slate-900" *ngIf="currentEntrega">
+          
+          <!-- Alumno Header & Info -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Estudiante #{{ currentEntregaIndex + 1 }} de {{ entregas.length }}</span>
+              <h3 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ currentEntrega.alumnoNombre }}</h3>
+              <p class="text-xs text-slate-400 font-mono">{{ currentEntrega.alumnoCorreo }}</p>
+            </div>
+            <span class="text-xs font-mono text-slate-500">
+              Entregado el: {{ currentEntrega.fechaEntrega | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
+
+          <!-- Archivo Entregado por el Alumno -->
+          <div class="border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 p-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 overflow-hidden">
+              <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-xl">description</span>
+              </div>
+              <div class="overflow-hidden">
+                <span class="text-xs font-bold text-slate-900 dark:text-white truncate block">Archivo de Entrega del Alumno</span>
+                <span class="text-[10px] text-slate-400 font-mono">{{ currentEntrega.archivoUrl ? 'Documento adjunto listo para revisión' : 'Sin archivo adjunto' }}</span>
+              </div>
+            </div>
+
+            <button 
+              *ngIf="currentEntrega.archivoUrl"
+              (click)="descargarArchivoEntrega(currentEntrega)"
+              class="px-4 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 hover:bg-slate-800 transition-colors shrink-0 shadow-xs">
+              <span class="material-symbols-outlined text-sm">download</span>
+              <span>Descargar Trabajo</span>
+            </button>
+          </div>
+
+          <!-- Comentario del Alumno (si existe) -->
+          <div *ngIf="currentEntrega.comentarioAlumno" class="p-3 bg-amber-50/60 dark:bg-amber-950/20 border-l-4 border-amber-500 text-xs">
+            <span class="font-black text-amber-800 dark:text-amber-400 uppercase text-[9px] block mb-0.5">Mensaje del Estudiante:</span>
+            <p class="text-slate-700 dark:text-slate-300 italic">"{{ currentEntrega.comentarioAlumno }}"</p>
+          </div>
+
+          <!-- Formulario de Calificación (SpeedGrader) -->
+          <div class="space-y-4 pt-2">
+            
+            <!-- Nota (0-20) & Quick Grades -->
+            <div class="space-y-2">
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                Nota Numérica (Escala 0 a 20)
+              </label>
+              <div class="flex items-center gap-2 flex-wrap">
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="20" 
+                  [(ngModel)]="calificacionInput"
+                  class="w-24 p-2 text-lg font-black font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
+                
+                <span class="text-xs text-slate-400 mr-2">/ 20</span>
+
+                <!-- Quick Grade Pills -->
+                <div class="flex items-center gap-1 flex-wrap">
+                  <button 
+                    *ngFor="let g of quickGrades"
+                    (click)="setQuickGrade(g)"
+                    [ngClass]="calificacionInput === g ? 'bg-indigo-600 text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'"
+                    class="px-2.5 py-1 text-xs font-mono transition-colors">
+                    {{ g }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estado de Calificación -->
+            <div>
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 mb-1">
+                Estado del Resultado
+              </label>
+              <div class="flex items-center gap-2">
+                <button 
+                  (click)="estadoCalificacionInput = 'APROBADO'"
+                  [ngClass]="estadoCalificacionInput === 'APROBADO' ? 'bg-emerald-600 text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'"
+                  class="px-3 py-1.5 text-xs uppercase tracking-wider transition-colors">
+                  Aprobado
+                </button>
+                <button 
+                  (click)="estadoCalificacionInput = 'DESAPROBADO'"
+                  [ngClass]="estadoCalificacionInput === 'DESAPROBADO' ? 'bg-rose-600 text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'"
+                  class="px-3 py-1.5 text-xs uppercase tracking-wider transition-colors">
+                  Desaprobado
+                </button>
+                <button 
+                  (click)="estadoCalificacionInput = 'ENTREGADO'"
+                  [ngClass]="estadoCalificacionInput === 'ENTREGADO' ? 'bg-blue-600 text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'"
+                  class="px-3 py-1.5 text-xs uppercase tracking-wider transition-colors">
+                  En Revisión
+                </button>
+              </div>
+            </div>
+
+            <!-- Feedback Docente & Snippets -->
+            <div class="space-y-2">
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500">
+                Retroalimentación / Comentarios para el Alumno
+              </label>
+              
+              <!-- Quick Feedback Snippets -->
+              <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+                <button 
+                  *ngFor="let s of feedbackSnippets"
+                  (click)="insertFeedbackSnippet(s)"
+                  type="button"
+                  class="px-2 py-0.5 text-[9px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 whitespace-nowrap transition-colors">
+                  + {{ s.substring(0, 24) }}...
+                </button>
+              </div>
+
+              <textarea 
+                [(ngModel)]="feedbackInput" 
+                rows="3"
+                placeholder="Escribe recomendaciones, observaciones y felicitaciones..."
+                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
+            </div>
+
+            <!-- SpeedGrader Action Buttons -->
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <button 
+                  (click)="anteriorEntrega()" 
+                  [disabled]="currentEntregaIndex === 0"
+                  class="px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase hover:bg-slate-50 disabled:opacity-40">
+                  ← Anterior
+                </button>
+                <button 
+                  (click)="siguienteEntrega()" 
+                  [disabled]="currentEntregaIndex === entregas.length - 1"
+                  class="px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase hover:bg-slate-50 disabled:opacity-40">
+                  Siguiente →
+                </button>
+              </div>
+
+              <button 
+                (click)="guardarCalificacionActual()"
+                [disabled]="isSavingCalificacion"
+                class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">check_circle</span>
+                <span>{{ isSavingCalificacion ? 'Guardando...' : 'Guardar y Siguiente' }}</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right Panel Empty State when no student selected -->
+        <div class="md:col-span-8 p-12 text-center text-slate-400 flex flex-col items-center justify-center" *ngIf="!currentEntrega && !isLoadingEntregas">
+          <span class="material-symbols-outlined text-4xl mb-2 text-slate-300">person_search</span>
+          <p class="text-xs font-bold uppercase">Selecciona un estudiante</p>
+          <p class="text-[10px] mt-0.5">Elige un alumno de la lista izquierda para iniciar la calificación con SpeedGrader.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

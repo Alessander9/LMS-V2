@@ -1,0 +1,258 @@
+﻿<app-navbar></app-navbar>
+
+<main class="acu-page">
+  <header class="ac-hero">
+    <div class="ac-hero__glow ac-hero__glow--one" aria-hidden="true"></div>
+    <div class="ac-hero__glow ac-hero__glow--two" aria-hidden="true"></div>
+
+    <div class="ac-shell ac-hero__shell">
+      <div class="ac-hero__content">
+        <div class="ac-kicker">
+          <span class="ac-kicker__pulse"></span>
+          Convocatoria 2026 abierta
+          <span class="ac-kicker__separator"></span>
+          Lima, Perú
+        </div>
+
+        <h1 class="ac-title">
+          Matricúlate en
+          <span>Acupuntura.</span>
+        </h1>
+
+        <p class="ac-description">
+          Especialízate con la <strong>formación presencial más completa</strong> en medicina tradicional china, moxibustión y microsistemas con práctica clínica guiada en Lima.
+        </p>
+
+        <div class="ac-actions">
+          <a class="ac-button ac-button--primary" href="#plan-estudios">
+            Ver plan de estudios
+            <span class="material-symbols-outlined">arrow_downward</span>
+          </a>
+          <a class="ac-button ac-button--ghost" href="https://wa.me/51939371250?text=Hola%2C%20deseo%20informaci%C3%B3n%20sobre%20la%20formaci%C3%B3n%20presencial%20en%20Acupuntura" target="_blank" rel="noopener noreferrer">
+            <span class="material-symbols-outlined">chat</span>
+            Hablar con un asesor
+          </a>
+        </div>
+
+        <div class="ac-proof">
+          <div class="ac-proof__avatars" aria-hidden="true">
+            <span>IN</span><span>ST</span><span>+</span>
+          </div>
+          <p><strong>Aprendizaje acompañado</strong><br>Clases presenciales, práctica y seguimiento docente.</p>
+        </div>
+      </div>
+
+      <div class="ac-hero__visual">
+        <div class="ac-visual__halo" aria-hidden="true"></div>
+        <figure class="ac-visual__frame">
+          <img src="assets/acupuntura_presencial_curso.jpg" alt="Sesión profesional de acupuntura presencial" fetchpriority="high">
+          <div class="ac-visual__wash" aria-hidden="true"></div>
+        </figure>
+
+        <div class="ac-visual__card ac-visual__card--top">
+          <span class="material-symbols-outlined">workspace_premium</span>
+          <div><strong>Certificación</strong><small>240 horas presenciales</small></div>
+        </div>
+
+        <div class="ac-visual__card ac-visual__card--bottom">
+          <span class="ac-live-dot"></span>
+          <div><strong>Práctica presencial</strong><small>Grupos reducidos en Lince</small></div>
+        </div>
+      </div>
+
+      <div class="ac-facts" aria-label="Información principal del curso">
+        <div class="ac-fact">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <div><small>Duración</small><strong>12 meses</strong><em>Formación progresiva</em></div>
+        </div>
+        <div class="ac-fact">
+          <span class="material-symbols-outlined">location_on</span>
+          <div><small>Modalidad</small><strong>Presencial</strong><em>Lince, Lima</em></div>
+        </div>
+        <div class="ac-fact">
+          <span class="material-symbols-outlined">schedule</span>
+          <div><small>Horario</small><strong>Fines de semana</strong><em>Horario acordado</em></div>
+        </div>
+        <div class="ac-fact">
+          <span class="material-symbols-outlined">payments</span>
+          <div><small>Inversión</small><strong>S/ 290</strong><em>Cuotas disponibles</em></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="ac-benefits" data-reveal>
+    <div class="ac-shell">
+      <div class="ac-section-heading">
+        <div>
+          <span class="ac-eyebrow"><span class="material-symbols-outlined">auto_awesome</span> Una formación completa</span>
+          <h2>Todo lo necesario para pasar del conocimiento a <span>la práctica clínica.</span></h2>
+        </div>
+        <p>Un programa presencial intensivo orientado a desarrollar seguridad terapéutica y criterio clínico real.</p>
+      </div>
+
+      <div class="ac-benefit-showcase">
+        <div class="ac-benefit-copy">
+          <div class="ac-benefit-count">0{{ activeBenefitIndex + 1 }} <span>/ 03</span></div>
+
+          <ng-container [ngSwitch]="activeBenefitIndex">
+            <div *ngSwitchCase="0" class="ac-benefit-panel animate-scale-up">
+              <span class="ac-benefit-icon material-symbols-outlined">location_on</span>
+              <span class="ac-benefit-label">100% presencial</span>
+              <h3>Aprende con práctica real desde el primer día.</h3>
+              <p>Clases en nuestro centro clínico con equipamiento profesional, docente en vivo y compañeros con quien practicar.</p>
+              <ul>
+                <li><span class="material-symbols-outlined">check</span> Clases presenciales cada semana</li>
+                <li><span class="material-symbols-outlined">check</span> Equipamiento clínico disponible</li>
+              </ul>
+            </div>
+
+            <div *ngSwitchCase="1" class="ac-benefit-panel animate-scale-up">
+              <span class="ac-benefit-icon material-symbols-outlined">medical_services</span>
+              <span class="ac-benefit-label">Experiencia aplicada</span>
+              <h3>Convierte la teoría en criterio terapéutico.</h3>
+              <p>Entrenamiento supervisado con pacientes reales para practicar localización de puntos, técnicas de inserción y protocolos.</p>
+              <ul>
+                <li><span class="material-symbols-outlined">check</span> Casos y demostraciones clínicas</li>
+                <li><span class="material-symbols-outlined">check</span> Grupos reducidos de máximo 8</li>
+              </ul>
+            </div>
+
+            <div *ngSwitchCase="2" class="ac-benefit-panel animate-scale-up">
+              <span class="ac-benefit-icon material-symbols-outlined">workspace_premium</span>
+              <span class="ac-benefit-label">Proyección profesional</span>
+              <h3>Certifica una formación amplia y especializada.</h3>
+              <p>Completa 240 horas presenciales y construye una base sólida para integrar la acupuntura a tu práctica profesional.</p>
+              <ul>
+                <li><span class="material-symbols-outlined">check</span> Certificado institucional oficial</li>
+                <li><span class="material-symbols-outlined">check</span> Orientación para tu práctica</li>
+              </ul>
+            </div>
+          </ng-container>
+
+          <div class="ac-slider-controls">
+            <button type="button" (click)="prevBenefit()" aria-label="Beneficio anterior">
+              <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div class="ac-slider-dots">
+              <button *ngFor="let index of [0, 1, 2]" type="button" (click)="setBenefit(index)"
+                [class.is-active]="activeBenefitIndex === index"
+                [attr.aria-label]="'Ir al beneficio ' + (index + 1)"
+                [attr.aria-current]="activeBenefitIndex === index ? 'true' : null"></button>
+            </div>
+            <button type="button" (click)="nextBenefit()" aria-label="Siguiente beneficio">
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="ac-benefit-media cursor-pointer" (click)="openBenefitLightbox()">
+           <img *ngIf="activeBenefitIndex === 0" class="animate-scale-up" src="assets/formacion_acupuntura_presencial1.jpg" alt="Formación presencial de acupuntura">
+           <img *ngIf="activeBenefitIndex === 1" class="animate-scale-up" src="assets/formacion_acupuntura_presencial2.jpg" alt="Práctica clínica de acupuntura">
+           <img *ngIf="activeBenefitIndex === 2" class="animate-scale-up" src="assets/formacion_acupuntura_presencial3.jpg" alt="Certificación profesional en acupuntura">
+          <div class="ac-benefit-media__overlay">  <button type="button" (click)="openBenefitLightbox(); $event.stopPropagation()" class="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/75 hover:bg-slate-950 text-white rounded-md text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm transition-all shadow-lg active:scale-95 border border-white/10">
+            <span class="material-symbols-outlined text-[12px] block">zoom_in</span>
+            Ampliar Imagen
+          </button>
+        </div>
+          <span class="ac-benefit-media__badge">Plataforma LMS · Formación profesional</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--
+<section class="ac-journey" data-reveal>
+    <div class="ac-shell">
+      <div class="ac-journey__intro">
+        <span class="ac-eyebrow"><span class="material-symbols-outlined">route</span> Tu recorrido formativo</span>
+        <h2>De los fundamentos a una práctica <span>segura y profesional.</span></h2>
+        <p>Explora cada etapa y descubre cómo evoluciona tu aprendizaje durante los 12 meses.</p>
+      </div>
+
+      <div class="ac-journey__content">
+        <div class="ac-journey__tabs" role="tablist" aria-label="Etapas de la formación">
+          <button *ngFor="let step of journeySteps; let i = index" type="button" role="tab"
+            (click)="setJourneyStep(i)" [class.is-active]="activeJourneyStep === i"
+            [attr.aria-selected]="activeJourneyStep === i">
+            <span>0{{ i + 1 }}</span>
+            {{ step.shortTitle }}
+          </button>
+        </div>
+
+        <article class="ac-journey__panel animate-scale-up" *ngIf="journeySteps[activeJourneyStep] as step">
+          <div class="ac-journey__icon"><span class="material-symbols-outlined">{{ step.icon }}</span></div>
+          <div>
+            <span class="ac-journey__period">{{ step.period }}</span>
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.description }}</p>
+          </div>
+          <ul>
+            <li *ngFor="let outcome of step.outcomes"><span class="material-symbols-outlined">check_circle</span>{{ outcome }}</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+-->
+
+  <app-course-syllabus [phases]="syllabusData"></app-course-syllabus>
+
+  <section class="ac-audience" data-reveal>
+    <div class="ac-shell">
+      <div class="ac-audience__intro">
+        <span class="ac-eyebrow"><span class="material-symbols-outlined">trending_up</span> Diseñado para avanzar contigo</span>
+        <h2>Un programa para iniciar o ampliar <span>tu práctica.</span></h2>
+        <p>No necesitas experiencia previa. Construimos los fundamentos paso a paso y los llevamos a situaciones terapéuticas concretas con pacientes reales.</p>
+        <div class="ac-audience__checks">
+          <span><span class="material-symbols-outlined">verified</span> Sin prerrequisitos</span>
+          <span><span class="material-symbols-outlined">groups</span> Acompañamiento cercano</span>
+        </div>
+      </div>
+
+      <div class="ac-audience__grid">
+        <article class="ac-profile ac-profile--large">
+          <div class="ac-profile__icon"><span class="material-symbols-outlined">health_and_safety</span></div>
+          <span class="ac-profile__number">01</span>
+          <h3>Profesionales de la salud</h3>
+          <p>Fisioterapeutas, enfermería y personal clínico que busca sumar herramientas de medicina tradicional china a su atención.</p>
+          <span class="ac-profile__tag">Especialización clínica</span>
+        </article>
+
+        <article class="ac-profile">
+          <div class="ac-profile__icon"><span class="material-symbols-outlined">spa</span></div>
+          <span class="ac-profile__number">02</span>
+          <h3>Terapeutas integrales</h3>
+          <p>Profesionales del bienestar que quieren ampliar sus protocolos con acupuntura y microsistemas.</p>
+          <span class="ac-profile__tag">Nuevas técnicas</span>
+        </article>
+
+        <article class="ac-profile ac-profile--accent">
+          <div class="ac-profile__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+          <span class="ac-profile__number">03</span>
+          <h3>Nuevos estudiantes</h3>
+          <p>Personas que desean construir una profesión vinculada a la medicina tradicional y la salud integral.</p>
+          <span class="ac-profile__tag">Desde cero</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <app-docente-section [docente]="docenteData"></app-docente-section>
+  <app-course-cta [ctaData]="ctaData"></app-course-cta>
+</main>
+
+<app-footer></app-footer>
+<!-- Lightbox Modal Overlay for Benefits Showcase -->
+<div *ngIf="showBenefitLightbox" role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-opacity duration-300" (click)="closeBenefitLightbox()">
+  <!-- Close Button -->
+  <button type="button" (click)="closeBenefitLightbox()" class="absolute top-6 right-6 text-white/75 hover:text-white transition-all p-2 rounded-full hover:bg-white/10 flex z-50">
+    <span class="material-symbols-outlined text-2xl">close</span>
+  </button>
+  
+  <!-- Image Container -->
+  <div class="max-w-4xl max-h-[85vh] w-full flex items-center justify-center relative" (click)="$event.stopPropagation()">
+    <img [src]="benefitLightboxImage" alt="Imagen de formación ampliada" class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/15 animate-[fadeIn_0.2s_ease-out]" />
+  </div>
+</div>
+

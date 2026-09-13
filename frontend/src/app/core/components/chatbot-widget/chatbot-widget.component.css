@@ -1,0 +1,951 @@
+/* ==========================================================================
+   WIDGET FLOTANTE: FAB & CENTRO DE ATENCIÓN MULTICANAL
+   ========================================================================== */
+
+.chatbot-fab-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: inherit;
+  pointer-events: auto;
+}
+
+/* Animación Flotante y Latido Suave (Heartbeat / Floating) */
+@keyframes chatbot-float-heartbeat {
+  0% {
+    transform: translateY(0px) scale(1);
+    box-shadow: 0 10px 28px rgba(5, 150, 105, 0.42), inset 0 1px 2px rgba(255, 255, 255, 0.45);
+  }
+  30% {
+    transform: translateY(-7px) scale(1.05);
+    box-shadow: 0 18px 34px rgba(16, 185, 129, 0.52), inset 0 1px 3px rgba(255, 255, 255, 0.55);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 36px rgba(16, 185, 129, 0.48), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+  }
+  70% {
+    transform: translateY(-3px) scale(1.06);
+    box-shadow: 0 15px 30px rgba(16, 185, 129, 0.55), inset 0 1px 3px rgba(255, 255, 255, 0.55);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
+    box-shadow: 0 10px 28px rgba(5, 150, 105, 0.42), inset 0 1px 2px rgba(255, 255, 255, 0.45);
+  }
+}
+
+/* 1. Botón FAB Flotante Principal (Verde Esmeralda Vibrante con Flotación y Latido) */
+.chatbot-fab-btn {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 10px 28px rgba(5, 150, 105, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  animation: chatbot-float-heartbeat 3.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  outline: none;
+}
+
+.chatbot-fab-btn:hover {
+  animation-play-state: paused;
+  transform: translateY(-4px) scale(1.1);
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  box-shadow: 0 16px 38px rgba(16, 185, 129, 0.6), inset 0 1px 3px rgba(255, 255, 255, 0.65);
+}
+
+.chatbot-fab-btn--active {
+  animation: none;
+  transform: rotate(90deg) !important;
+  background: linear-gradient(135deg, #065f46 0%, #064e3b 100%);
+  box-shadow: 0 8px 24px rgba(6, 78, 59, 0.45);
+}
+
+.chatbot-fab-btn--hidden {
+  animation: none;
+  transform: scale(0) rotate(-45deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Aura brillante pulsante (Verde Esmeralda) */
+.chatbot-fab-btn__glow {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.55) 0%, transparent 72%);
+  animation: chatbot-pulse 2.5s infinite alternate;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Íconos con transición fluida */
+.chatbot-fab-btn__icon {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab-icon {
+  position: absolute;
+  font-size: 28px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+}
+
+.fab-icon--default {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.fab-icon--close {
+  opacity: 0;
+  transform: scale(0.5) rotate(-90deg);
+}
+
+.chatbot-fab-btn--active .fab-icon--default {
+  opacity: 0;
+  transform: scale(0.5) rotate(90deg);
+}
+
+.chatbot-fab-btn--active .fab-icon--close {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* 2. Menú Compacto Expandible */
+.chatbot-fab-menu {
+  position: absolute;
+  bottom: 74px;
+  right: 0;
+  width: min(320px, calc(100vw - 36px));
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(6, 38, 74, 0.08);
+  border-radius: 1.35rem;
+  box-shadow: 0 24px 50px -12px rgba(6, 38, 74, 0.24), 0 4px 16px rgba(6, 38, 74, 0.06);
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  opacity: 0;
+  transform: translateY(14px) scale(0.93);
+  transform-origin: bottom right;
+  pointer-events: none;
+  transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 9998;
+}
+
+.chatbot-fab-menu--open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.chatbot-fab-menu__header {
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(6, 38, 74, 0.06);
+}
+
+.chatbot-fab-menu__title {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #06264a;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.chatbot-fab-menu__subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.chatbot-fab-menu__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+/* Items individuales del menú */
+.chatbot-fab-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.95rem;
+  border: 1px solid transparent;
+  background: rgba(245, 249, 252, 0.85);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.chatbot-fab-item:hover {
+  transform: translateY(-1px) translateX(2px);
+}
+
+.chatbot-fab-item--assistant:hover {
+  background: rgba(13, 99, 181, 0.08);
+  border-color: rgba(13, 99, 181, 0.18);
+}
+
+.chatbot-fab-item--whatsapp:hover {
+  background: rgba(37, 211, 102, 0.08);
+  border-color: rgba(37, 211, 102, 0.22);
+}
+
+.chatbot-fab-item__icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.chatbot-fab-item:hover .chatbot-fab-item__icon {
+  transform: scale(1.08);
+}
+
+.chatbot-fab-item__icon--assistant {
+  background: linear-gradient(135deg, #9333ea, #7e22ce);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(147, 51, 234, 0.35);
+}
+
+.chatbot-fab-item__icon--assistant span {
+  font-size: 20px;
+}
+
+.chatbot-fab-item__icon--whatsapp {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
+}
+
+.fab-whatsapp-svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+.chatbot-fab-item__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.chatbot-fab-item__title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #06264a;
+  line-height: 1.3;
+}
+
+.chatbot-fab-item__desc {
+  font-size: 0.69rem;
+  color: #64748b;
+  line-height: 1.25;
+}
+
+.chatbot-fab-item__chevron {
+  margin-left: auto;
+  color: #94a3b8;
+  font-size: 1.15rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.chatbot-fab-item:hover .chatbot-fab-item__chevron {
+  transform: translateX(3px);
+  color: #06264a;
+}
+
+/* Soporte Modo Oscuro */
+:host-context(.dark) .chatbot-fab-menu {
+  background: rgba(15, 23, 42, 0.96);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.6);
+}
+
+:host-context(.dark) .chatbot-fab-menu__header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+:host-context(.dark) .chatbot-fab-menu__title {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .chatbot-fab-menu__subtitle {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .chatbot-fab-item {
+  background: rgba(30, 41, 59, 0.7);
+}
+
+:host-context(.dark) .chatbot-fab-item__title {
+  color: #f8fafc;
+}
+
+:host-context(.dark) .chatbot-fab-item__desc {
+  color: #94a3b8;
+}
+
+:host-context(.dark) .chatbot-fab-item:hover .chatbot-fab-item__chevron {
+  color: #f8fafc;
+}
+
+/* 2. Ventana de chat principal */
+.chatbot-window {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 380px;
+  height: 520px;
+  border-radius: 20px;
+  background: rgba(2, 11, 26, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9998;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transform-origin: bottom right;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.chatbot-window--open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* 3. Cabecera (Header) */
+.chatbot-header {
+  padding: 16px 20px;
+  background: linear-gradient(90deg, #021428 0%, #03183a 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chatbot-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chatbot-header__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4db8ff;
+  position: relative;
+}
+
+.chatbot-header__avatar span {
+  font-size: 20px;
+}
+
+.chatbot-header__status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #00c9a7;
+  border: 2px solid #021428;
+}
+
+.chatbot-header__info h3 {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.chatbot-header__info span {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  display: block;
+}
+
+.chatbot-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chatbot-header__btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.chatbot-header__btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.chatbot-header__btn span {
+  font-size: 18px;
+}
+
+/* 4. Contenedor de Mensajes (Chat body) */
+.chatbot-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar personalizado */
+.chatbot-messages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chatbot-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Globos de Mensaje con animación suave */
+@keyframes chatBubbleSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chatbot-message {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 85%;
+  animation: chatBubbleSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.chatbot-message--assistant {
+  align-self: flex-start;
+}
+
+.chatbot-message--user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+  max-width: 80%;
+}
+
+.chatbot-message__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(77, 184, 255, 0.08);
+  border: 1px solid rgba(77, 184, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4db8ff;
+  flex-shrink: 0;
+}
+
+.chatbot-message__avatar span {
+  font-size: 16px;
+}
+
+.chatbot-message__bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.chatbot-message--assistant .chatbot-message__bubble {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom-left-radius: 4px;
+}
+
+.chatbot-message--user .chatbot-message__bubble {
+  background: linear-gradient(135deg, #1a4b84 0%, #153c6a 100%);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 15px rgba(26, 75, 132, 0.15);
+}
+
+.chatbot-message__text {
+  word-break: break-word;
+}
+
+/* Enlaces y Botones dinámicos generados por innerHTML */
+:host ::ng-deep .chatbot-link {
+  color: #f9e37a;
+  text-decoration: underline;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+:host ::ng-deep .chatbot-link:hover {
+  color: #ffffff;
+}
+
+/* Botón de descarga/acción dentro del chat */
+:host ::ng-deep .chatbot-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: #0e4c8a !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  padding: 8px 14px !important;
+  border-radius: 9px !important;
+  margin: 6px 0 !important;
+  font-size: 12px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  line-height: 1.35 !important;
+}
+
+:host ::ng-deep .chatbot-button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+  opacity: 0.95 !important;
+}
+
+:host ::ng-deep .chatbot-button:active {
+  transform: translateY(0) !important;
+}
+
+/* Variante Temario / PDF (Ámbar elegante y sobrio) */
+:host ::ng-deep .chatbot-button--temario {
+  background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%) !important;
+  color: #041226 !important;
+  border: 1px solid rgba(212, 160, 23, 0.4) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18) !important;
+}
+
+:host ::ng-deep .chatbot-button--temario:hover {
+  background: linear-gradient(135deg, #dfab20 0%, #c49212 100%) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Variante WhatsApp (Verde WhatsApp Natural Mate) */
+:host ::ng-deep .chatbot-button--whatsapp {
+  background: linear-gradient(135deg, #1b9e50 0%, #127a3c 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(27, 158, 80, 0.35) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+:host ::ng-deep .chatbot-button--whatsapp:hover {
+  background: linear-gradient(135deg, #20ad59 0%, #168a44 100%) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Variante Curso / Sedes / Catálogo (Azul Marino Refinado) */
+:host ::ng-deep .chatbot-button--course {
+  background: linear-gradient(135deg, #0e5499 0%, #083c70 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+:host ::ng-deep .chatbot-button--course:hover {
+  background: linear-gradient(135deg, #1261b0 0%, #0c4885 100%) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Listas ordenadas/desordenadas dentro del globo */
+:host ::ng-deep .chatbot-list {
+  list-style-type: disc;
+  padding-left: 16px;
+  margin: 6px 0;
+}
+
+:host ::ng-deep .chatbot-list li {
+  margin-bottom: 4px;
+}
+
+/* 5. Indicador de Escritura (Typing animation) */
+.chatbot-message__bubble--typing {
+  padding: 12px 18px;
+}
+
+.chatbot-typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 12px;
+}
+
+.chatbot-typing-indicator span {
+  width: 6px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  display: inline-block;
+  animation: chatbot-bounce 1.4s infinite ease-in-out both;
+}
+
+.chatbot-typing-indicator span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.chatbot-typing-indicator span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+/* 6. Sugerencias rápidas (Chips) */
+.chatbot-suggestions {
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.chatbot-suggestion-chip {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chatbot-suggestion-chip:hover {
+  background: rgba(77, 184, 255, 0.1);
+  border-color: rgba(77, 184, 255, 0.3);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* 7. Footer de Entrada (Formulario) */
+.chatbot-footer {
+  padding: 14px 20px;
+  background: rgba(2, 11, 26, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.chatbot-form {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 4px 6px;
+  transition: all 0.3s ease;
+}
+
+.chatbot-form:focus-within {
+  border-color: rgba(77, 184, 255, 0.5);
+  box-shadow: 0 0 10px rgba(77, 184, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.chatbot-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 8px 10px;
+  outline: none;
+  font-family: inherit;
+}
+
+.chatbot-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.chatbot-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chatbot-send-btn {
+  background: linear-gradient(135deg, #1a4b84 0%, #042050 100%);
+  border: none;
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chatbot-send-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2264b0 0%, #153c6a 100%);
+  transform: scale(1.05);
+}
+
+.chatbot-send-btn:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.2);
+  cursor: not-allowed;
+}
+
+.chatbot-send-btn span {
+  font-size: 16px;
+}
+
+/* ==========================================================================
+   ANIMACIONES CLAVE (KEYFRAMES)
+   ========================================================================== */
+@keyframes chatbot-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes chatbot-bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* ==========================================================================
+   DISEÑO RESPONSIVO — MOBILE
+   ========================================================================== */
+
+/* touch-action en todos los elementos interactivos para evitar doble-tap zoom */
+.chatbot-fab-btn,
+.chatbot-header__btn,
+.chatbot-send-btn,
+.chatbot-suggestion-chip,
+.chatbot-fab-item {
+  touch-action: manipulation;
+}
+
+@media (max-width: 480px) {
+  /* --- FAB Container --- */
+  .chatbot-fab-container {
+    bottom: 16px;
+    right: 16px;
+    /* Soporte safe-area en notched phones (iPhone X+) */
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    right: calc(16px + env(safe-area-inset-right, 0px));
+  }
+
+  /* --- Botón FAB principal --- */
+  .chatbot-fab-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .chatbot-fab-btn .fab-icon {
+    font-size: 24px;
+  }
+
+  /* --- Menú flotante FAB: no salirse del viewport --- */
+  .chatbot-fab-menu {
+    bottom: 66px;
+    right: 0;
+    /* Asegura que no se corte en pantallas muy pequeñas */
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    width: calc(100vw - 32px);
+    padding: 1rem;
+    border-radius: 1.2rem;
+  }
+
+  /* --- Ventana de chat: FULLSCREEN en mobile --- */
+  .chatbot-window {
+    /* Ocupa toda la pantalla */
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    /* Sin bordes laterales, solo esquinas superiores redondeadas */
+    border-radius: 0;
+    /* Mantener margen del safe-area inferior para el footer */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    bottom: 0;
+    right: 0;
+    /* Reset de cualquier transform-origin que afecte al layout */
+    transform-origin: center bottom;
+  }
+
+  /* --- Header: más compacto --- */
+  .chatbot-header {
+    padding: 12px 16px;
+  }
+
+  /* --- Área de mensajes: flex-1 funciona con height:100% --- */
+  .chatbot-messages {
+    padding: 14px 14px;
+    gap: 12px;
+    /* Permite scroll sin que el teclado tape el contenido */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* --- Burbujas: texto más legible en mobile --- */
+  .chatbot-message__bubble {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  /* --- Chips de sugerencias: scroll si hay muchos --- */
+  .chatbot-suggestions {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+    /* Scroll vertical si los chips desbordan */
+    max-height: 130px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Borde inferior suave para indicar scroll */
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  /* Cuando no hay overflow no mostramos el fade */
+  .chatbot-suggestions:not(:hover) {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .chatbot-suggestion-chip {
+    font-size: 12px;
+    padding: 8px 14px;
+    /* Área táctil mínima 44px de altura */
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* --- Footer: pegado al fondo con safe-area --- */
+  .chatbot-footer {
+    padding: 10px 14px;
+    /* Safe-area para iPhone con home bar */
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* --- Input: optimizado para teclado móvil --- */
+  .chatbot-input {
+    font-size: 16px; /* Evita zoom automático en iOS (min 16px) */
+    padding: 10px 10px;
+  }
+
+  /* --- Botón de enviar: área táctil mínima WCAG (44×44px) --- */
+  .chatbot-send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .chatbot-send-btn span {
+    font-size: 20px;
+  }
+
+  /* --- Botones dentro de mensajes (chatbot-button): más grandes en mobile --- */
+  :host ::ng-deep .chatbot-button {
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+    min-height: 44px !important;
+    touch-action: manipulation !important;
+  }
+
+  /* --- Header buttons: área táctil mínima --- */
+  .chatbot-header__btn {
+    width: 36px;
+    height: 36px;
+    touch-action: manipulation;
+  }
+}
+
+/* Breakpoint adicional para teléfonos muy pequeños (< 360px) */
+@media (max-width: 360px) {
+  .chatbot-message__bubble {
+    font-size: 13px;
+  }
+
+  .chatbot-suggestion-chip {
+    font-size: 11px;
+    padding: 7px 12px;
+  }
+}

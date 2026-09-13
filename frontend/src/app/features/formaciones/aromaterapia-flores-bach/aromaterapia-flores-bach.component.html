@@ -1,0 +1,271 @@
+﻿<app-navbar></app-navbar>
+
+<main class="acu-page">
+  <header class="ac-hero">
+    <div class="ac-hero__glow ac-hero__glow--one" aria-hidden="true"></div>
+    <div class="ac-hero__glow ac-hero__glow--two" aria-hidden="true"></div>
+
+    <div class="ac-shell ac-hero__shell">
+      <div class="ac-hero__content">
+        <div class="ac-kicker">
+          <span class="ac-kicker__pulse"></span>
+          🌸✨ CURSO DE AROMATERAPIA Y FLORES DE BACH
+          <span class="ac-kicker__separator"></span>
+          Inicio 6 de Septiembre
+        </div>
+
+        <h1 class="ac-title">
+          Integra el poder de los
+          <span>Aceites Esenciales</span> y las <span>Flores de Bach</span>
+        </h1>
+
+        <p class="ac-description">
+          Aprende a combinar la aromaterapia clínica y la terapia floral de Bach en el abordaje integral de la salud,
+          el bienestar emocional y el alivio de dolencias físicas.
+        </p>
+
+        <div class="ac-actions">
+          <a class="ac-button ac-button--primary" href="#plan-estudios">
+            Ver plan de estudios
+            <span class="material-symbols-outlined">arrow_downward</span>
+          </a>
+          <a class="ac-button ac-button--ghost"
+            href="https://wa.me/51939371250?text=Hola%2C%20deseo%20matricularme%20en%20el%20Curso%20de%20Aromaterapia%20y%20Flores%20de%20Bach"
+            target="_blank" rel="noopener noreferrer">
+            <span class="material-symbols-outlined">chat</span>
+            Inscribirme por WhatsApp
+          </a>
+        </div>
+
+        <div class="ac-proof">
+          <div class="ac-proof__avatars" aria-hidden="true">
+            <span>IN</span><span>ST</span><span>+</span>
+          </div>
+          <p><strong>Cupos limitados · Práctica clínica</strong><br>Manuales de fórmulas, esencias y certificación
+            oficial.</p>
+        </div>
+      </div>
+
+      <div class="ac-hero__visual">
+        <div class="ac-visual__halo" aria-hidden="true"></div>
+        <figure class="ac-visual__frame cursor-pointer group" (click)="openFlyerLightbox()" title="Clic para ver afiche completo">
+          <img src="assets/aromaterapia_flores_bach.jpg" alt="Curso de Aromaterapia y Flores de Bach - Plataforma LMS"
+            fetchpriority="high">
+          <div class="ac-visual__wash" aria-hidden="true"></div>
+
+          <button type="button" (click)="openFlyerLightbox(); $event.stopPropagation()"
+            class="ac-visual__expand-btn" aria-label="Ver imagen más grande">
+            <span class="material-symbols-outlined">zoom_in</span>
+            <span>Ver más grande</span>
+          </button>
+        </figure>
+      </div>
+
+      <div class="ac-facts" aria-label="Información principal del curso">
+        <div class="ac-fact">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <div><small>Duración</small><strong>1 mes</strong><em>Inicio 6 de Septiembre</em></div>
+        </div>
+        <div class="ac-fact">
+          <span class="material-symbols-outlined">location_on</span>
+          <div><small>Modalidad</small><strong>Presencial / Online</strong><em>Lince / Aula Virtual</em></div>
+        </div>
+        <div class="ac-fact">
+          <span class="material-symbols-outlined">schedule</span>
+          <div><small>Horario</small><strong>Domingos</strong><em>10:00 AM — 1:00 PM</em></div>
+        </div>
+        <div class="ac-fact">
+          <span class="material-symbols-outlined">payments</span>
+          <div>
+            <small>Inversión</small>
+            <strong style="font-size: 0.82rem; line-height: 1.35; margin-top: 0.15rem;">🏫 Presencial: S/
+              200.00</strong>
+            <strong style="font-size: 0.82rem; line-height: 1.35; margin-top: 0.08rem;">💻 Online: S/ 120.00</strong>
+            <em>Certificado incluido</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="ac-benefits" data-reveal>
+    <div class="ac-shell">
+      <div class="ac-section-heading">
+        <div>
+          <span class="ac-eyebrow"><span class="material-symbols-outlined">auto_awesome</span> Terapias
+            Integrales</span>
+          <h2>Todo lo necesario para dominar la <span>aromaterapia y las flores de Bach.</span></h2>
+        </div>
+        <p>Una experiencia de aprendizaje integral con rigor botánico, criterio holístico, dosificaciones seguras y
+          certificación oficial.</p>
+      </div>
+
+      <div class="ac-benefit-showcase">
+        <div class="ac-benefit-copy">
+          <div class="ac-benefit-count">0{{ activeBenefitIndex + 1 }} <span>/ 03</span></div>
+
+          <ng-container [ngSwitch]="activeBenefitIndex">
+            <div *ngSwitchCase="0" class="ac-benefit-panel animate-scale-up">
+              <span class="ac-benefit-icon material-symbols-outlined">spa</span>
+              <span class="ac-benefit-label">Aromaterapia Clínica</span>
+              <h3>Aprende aromaterapia con base científica y práctica.</h3>
+              <p>Conoce los mecanismos de acción olfativos y cutáneos, aceites portadores y sinergias aromáticas para
+                tratar contracturas, estrés y dolores físicos.</p>
+              <ul>
+                <li><span class="material-symbols-outlined">check</span> Perfiles terapéuticos de aceites esenciales
+                  puros</li>
+                <li><span class="material-symbols-outlined">check</span> Vías de absorción, diluciones y seguridad</li>
+              </ul>
+            </div>
+
+            <div *ngSwitchCase="1" class="ac-benefit-panel animate-scale-up">
+              <span class="ac-benefit-icon material-symbols-outlined">local_florist</span>
+              <span class="ac-benefit-label">Terapia Floral de Bach</span>
+              <h3>Abordaje de la salud y el equilibrio emocional.</h3>
+              <p>Domina el sistema del Dr. Edward Bach: los 38 elixires florales y la fórmula de rescate para acompañar
+                procesos de ansiedad, miedos, duelo e insomnio.</p>
+              <ul>
+                <li><span class="material-symbols-outlined">check</span> Los 7 grupos emocionales de Bach</li>
+                <li><span class="material-symbols-outlined">check</span> Elaboración práctica de fórmulas personalizadas
+                </li>
+              </ul>
+            </div>
+
+            <div *ngSwitchCase="2" class="ac-benefit-panel animate-scale-up">
+              <span class="ac-benefit-icon material-symbols-outlined">workspace_premium</span>
+              <span class="ac-benefit-label">Certificación Oficial</span>
+              <h3>Respaldo y proyección en tu consulta profesional.</h3>
+              <p>Certificado oficial emitido por Plataforma LMS que respalda tus competencias en terapias complementarias e
+                integración clínica.</p>
+              <ul>
+                <li><span class="material-symbols-outlined">check</span> Certificación oficial emitida por Plataforma LMS</li>
+                <li><span class="material-symbols-outlined">check</span> Guías, fichas clínicas y manuales de
+                  formulación</li>
+              </ul>
+            </div>
+          </ng-container>
+
+          <div class="ac-slider-controls">
+            <button type="button" (click)="prevBenefit()" aria-label="Beneficio anterior">
+              <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <div class="ac-slider-dots">
+              <button *ngFor="let index of [0, 1, 2]" type="button" (click)="setBenefit(index)"
+                [class.is-active]="activeBenefitIndex === index" [attr.aria-label]="'Ir al beneficio ' + (index + 1)"
+                [attr.aria-current]="activeBenefitIndex === index ? 'true' : null"></button>
+            </div>
+            <button type="button" (click)="nextBenefit()" aria-label="Siguiente beneficio">
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="ac-benefit-media cursor-pointer" (click)="openBenefitLightbox()">
+          <img *ngIf="activeBenefitIndex === 0" class="animate-scale-up ac-benefit-img--slide1" src="assets/aromaterapia_1.jpg"
+            alt="Consulta y aplicación de aromaterapia clínica">
+          <img *ngIf="activeBenefitIndex === 1" class="animate-scale-up" src="assets/aromaterapia_2.jpg"
+            alt="Preparación de fórmulas de flores de Bach">
+          <img *ngIf="activeBenefitIndex === 2" class="animate-scale-up" src="assets/aromaterapia_3.jpg"
+            alt="Certificación oficial en aromaterapia y flores de Bach">
+          <div class="ac-benefit-media__overlay"></div>
+
+          <button type="button" (click)="openBenefitLightbox(); $event.stopPropagation()"
+            class="absolute bottom-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 bg-slate-950/75 hover:bg-slate-950 text-white rounded-md text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm transition-all shadow-lg active:scale-95 border border-white/10">
+            <span class="material-symbols-outlined text-[12px] block">zoom_in</span>
+            Ampliar Imagen
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="plan-estudios">
+    <app-course-syllabus [phases]="syllabusData"></app-course-syllabus>
+  </div>
+
+  <section class="ac-audience" data-reveal>
+    <div class="ac-shell">
+      <div class="ac-audience__intro">
+        <span class="ac-eyebrow"><span class="material-symbols-outlined">groups</span> ¿A quién va dirigido?</span>
+        <h2>¿A quién está dirigido este <span>curso de aromaterapia y flores de Bach?</span></h2>
+        <p>Una formación integral diseñada tanto para terapeutas en ejercicio como para quienes desean iniciarse en las
+          terapias naturales.</p>
+        <div class="ac-audience__checks">
+          <span><span class="material-symbols-outlined">verified</span> Sin requisitos previos</span>
+          <span><span class="material-symbols-outlined">spa</span> Abordaje físico y emocional</span>
+        </div>
+      </div>
+
+      <div class="ac-audience__grid">
+        <article class="ac-profile ac-profile--large">
+          <div class="ac-profile__icon"><span class="material-symbols-outlined">health_and_safety</span></div>
+          <span class="ac-profile__number">01</span>
+          <h3>Terapeutas y Masoterapeutas</h3>
+          <p>Profesionales de la salud integral, masajistas y terapeutas corporales que buscan enriquecer sus
+            tratamientos con el poder de los aceites y las flores.</p>
+          <span class="ac-profile__tag">Sinergia terapéutica</span>
+        </article>
+
+        <article class="ac-profile">
+          <div class="ac-profile__icon"><span class="material-symbols-outlined">psychology</span></div>
+          <span class="ac-profile__number">02</span>
+          <h3>Psicólogos y Acompañantes</h3>
+          <p>Especialistas del bienestar emocional que desean incorporar herramientas naturales de modulación afectiva y
+            manejo del estrés.</p>
+          <span class="ac-profile__tag">Salud emocional</span>
+        </article>
+
+        <article class="ac-profile ac-profile--accent">
+          <div class="ac-profile__icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+          <span class="ac-profile__number">03</span>
+          <h3>Público Interesado</h3>
+          <p>Personas que desean aprender a cuidar su salud y la de su familia de forma natural, rigurosa y segura desde
+            el primer día.</p>
+          <span class="ac-profile__tag">Desde cero</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <app-docente-section [docente]="docenteData"></app-docente-section>
+  <app-course-cta [ctaData]="ctaData"></app-course-cta>
+</main>
+
+<app-footer></app-footer>
+
+<!-- Lightbox Modal Overlay for Benefits Showcase -->
+<div *ngIf="showBenefitLightbox" role="dialog" aria-modal="true"
+  class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-opacity duration-300"
+  (click)="closeBenefitLightbox()">
+  <!-- Close Button -->
+  <button type="button" (click)="closeBenefitLightbox()"
+    class="absolute top-6 right-6 text-white/75 hover:text-white transition-all p-2 rounded-full hover:bg-white/10 flex z-50">
+    <span class="material-symbols-outlined text-2xl">close</span>
+  </button>
+
+  <!-- Image Container -->
+  <div class="max-w-4xl max-h-[85vh] w-full flex items-center justify-center relative"
+    (click)="$event.stopPropagation()">
+    <img [src]="benefitLightboxImage" alt="Imagen de formación ampliada"
+      class="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/15 animate-[fadeIn_0.2s_ease-out]" />
+  </div>
+</div>
+
+<!-- Lightbox Modal Overlay for Hero Flyer -->
+<div *ngIf="showFlyerLightbox" role="dialog" aria-modal="true"
+  class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4 transition-opacity duration-300"
+  (click)="closeFlyerLightbox()">
+  <!-- Close Button -->
+  <button type="button" (click)="closeFlyerLightbox()"
+    class="absolute top-6 right-6 text-white/75 hover:text-white transition-all p-2 rounded-full hover:bg-white/10 flex z-50"
+    aria-label="Cerrar modal">
+    <span class="material-symbols-outlined text-2xl">close</span>
+  </button>
+
+  <!-- Image Container -->
+  <div class="max-w-4xl max-h-[90vh] w-full flex items-center justify-center relative"
+    (click)="$event.stopPropagation()">
+    <img src="assets/aromaterapia_flores_bach.jpg" alt="Afiche Oficial Curso de Aromaterapia y Flores de Bach - Plataforma LMS ampliado"
+      class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl border border-white/20 animate-[fadeIn_0.2s_ease-out]" />
+  </div>
+</div>

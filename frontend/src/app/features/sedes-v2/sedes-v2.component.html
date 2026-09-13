@@ -1,0 +1,342 @@
+﻿<app-navbar></app-navbar>
+
+<main class="sedes-page">
+  <!-- Efecto visual de fondo: rejilla fina y orbes de luz dinámicos -->
+  <div class="sedes-page__grid" aria-hidden="true"></div>
+  <div class="sedes-page__orb sedes-page__orb--one" aria-hidden="true"></div>
+  <div class="sedes-page__orb sedes-page__orb--two" aria-hidden="true"></div>
+
+  <!-- Hero Header -->
+  <header class="sedes-hero">
+    <div class="sedes-shell">
+      <nav class="sedes-breadcrumbs" aria-label="Navegación secundaria">
+        <a routerLink="/inicio">Inicio</a>
+        <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+        <span>Sedes a nivel nacional</span>
+      </nav>
+
+      <div class="sedes-hero__layout">
+        <div class="sedes-hero__copy">
+          <span class="sedes-kicker">
+            <span class="material-symbols-outlined text-[16px] text-primary dark:text-secondary-fixed">explore</span> 
+            Red de Expansión Académica
+          </span>
+          <h1>Nuestras Sedes a <span>Nivel Nacional.</span></h1>
+          <p>Con el compromiso de fomentar la medicina complementaria y descentralizar la educación de salud integral, nos expandimos a puntos estratégicos del país.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sección de Pestañas e Información -->
+  <section class="sedes-section">
+    <div class="sedes-shell">
+      <!-- Navegación de pestañas en formato cápsula flotante -->
+      <div class="sedes-tabs-nav-container">
+        <div class="sedes-tabs-nav">
+          <button 
+            (click)="setActiveTab('huanuco')" 
+            [class.active]="activeTab === 'huanuco'"
+            class="sedes-tab-btn">
+            <span class="material-symbols-outlined">location_city</span>
+            <span>Huánuco</span>
+          </button>
+          <button 
+            (click)="setActiveTab('lima')" 
+            [class.active]="activeTab === 'lima'"
+            class="sedes-tab-btn">
+            <span class="material-symbols-outlined">apartment</span>
+            <span>Lima</span>
+          </button>
+          <button 
+            (click)="setActiveTab('piura')" 
+            [class.active]="activeTab === 'piura'"
+            class="sedes-tab-btn">
+            <span class="material-symbols-outlined">storefront</span>
+            <span>Piura</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenedor del contenido con animación de entrada -->
+      <div class="sedes-tabs-content">
+        
+        <!-- SEDE HUÁNUCO (Pestaña por defecto) -->
+        <div *ngIf="activeTab === 'huanuco'" class="sedes-tab-panel animate-fade-in">
+          <div class="sedes-card-layout">
+            <div class="sedes-info-card">
+              <span class="sedes-badge">Sede Oriente</span>
+              <h2>Sede Huánuco</h2>
+              <p class="sedes-description">
+                Con el firme propósito de descentralizar la formación profesional en terapias complementarias, nos establecemos en el departamento de Huánuco como el epicentro de la medicina integradora de la zona oriente del país.
+              </p>
+
+              <!-- Presentación Premium del Representante -->
+              <div class="representative-box">
+                <div class="representative-avatar">
+                  <div class="avatar-glow"></div>
+                  <span class="material-symbols-outlined text-5xl">person</span>
+                </div>
+                <div class="representative-details">
+                  <span class="rep-tag">Coordinador Oficial</span>
+                  <h3>Alesandro</h3>
+                  <span class="representative-role">Representante de Plataforma LMS en la Zona Oriente</span>
+                  <p>Encargado de promover la medicina complementaria, coordinar las convocatorias locales y dirigir la organización de eventos y prácticas clínicas supervisadas en Huánuco.</p>
+                </div>
+              </div>
+
+              <!-- Llamado a la Acción (CTA) Premium -->
+              <div class="sedes-cta-box-premium">
+                <div class="cta-content">
+                  <h4>¿Vives en Huánuco o la zona oriente?</h4>
+                  <p>Ponte en contacto directo con Alesandro para matricularte, resolver dudas sobre talleres prácticos presenciales o solicitar información específica de tu región.</p>
+                </div>
+                
+                <div class="sedes-actions">
+                  <a href="https://wa.me/51939371250?text=Hola%20Alesandro,%20me%20comunico%20desde%20la%20zona%20oriente%20para%20solicitar%20información%20sobre%20la%20sede%20Huánuco%20y%20talleres%20presenciales" target="_blank" rel="noopener noreferrer" class="btn btn-primary-custom">
+                    <span class="material-symbols-outlined">chat</span>
+                    Escribir por WhatsApp
+                  </a>
+                  <a href="tel:+51924619472" class="btn btn-secondary-custom">
+                    <span class="material-symbols-outlined">call</span>
+                    Llamar al Representante
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tarjeta Lateral de Beneficios -->
+            <div class="sedes-visual-card">
+              <div class="visual-decor">
+                <img src="assets/SedeHuanuco1.jpg" alt="Sede Huánuco Plataforma LMS" class="sedes-visual-img">
+                <div class="visual-gradient-overlay"></div>
+                <div class="visual-content-bottom">
+                  <h3>Fomento de Medicina Complementaria</h3>
+                  <p>Organizando seminarios presenciales, jornadas de salud gratuitas y prácticas comunitarias.</p>
+                </div>
+                <button class="btn-zoom-image" (click)="openModal('assets/SedeHuanuco1.jpg')" title="Ver más grande">
+                  <span class="material-symbols-outlined">zoom_in</span>
+                  <span>Ver más grande</span>
+                </button>
+              </div>
+              
+              <div class="sedes-bento-features">
+                <div class="bento-feature-item">
+                  <span class="material-symbols-outlined">event_note</span>
+                  <div>
+                    <h4>Talleres Intensivos</h4>
+                    <p>Seminarios de fines de semana diseñados para facilitar la asistencia de estudiantes de todo el oriente peruano.</p>
+                  </div>
+                </div>
+                <div class="bento-feature-item">
+                  <span class="material-symbols-outlined">verified_user</span>
+                  <div>
+                    <h4>Prácticas Clínicas</h4>
+                    <p>Espacios comunitarios supervisados por Alesandro para aplicar tratamientos reales de Acupuntura y Ventosas.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEDE LIMA -->
+        <div *ngIf="activeTab === 'lima'" class="sedes-tab-panel animate-fade-in">
+          <div class="sedes-card-layout">
+            <div class="sedes-info-card">
+              <span class="sedes-badge">Sede Central</span>
+              <h2>Sede Lima (Lince)</h2>
+              <p class="sedes-description">
+                Nuestra sede principal está totalmente adaptada para la instrucción de alta gama. Cuenta con aulas modernas de teoría, salas equipadas con camillas de simulación clínica y un área administrativa para brindarte el mejor soporte presencial.
+              </p>
+
+              <!-- Grid de Tarjetas de Contacto Interactivas -->
+              <div class="contact-cards-grid">
+                <div class="contact-card-item">
+                  <div class="card-icon">
+                    <span class="material-symbols-outlined">location_on</span>
+                  </div>
+                  <div class="card-text">
+                    <span>DIRECCIÓN FISICA</span>
+                    <h3>Av. Julio C. Tello 438</h3>
+                    <p>Lince, Lima, Perú</p>
+                  </div>
+                </div>
+
+                <div class="contact-card-item">
+                  <div class="card-icon">
+                    <span class="material-symbols-outlined">chat</span>
+                  </div>
+                  <div class="card-text">
+                    <span>WHATSAPP ADMISIÓN</span>
+                    <h3>939 371 250</h3>
+                    <p>Respuestas inmediatas 24/7</p>
+                  </div>
+                </div>
+
+                <div class="contact-card-item">
+                  <div class="card-icon">
+                    <span class="material-symbols-outlined">support_agent</span>
+                  </div>
+                  <div class="card-text">
+                    <span>TELÉFONO DE ATENCIÓN</span>
+                    <h3>+51 984 256 712</h3>
+                    <p>Lunes a Sábado de 9am a 6pm</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CTA Lima -->
+              <div class="sedes-cta-box-premium mt-8">
+                <div class="sedes-actions">
+                  <a href="https://wa.me/51939371250?text=Hola,%20deseo%20información%20sobre%20las%20formaciones%20presenciales%20en%20la%20Sede%20Lima" target="_blank" rel="noopener noreferrer" class="btn btn-primary-custom">
+                    <span class="material-symbols-outlined">chat</span>
+                    Conversar con Admisión Lima
+                  </a>
+                  <a href="https://maps.app.goo.gl/9uG5C" target="_blank" rel="noopener noreferrer" class="btn btn-secondary-custom">
+                    <span class="material-symbols-outlined">directions</span>
+                    ¿Cómo llegar?
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carrusel y Mapa de Ubicación -->
+            <div class="sedes-visual-card">
+              <!-- Carrusel -->
+              <div class="visual-decor sedes-carousel-container">
+                <div class="carousel-slides" [style.transform]="'translateX(' + (-limaActiveIndex * 100) + '%)'">
+                  <div class="carousel-slide" *ngFor="let img of limaImages">
+                    <img [src]="img" alt="Sede Lima" class="sedes-visual-img">
+                  </div>
+                </div>
+                <button class="carousel-btn prev" (click)="prevLimaImage()" aria-label="Imagen anterior">
+                  <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button class="carousel-btn next" (click)="nextLimaImage()" aria-label="Siguiente imagen">
+                  <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+                <button class="btn-zoom-image" (click)="openModal(limaImages[limaActiveIndex])" title="Ver más grande">
+                  <span class="material-symbols-outlined">zoom_in</span>
+                  <span>Ver más grande</span>
+                </button>
+                <div class="carousel-dots">
+                  <span 
+                    *ngFor="let img of limaImages; let i = index" 
+                    [class.active]="i === limaActiveIndex"
+                    (click)="limaActiveIndex = i">
+                  </span>
+                </div>
+              </div>
+
+              <!-- Mapa Estilo Ventana de Aplicación -->
+              <div class="sedes-map-card mt-6">
+                <div class="window-top-bar">
+                  <div class="window-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <div class="window-title">Google Maps — Sede Lince</div>
+                </div>
+                <div class="map-container">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3901.377885392815!2d-77.0383475!3d-12.086262399999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c96c68aee5a7%3A0xcab144ed9521a5da!2sPlataforma LMS!5e0!3m2!1ses-419!2spe!4v1785661841712!5m2!1ses-419!2spe" 
+                    width="100%" 
+                    height="100%" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="strict-origin-when-cross-origin">
+                  </iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEDE PIURA -->
+        <div *ngIf="activeTab === 'piura'" class="sedes-tab-panel animate-fade-in">
+          <div class="sedes-card-layout">
+            <div class="sedes-info-card">
+              <span class="sedes-badge">Sede Norte</span>
+              <h2>Sede Piura</h2>
+              <p class="sedes-description">
+                Acercamos la mejor capacitación teórico-práctica al norte del Perú. En la sede de Piura coordinamos convocatorias descentralizadas para que nuestros alumnos estudien sin necesidad de trasladarse a la capital, garantizando la misma calidad académica y aval oficial.
+              </p>
+
+              <!-- Bento Grid de Especialidades Proyectadas -->
+              <div class="piura-bento-grid">
+                <div class="piura-bento-item">
+                  <div class="item-icon"><span class="material-symbols-outlined">health_and_safety</span></div>
+                  <h3>Acupuntura Práctica</h3>
+                  <p>Jornadas clínicas presenciales e inserción de agujas con supervisión docente.</p>
+                </div>
+                <div class="piura-bento-item">
+                  <div class="item-icon"><span class="material-symbols-outlined">earbuds</span></div>
+                  <h3>Auriculoterapia</h3>
+                  <p>Talleres intensivos para el tratamiento del dolor y la ansiedad por microsistema auricular.</p>
+                </div>
+                <div class="piura-bento-item">
+                  <div class="item-icon"><span class="material-symbols-outlined">back_hand</span></div>
+                  <h3>Terapia Manual</h3>
+                  <p>Técnicas de masaje descontracturante, ventosas y reflexología podal presencial.</p>
+                </div>
+              </div>
+
+              <!-- CTA Piura -->
+              <div class="sedes-cta-box-premium mt-8">
+                <div class="cta-content">
+                  <h4>¿Quieres estudiar en Piura?</h4>
+                  <p>Regístrate en nuestra lista de interés de la sede norte para reservar tu vacante y recibir de primera mano el cronograma de clases presenciales en Piura.</p>
+                </div>
+                <div class="sedes-actions">
+                  <a href="https://wa.me/51939371250?text=Hola,%20deseo%20registrarme%20en%20la%20lista%20de%20interesados%20para%20la%20Sede%20Piura" target="_blank" rel="noopener noreferrer" class="btn btn-primary-custom">
+                    <span class="material-symbols-outlined">edit_note</span>
+                    Registrarme a la Lista de Interés
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tarjeta Visual de Sede Piura -->
+            <div class="sedes-visual-card">
+              <div class="visual-decor">
+                <img src="assets/SedePiura1.jpg" alt="Cursos presenciales Plataforma LMS Piura" class="sedes-visual-img">
+                <div class="visual-gradient-overlay"></div>
+                <div class="visual-content-bottom">
+                  <h3>Capacitación Descentralizada</h3>
+                  <p>Clases intensivas diseñadas para terapeutas y profesionales de la salud del norte del Perú.</p>
+                </div>
+                <button class="btn-zoom-image" (click)="openModal('assets/SedePiura1.jpg')" title="Ver más grande">
+                  <span class="material-symbols-outlined">zoom_in</span>
+                  <span>Ver más grande</span>
+                </button>
+              </div>
+              <div class="sedes-bento-features">
+                <div class="bento-feature-item">
+                  <span class="material-symbols-outlined">notifications_active</span>
+                  <div>
+                    <h4>Alertas de Inicio</h4>
+                    <p>Entérate inmediatamente cuando lancemos el calendario de talleres clínicos de Acupuntura en Piura.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Lightbox Modal para ampliar imagen -->
+<div *ngIf="isModalOpen" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[9999] flex items-center justify-center p-4" (click)="closeModal()">
+  <button class="absolute top-4 right-4 text-white hover:text-gray-300 p-2 focus:outline-none" (click)="closeModal()" aria-label="Cerrar vista grande">
+    <span class="material-symbols-outlined text-4xl">close</span>
+  </button>
+  <img [src]="modalImageUrl" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-scale-up-modal" (click)="$event.stopPropagation()" alt="Vista ampliada de la sede">
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,28 @@
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: insteip-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "127.0.0.1:5455:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+    command: >
+      postgres
+      -c shared_buffers=2560MB
+      -c effective_cache_size=8192MB
+      -c work_mem=16MB
+      -c maintenance_work_mem=256MB
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.max=10000
+      -c pg_stat_statements.track=all
+
+volumes:
+  postgres_data:

@@ -1,0 +1,109 @@
+﻿<div class="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-6 font-body text-slate-800 dark:text-slate-200 transition-colors duration-300">
+  
+  <div class="w-full max-w-lg bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-800 p-8 rounded-none shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] dark:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.35)] relative overflow-hidden transition-colors duration-300">
+    
+    <!-- Branding Header inside card -->
+    <div class="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-5 mb-6">
+      <div class="w-8 h-8 bg-slate-900 dark:bg-slate-100 border border-slate-900 dark:border-slate-100 text-white dark:text-slate-900 flex items-center justify-center font-black text-sm rounded-none">
+        I
+      </div>
+      <div>
+        <h2 class="text-xs font-black tracking-wider uppercase text-slate-900 dark:text-slate-100 leading-none">Plataforma LMS</h2>
+        <span class="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest leading-none">Sistema de Verificación Digital</span>
+      </div>
+    </div>
+
+    <ng-container *ngIf="isLoading">
+      <app-skeleton-loader type="custom"></app-skeleton-loader>
+    </ng-container>
+
+    <div *ngIf="!isLoading">
+      
+      <!-- ================= SUCCESS VALIDATION STATE ================= -->
+      <div *ngIf="validationData" class="space-y-6">
+        
+        <!-- Validation Status Badge (Brutalist style) -->
+        <div class="border-2 border-emerald-500 bg-emerald-50 text-emerald-800 p-4 text-center rounded-none flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-xl font-black">verified</span>
+          <span class="text-xs font-black uppercase tracking-widest">✓ CERTIFICADO VÁLIDO</span>
+        </div>
+
+        <p class="text-xs text-slate-500 dark:text-slate-400 text-center leading-relaxed">
+          El Instituto Plataforma LMS certifica la autenticidad de la siguiente acreditación académica registrada en nuestros servidores oficiales:
+        </p>
+
+        <!-- Structured Details Grid -->
+        <div class="border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 rounded-none overflow-hidden">
+          <div class="grid grid-cols-3 border-b border-slate-200 dark:border-slate-800 divide-x divide-slate-200 dark:divide-slate-800 text-xs">
+            <div class="p-4 bg-slate-100 dark:bg-slate-800 font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest text-[9px] flex items-center col-span-1">
+              Alumno
+            </div>
+            <div class="p-4 text-slate-900 dark:text-slate-100 font-black uppercase col-span-2" data-testid="validation-alumno">
+              {{ validationData.alumno }}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 border-b border-slate-200 dark:border-slate-800 divide-x divide-slate-200 dark:divide-slate-800 text-xs">
+            <div class="p-4 bg-slate-100 dark:bg-slate-800 font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest text-[9px] flex items-center col-span-1">
+              Curso
+            </div>
+            <div class="p-4 text-slate-900 dark:text-slate-100 font-black uppercase col-span-2" data-testid="validation-curso">
+              {{ validationData.curso }}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 border-b border-slate-200 dark:border-slate-800 divide-x divide-slate-200 dark:divide-slate-800 text-xs">
+            <div class="p-4 bg-slate-100 dark:bg-slate-800 font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest text-[9px] flex items-center col-span-1">
+              Emitido
+            </div>
+            <div class="p-4 text-slate-700 dark:text-slate-300 font-mono text-[11px] col-span-2" data-testid="validation-fecha">
+              {{ validationData.fechaEmision | date:'dd/MM/yyyy' }}
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 divide-x divide-slate-200 dark:divide-slate-800 text-xs">
+            <div class="p-4 bg-slate-100 dark:bg-slate-800 font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest text-[9px] flex items-center col-span-1">
+              Código
+            </div>
+            <div class="p-4 text-slate-900 dark:text-slate-100 font-mono font-black col-span-2" data-testid="validation-codigo">
+              {{ validationData.codigo }}
+            </div>
+          </div>
+        </div>
+
+        <p class="text-[10px] text-slate-400 dark:text-slate-500 text-center italic mt-4">
+          Copia de seguridad registrada bajo protocolo de auditoría académica digital.
+        </p>
+      </div>
+
+      <!-- ================= ERROR / INVALID STATE ================= -->
+      <div *ngIf="errorMsg" class="space-y-6">
+        <div class="border-2 border-red-500 bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-200 p-4 text-center rounded-none flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-xl font-black">gpp_bad</span>
+          <span class="text-xs font-black uppercase tracking-widest">✗ CERTIFICADO NO REGISTRADO</span>
+        </div>
+
+        <div class="border border-red-100 dark:border-red-900/50 bg-red-50/30 dark:bg-red-950/20 p-6 text-center text-xs text-red-800 dark:text-red-200 rounded-none leading-relaxed">
+          {{ errorMsg }}
+        </div>
+
+        <p class="text-xs text-slate-500 dark:text-slate-400 text-center leading-relaxed">
+          Verifique que el código copiado coincida exactamente con la credencial del alumno, incluyendo los guiones. Si el error persiste, la credencial puede haber sido alterada.
+        </p>
+      </div>
+
+      <!-- Return back button -->
+      <div class="mt-8 border-t border-slate-200 dark:border-slate-800 pt-6 flex justify-center">
+        <a 
+          routerLink="/login" 
+          class="px-5 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors rounded-none inline-flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm">home</span>
+          <span>Volver al Login</span>
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

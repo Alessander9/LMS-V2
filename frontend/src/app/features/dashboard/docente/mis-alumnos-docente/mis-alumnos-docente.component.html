@@ -1,0 +1,228 @@
+<div class="space-y-8 font-body text-slate-800 dark:text-slate-200 transition-colors duration-300">
+  <div class="border border-slate-200 dark:border-slate-800 p-8 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div>
+      <button (click)="goBack()" class="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">
+        <span class="material-symbols-outlined text-sm">arrow_back</span>
+        <span>Regresar a cursos</span>
+      </button>
+      <h1 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight uppercase leading-none">Estudiantes Matriculados</h1>
+      <p class="text-slate-500 dark:text-slate-400 text-xs mt-2" *ngIf="curso">Listado del curso: <strong class="uppercase">{{ curso.nombre }}</strong>.</p>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+      <label class="flex items-center gap-2 border border-slate-200 dark:border-slate-700 px-3 py-2 bg-slate-50 dark:bg-slate-800 w-full sm:w-72">
+        <span class="material-symbols-outlined text-sm text-slate-400">search</span>
+        <input [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" type="text" placeholder="Buscar alumno, correo o fecha" class="w-full bg-transparent outline-none text-sm">
+      </label>
+      <button (click)="toggleDateSort()" class="px-4 py-2 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">schedule</span>
+        <span>Fecha {{ dateSortOrder === 'desc' ? '↓' : '↑' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="isLoading">
+    <app-skeleton-loader type="custom"></app-skeleton-loader>
+  </ng-container>
+
+  <div *ngIf="!isLoading && filteredEstudiantes.length === 0" class="border border-slate-200 dark:border-slate-800 p-12 text-center bg-white dark:bg-slate-900">
+    <span class="material-symbols-outlined text-5xl text-slate-300 dark:text-slate-800 mb-2">group_off</span>
+    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 uppercase">Sin resultados</h3>
+    <p class="text-slate-500 dark:text-slate-400 text-xs mt-1.5 max-w-sm mx-auto">No encontramos estudiantes con esos criterios.</p>
+  </div>
+
+  <div *ngIf="!isLoading && pagedEstudiantes.length > 0" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <th class="py-4 px-6">Alumno</th>
+            <th class="py-4 px-6">Correo</th>
+            <th class="py-4 px-6">Progreso</th>
+            <th class="py-4 px-6">Estado</th>
+            <th class="py-4 px-6">Última Actividad</th>
+            <th class="py-4 px-6 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+          <tr *ngFor="let estudiante of pagedEstudiantes" class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors duration-200">
+            <td class="py-4 px-6 font-bold text-slate-900 dark:text-white uppercase">{{ estudiante.nombres }} {{ estudiante.apellidos }}</td>
+            <td class="py-4 px-6 text-slate-500 dark:text-slate-400 font-mono">{{ estudiante.correo }}</td>
+            <td class="py-4 px-6">
+              <div class="flex items-center gap-3 min-w-[150px]">
+                <div class="flex-grow bg-slate-200 dark:bg-slate-800 h-1.5 overflow-hidden">
+                  <div class="bg-slate-900 dark:bg-slate-100 h-full" [style.width.%]="estudiante.porcentajeAvance"></div>
+                </div>
+                <span class="font-bold text-slate-900 dark:text-white font-mono">{{ estudiante.porcentajeAvance }}%</span>
+              </div>
+            </td>
+            <td class="py-4 px-6">
+              <span [ngClass]="{
+                'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900/60': estudiante.completado,
+                'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700': !estudiante.completado
+              }" class="text-[9px] font-black uppercase tracking-widest border px-2 py-0.5">
+                {{ estudiante.completado ? 'Completado' : 'En Curso' }}
+              </span>
+            </td>
+            <td class="py-4 px-6 text-slate-400 dark:text-slate-500">{{ estudiante.fechaActualizacion | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="py-4 px-6 text-right">
+              <div class="inline-flex items-center gap-1.5 justify-end">
+                <!-- Botón de Control Modular (Cuotas) -->
+                <button
+                  *ngIf="estudiante.matriculaId"
+                  (click)="abrirModalModulos(estudiante)"
+                  title="Gestionar Acceso a Módulos (Cuotas)"
+                  class="p-1.5 border border-amber-300 dark:border-amber-800 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30 rounded-none transition-all inline-flex items-center justify-center">
+                  <span class="material-symbols-outlined text-base block">lock_open</span>
+                </button>
+
+                <!-- Botón de Ficha de Matrícula en PDF -->
+                <button 
+                  *ngIf="estudiante.matriculaId"
+                  (click)="descargarFichaDocente(estudiante)"
+                  title="Descargar Ficha Consolidada en PDF"
+                  class="p-1.5 border border-indigo-200 dark:border-indigo-900/60 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 rounded-none transition-all shadow-[1px_1px_0px_0px_rgba(0,0,0,0.03)] inline-flex items-center justify-center">
+                  <span class="material-symbols-outlined text-base block">picture_as_pdf</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && totalPages > 1" class="flex items-center justify-between border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
+    <p class="text-xs font-bold uppercase tracking-widest text-slate-500">Página {{ currentPage }} de {{ totalPages }}</p>
+    <div class="flex items-center gap-2">
+      <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-3 py-2 border text-xs font-bold uppercase disabled:opacity-40">Anterior</button>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="px-3 py-2 border text-xs font-bold uppercase disabled:opacity-40">Siguiente</button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: GESTIÓN DE ACCESO A MÓDULOS POR CUOTAS / MENSUALIDADES -->
+  <!-- ========================================================================= -->
+  <div *ngIf="showModulosModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+            <span class="material-symbols-outlined text-xl">tune</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-black uppercase tracking-tight text-slate-900 dark:text-white">Control de Acceso por Módulos</h3>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Habilitación individual para pagos por cuotas</p>
+          </div>
+        </div>
+        <button (click)="cerrarModalModulos()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Student info badge -->
+      <div class="px-5 py-3 bg-indigo-50/60 dark:bg-indigo-950/30 border-b border-indigo-100 dark:border-indigo-900/40 flex items-center justify-between gap-2">
+        <div class="overflow-hidden">
+          <span class="text-[9px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400 block">Estudiante</span>
+          <p class="text-xs font-bold text-slate-900 dark:text-white truncate uppercase">{{ selectedEstudiante?.nombres }} {{ selectedEstudiante?.apellidos }}</p>
+        </div>
+        <div class="text-right shrink-0">
+          <span class="text-[9px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400 block">Matrícula ID</span>
+          <span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">#{{ selectedEstudiante?.matriculaId }}</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions Header -->
+      <div class="px-5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          Módulos del Curso ({{ modulosAcceso.length }})
+        </span>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            (click)="habilitarTodosModulos(true)"
+            [disabled]="loadingModulos || isSavingModulos"
+            class="text-[9px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400 hover:underline">
+            Habilitar Todos
+          </button>
+          <span class="text-slate-300 dark:text-slate-700">•</span>
+          <button
+            type="button"
+            (click)="habilitarTodosModulos(false)"
+            [disabled]="loadingModulos || isSavingModulos"
+            class="text-[9px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 hover:underline">
+            Bloquear Todos
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body (Modules List with Toggle Switches) -->
+      <div class="p-5 overflow-y-auto space-y-3 flex-1">
+        
+        <!-- Loading State -->
+        <div *ngIf="loadingModulos" class="py-10 text-center text-slate-400">
+          <div class="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+          <p class="text-xs font-bold uppercase tracking-wider">Cargando módulos...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loadingModulos && modulosAcceso.length === 0" class="py-8 text-center text-slate-400">
+          <span class="material-symbols-outlined text-4xl mb-1 text-slate-300">view_module</span>
+          <p class="text-xs font-semibold">Este curso no tiene módulos registrados aún.</p>
+        </div>
+
+        <!-- Modules Items -->
+        <div 
+          *ngFor="let m of modulosAcceso"
+          class="border border-slate-200 dark:border-slate-800 p-3.5 flex items-center justify-between gap-3 transition-colors"
+          [ngClass]="m.habilitado ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/70 dark:bg-slate-800/30 opacity-80'">
+          
+          <div class="flex items-center gap-3 overflow-hidden">
+            <div 
+              [ngClass]="m.habilitado ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800' : 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800'"
+              class="w-8 h-8 border flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-base">
+                {{ m.habilitado ? 'lock_open' : 'lock' }}
+              </span>
+            </div>
+            
+            <div class="overflow-hidden">
+              <span class="text-[9px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block">
+                Módulo {{ m.orden }}
+              </span>
+              <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate uppercase">
+                {{ m.nombreModulo }}
+              </h4>
+            </div>
+          </div>
+
+          <!-- Toggle Switch Button -->
+          <button
+            type="button"
+            (click)="toggleModuloAcceso(m)"
+            [disabled]="isSavingModulos"
+            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none"
+            [ngClass]="m.habilitado ? 'bg-emerald-600' : 'bg-slate-300 dark:bg-slate-700'">
+            <span
+              class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+              [ngClass]="m.habilitado ? 'translate-x-5' : 'translate-x-0'"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
+        <span class="text-[9px] text-slate-400">
+          Los cambios se guardan y reflejan inmediatamente en el aula del estudiante.
+        </span>
+        <button
+          type="button"
+          (click)="cerrarModalModulos()"
+          class="px-5 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-900 text-xs font-bold uppercase tracking-wider transition-colors">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

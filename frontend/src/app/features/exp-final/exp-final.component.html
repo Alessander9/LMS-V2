@@ -1,0 +1,237 @@
+﻿<div class="exp-final-page">
+  <!-- Atmospheric Glow Elements -->
+  <div class="exp-final-page__grid" aria-hidden="true"></div>
+  <div class="exp-final-page__orb exp-final-page__orb--one" aria-hidden="true"></div>
+  <div class="exp-final-page__orb exp-final-page__orb--two" aria-hidden="true"></div>
+
+  <!-- Header / Navigation -->
+  <header class="exp-final-header">
+    <div class="exp-final-shell">
+      <a routerLink="/inicio" class="exp-final-brand" title="Ir al portal principal de Plataforma LMS">
+        <img src="assets/plataforma_lms-logo.png" alt="Plataforma LMS Logo" class="exp-final-logo-img" />
+        <div class="exp-final-brand-text">
+          <span class="exp-final-brand-title">Plataforma LMS</span>
+          <span class="exp-final-brand-subtitle">Instituto de Terapias Integrales Perú</span>
+        </div>
+      </a>
+
+      <a routerLink="/inicio" class="exp-final-back-btn">
+        <span>Volver al portal</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content Shell -->
+  <main class="exp-final-main">
+    <div class="exp-final-shell">
+      <div class="exp-final-card">
+        
+        <!-- Status Kicker Badge -->
+        <div class="exp-final-badge">
+          <span class="exp-badge-pulse"></span>
+          <span>Sesión EXP Plataforma LMS Concluida</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="exp-final-title">
+          ¡Esperamos que hayas disfrutado la <span class="exp-title-highlight">Experiencia Plataforma LMS</span>!
+        </h1>
+
+        <!-- Description -->
+        <p class="exp-final-desc">
+          Has conocido de cerca nuestro campus virtual y la excelencia académica de nuestras formaciones en terapias integrales.
+          <br class="hidden-mobile" />
+          <strong class="exp-desc-bold">Da el siguiente paso en tu formación profesional:</strong> matricúlate hoy mismo y accede al temario completo, materiales clínicos y certificación oficial.
+        </p>
+
+        <!-- Bento Value Pillars Grid -->
+        <div class="exp-pillars-grid">
+          
+          <div class="exp-pillar-card">
+            <div class="exp-pillar-icon-wrap exp-pillar-icon--emerald">
+              <span class="material-symbols-outlined">verified</span>
+            </div>
+            <div class="exp-pillar-content">
+              <h3>Certificación Oficial</h3>
+              <p>Respaldo curricular institucional con validez profesional y acreditaciones.</p>
+            </div>
+          </div>
+
+          <div class="exp-pillar-card">
+            <div class="exp-pillar-icon-wrap exp-pillar-icon--navy">
+              <span class="material-symbols-outlined">devices</span>
+            </div>
+            <div class="exp-pillar-content">
+              <h3>Campus 24/7 Ilimitado</h3>
+              <p>Acceso permanente a videoclases HD, foros y descarga de materiales.</p>
+            </div>
+          </div>
+
+          <div class="exp-pillar-card">
+            <div class="exp-pillar-icon-wrap exp-pillar-icon--teal">
+              <span class="material-symbols-outlined">clinical_notes</span>
+            </div>
+            <div class="exp-pillar-content">
+              <h3>Asesoría Docente</h3>
+              <p>Acompañamiento pedagógico continuo y resolución personalizada de casos clínicos.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action Buttons: Cursos Online, Cursos Presenciales, Matricularme Ahora -->
+        <div class="exp-actions-container">
+          <div class="exp-actions-label">
+            <span class="material-symbols-outlined">touch_app</span>
+            <span>Elige tu siguiente paso:</span>
+          </div>
+
+          <div class="exp-actions-grid">
+            
+            <!-- 1. Botón Cursos Online -->
+            <a routerLink="/cursos-online" class="exp-btn exp-btn--outline-blue">
+              <span class="material-symbols-outlined">devices</span>
+              <span>Cursos Online</span>
+            </a>
+
+            <!-- 2. Botón Cursos Presenciales -->
+            <a routerLink="/cursos-presenciales" class="exp-btn exp-btn--outline-teal">
+              <span class="material-symbols-outlined">location_city</span>
+              <span>Cursos Presenciales</span>
+            </a>
+
+            <!-- 3. Botón Destacado: Matricularme ahora (WhatsApp) -->
+            <a [href]="whatsappMatriculaUrl" target="_blank" rel="noopener noreferrer" class="exp-btn exp-btn--matricula">
+              <span class="material-symbols-outlined">school</span>
+              <span>Matricularme ahora</span>
+              <span class="exp-wa-mini-badge">WhatsApp</span>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Enhanced Direct WhatsApp Helpline Card -->
+        <div class="exp-helpline-card">
+          <div class="exp-helpline-left">
+            <div class="exp-helpline-avatar">
+              <span class="material-symbols-outlined">support_agent</span>
+              <span class="exp-online-dot"></span>
+            </div>
+            <div class="exp-helpline-info">
+              <div class="exp-helpline-header">
+                <span class="exp-helpline-title">Atención directa de Admisiones por WhatsApp</span>
+                <span class="exp-live-pill">En línea</span>
+              </div>
+              <p class="exp-helpline-subtitle">Resuelve tus dudas sobre temarios, horarios, promociones y métodos de pago.</p>
+            </div>
+          </div>
+
+          <a [href]="whatsappMatriculaUrl" target="_blank" rel="noopener noreferrer" class="exp-helpline-btn">
+            <span class="exp-wa-icon-large">💬</span>
+            <div class="exp-helpline-btn-text">
+              <small>Chatear con un asesor</small>
+              <strong>+51 939 371 250</strong>
+            </div>
+          </a>
+        </div>
+
+        <!-- Social Media Invitation Section -->
+        <div class="exp-social-section">
+          <div class="exp-social-header">
+            <h2 class="exp-social-title">
+              <span>✨</span> ¡Únete a nuestra comunidad terapéutica! <span>🌿</span>
+            </h2>
+            <p class="exp-social-desc">
+              Síguenos en nuestras redes sociales oficiales para acceder a clases gratuitas, demostraciones clínicas, casos prácticos y novedades exclusivas:
+            </p>
+          </div>
+
+          <div class="exp-social-grid">
+            
+            <!-- TikTok -->
+            <a href="https://www.tiktok.com/@terapias.integrales" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="exp-social-pill social-pill--tiktok"
+               title="Seguir a Plataforma LMS en TikTok">
+              <div class="exp-social-icon-box">
+                <svg class="exp-social-svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.89 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.58a8.28 8.28 0 0 0 3.77.92V6.69z"/>
+                </svg>
+              </div>
+              <div class="exp-social-info">
+                <strong>TikTok</strong>
+                <small>@terapias.integrales</small>
+              </div>
+              <span class="material-symbols-outlined exp-social-arrow">north_east</span>
+            </a>
+
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/institutodeterapias/?hl=es%20Plataforma LMS" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="exp-social-pill social-pill--instagram"
+               title="Seguir a Plataforma LMS en Instagram">
+              <div class="exp-social-icon-box">
+                <svg class="exp-social-svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </div>
+              <div class="exp-social-info">
+                <strong>Instagram</strong>
+                <small>&#64;institutodeterapias</small>
+              </div>
+              <span class="material-symbols-outlined exp-social-arrow">north_east</span>
+            </a>
+
+            <!-- Facebook -->
+            <a href="https://www.facebook.com/Plataforma LMS" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="exp-social-pill social-pill--facebook"
+               title="Seguir a Plataforma LMS en Facebook">
+              <div class="exp-social-icon-box">
+                <svg class="exp-social-svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </div>
+              <div class="exp-social-info">
+                <strong>Facebook</strong>
+                <small>Plataforma LMS</small>
+              </div>
+              <span class="material-symbols-outlined exp-social-arrow">north_east</span>
+            </a>
+
+            <!-- YouTube -->
+            <a href="https://www.youtube.com/@Plataforma LMSperucursosterapiasc4318" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="exp-social-pill social-pill--youtube"
+               title="Suscribirse al canal de Plataforma LMS en YouTube">
+              <div class="exp-social-icon-box">
+                <svg class="exp-social-svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </div>
+              <div class="exp-social-info">
+                <strong>YouTube</strong>
+                <small>Plataforma LMS Perú</small>
+              </div>
+              <span class="material-symbols-outlined exp-social-arrow">north_east</span>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Page Footer -->
+  <footer class="exp-page-footer">
+    <div class="exp-final-shell">
+      <p>© 2026 Plataforma LMS — Instituto de Terapias Integrales Perú. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+</div>

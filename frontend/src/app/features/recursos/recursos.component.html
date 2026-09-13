@@ -1,0 +1,47 @@
+<app-navbar></app-navbar>
+<main class="pt-20 bg-surface dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300 min-h-screen">
+  <!-- New Free Resources Section for Lead Capture -->
+<section class="py-20 border-b border-surface-variant/40 dark:border-slate-800" id="recursos">
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+    <div class="bg-gradient-to-br from-primary to-slate-900 rounded-3xl p-8 md:p-16 text-on-primary shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center gap-12 animate-scale-up">
+      <!-- Glow blobs inside the card -->
+      <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-secondary/15 rounded-full blur-[80px] pointer-events-none"></div>
+      
+      <div class="flex-1 space-y-6 relative z-10">
+        <span class="inline-block bg-secondary text-on-secondary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider animate-fade-in-up">Recursos Gratuitos</span>
+        <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-4 leading-tight animate-fade-in-up delay-100">Inicia tu camino hoy mismo sin costo</h2>
+        <p class="font-body-lg text-white/80 text-lg mb-8 max-w-lg animate-fade-in-up delay-200">
+          Descarga nuestra <strong>"Guía Definitiva de Terapias Holísticas"</strong> o regístrate para nuestra próxima Masterclass introductoria en vivo. El primer paso hacia tu transformación profesional es gratis.
+        </p>
+        
+        <div class="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 max-w-md shadow-lg animate-fade-in-up delay-300">
+          <h4 class="font-label-md text-white mb-4 text-sm font-bold tracking-wide">Obtén la guía en tu correo:</h4>
+          <form class="flex flex-col gap-3">
+            <input class="w-full rounded-lg border-white/20 bg-white/10 text-white placeholder-white/50 px-4 py-3 text-sm focus:ring-secondary focus:border-secondary transition-all" placeholder="Tu nombre" type="text"/>
+            <input class="w-full rounded-lg border-white/20 bg-white/10 text-white placeholder-white/50 px-4 py-3 text-sm focus:ring-secondary focus:border-secondary transition-all" placeholder="Tu correo electrónico" type="email"/>
+            <button class="bg-secondary text-on-secondary font-label-md px-6 py-3.5 rounded-lg shadow-lg hover:bg-secondary/95 hover:shadow-secondary/25 transition-all duration-300 w-full flex justify-center items-center gap-2 mt-2 transform hover:-translate-y-0.5" type="button">
+              Descargar Guía Ahora <span class="material-symbols-outlined text-sm">download</span>
+            </button>
+          </form>
+          <p class="text-[11px] text-white/60 mt-4 text-center">Tus datos están 100% seguros con nosotros.</p>
+        </div>
+      </div>
+      
+      <div class="flex-1 w-full relative z-10 flex justify-center perspective-3d animate-scale-up delay-200">
+        <div class="relative bg-surface rounded-2xl overflow-hidden shadow-2xl border border-surface-variant/40 book-card w-full max-w-sm h-[400px] md:h-[480px]">
+          <img alt="Recurso Gratuito Guia" class="object-cover w-full h-full opacity-95 hover:scale-105 transition-transform duration-700" src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/45 to-transparent flex flex-col justify-end p-8">
+            <div class="bg-secondary text-on-secondary w-14 h-14 rounded-full flex items-center justify-center mb-4 shadow-lg">
+              <span class="material-symbols-outlined text-2xl">menu_book</span>
+            </div>
+            <h3 class="font-headline-md text-white mb-2 text-xl tracking-tight">Guía Oficial de Terapias</h3>
+            <p class="text-white/80 text-xs leading-relaxed">60+ páginas de contenido exclusivo sobre tendencias, salidas laborales y metodologías en el sector holístico.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<app-footer></app-footer>

@@ -1,0 +1,239 @@
+﻿<app-navbar></app-navbar>
+
+<main class="pt-20 bg-surface dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+  <!-- If course is not found -->
+  <div *ngIf="!curso" class="min-h-screen flex flex-col items-center justify-center text-center p-6 space-y-6">
+    <span class="material-symbols-outlined text-6xl text-primary/40 dark:text-slate-600">menu_book</span>
+    <h1 class="font-headline-xl text-3xl font-bold text-primary dark:text-white">Curso no encontrado</h1>
+    <p class="text-on-surface-variant dark:text-slate-400 max-w-md">Lo sentimos, el curso que buscas no existe o ha sido modificado. Vuelve a nuestro catálogo para ver todos los cursos disponibles.</p>
+    <a routerLink="/cursos" class="bg-primary text-on-primary px-6 py-3 rounded-lg font-bold shadow-md hover:bg-primary/95 transition-all">Ver todos los cursos</a>
+  </div>
+
+  <!-- If course is found -->
+  <div *ngIf="curso" class="animate-fade-in">
+    <!-- Hero Header Section -->
+    <div class="relative bg-gradient-to-br from-primary via-[#002d57] to-[#001c37] text-white overflow-hidden py-16 md:py-24 border-b border-primary-variant/30">
+      <!-- Glow effects -->
+      <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-secondary/15 blur-3xl"></div>
+      <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-primary-container/20 blur-3xl"></div>
+      
+      <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10 space-y-6">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-xs text-white/60 font-medium">
+          <a routerLink="/inicio" class="hover:text-white transition-colors">Inicio</a>
+          <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+          <a routerLink="/cursos" class="hover:text-white transition-colors">Cursos</a>
+          <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+          <span class="text-white/90 truncate">{{ curso.title }}</span>
+        </nav>
+
+        <div class="max-w-3xl space-y-6">
+          <span class="inline-block bg-secondary text-white text-xs font-extrabold uppercase px-3.5 py-1.5 rounded-full tracking-wider shadow-sm">{{ curso.category === 'CORTOS' ? 'Curso Corto' : 'Diplomado' }}</span>
+          <h1 class="font-headline-xl text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight md:leading-none text-white drop-shadow-sm">{{ curso.title }}</h1>
+          <p class="font-body-lg text-lg text-white/80 leading-relaxed max-w-2xl">{{ curso.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 md:py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-14">
+        
+        <!-- Left Side: Course Details -->
+        <div class="lg:col-span-2 space-y-12 order-2 lg:order-1">
+          
+          <!-- Key Points / What you will learn -->
+          <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-surface-variant/40 dark:border-slate-800 shadow-sm space-y-6 transition-colors duration-300">
+            <h2 class="font-headline-md text-xl md:text-2xl text-primary dark:text-white font-bold flex items-center gap-3">
+              <span class="material-symbols-outlined text-secondary text-2xl font-bold">school</span>
+              ¿Qué aprenderás en este programa?
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div *ngFor="let point of curso.syllabus" class="flex items-start gap-3 text-sm">
+                <span class="material-symbols-outlined text-secondary text-lg mt-0.5">check_circle</span>
+                <span class="leading-relaxed">{{ point.title }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Syllabus Section (Temario) -->
+          <div class="space-y-6">
+            <div class="flex items-center justify-between">
+              <h2 class="font-headline-md text-xl md:text-2xl text-primary dark:text-white font-bold flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary text-2xl font-bold">format_list_bulleted</span>
+                Temario del Curso
+              </h2>
+              <span class="text-xs text-on-surface-variant dark:text-slate-400 font-medium bg-surface-container dark:bg-slate-800 px-3 py-1.5 rounded-full transition-colors">{{ curso.syllabus.length }} Módulos</span>
+            </div>
+            
+            <div class="space-y-4">
+              <div *ngFor="let mod of curso.syllabus; let i = index" class="bg-white dark:bg-slate-900 rounded-2xl border border-surface-variant/30 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                <!-- Accordion Header -->
+                <button (click)="toggleModule(mod.title)" class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-55 dark:hover:bg-slate-800 transition-colors focus:outline-none">
+                  <div class="flex items-center gap-4 pr-4">
+                    <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 dark:bg-slate-800 text-primary dark:text-slate-300 font-bold text-xs flex items-center justify-center">{{ i + 1 }}</span>
+                    <h3 class="font-headline-sm text-base md:text-lg text-primary dark:text-white font-bold leading-snug">{{ mod.title }}</h3>
+                  </div>
+                  <span class="material-symbols-outlined text-primary/60 dark:text-slate-400 transition-transform duration-300 transform" [ngClass]="{'rotate-180': expandedModules[mod.title]}">
+                    expand_more
+                  </span>
+                </button>
+                
+                <!-- Accordion Content -->
+                <div *ngIf="expandedModules[mod.title]" class="border-t border-surface-variant/20 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/30 px-6 py-5 space-y-3 animate-fade-in">
+                  <div *ngFor="let topic of mod.topics" class="flex items-start gap-3 pl-12 text-sm text-on-surface-variant dark:text-slate-400">
+                    <span class="material-symbols-outlined text-primary/50 dark:text-slate-500 text-[18px] mt-0.5">adjust</span>
+                    <span class="leading-relaxed">{{ topic }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Target Audience (Dirigido a) -->
+          <div class="bg-gradient-to-r from-secondary/5 to-secondary/10 p-8 rounded-3xl border border-secondary/20 space-y-4">
+            <h2 class="font-headline-md text-lg md:text-xl text-[#006e1c] dark:text-[#52d26d] font-bold flex items-center gap-3">
+              <span class="material-symbols-outlined text-secondary text-2xl font-bold">group</span>
+              ¿A quién está dirigido?
+            </h2>
+            <p class="text-sm text-on-surface-variant dark:text-slate-300 leading-relaxed">
+              {{ curso.audience }}
+            </p>
+          </div>
+
+          <!-- Requirements (Requisitos) -->
+          <div class="space-y-6">
+            <h2 class="font-headline-md text-xl md:text-2xl text-primary dark:text-white font-bold flex items-center gap-3">
+              <span class="material-symbols-outlined text-secondary text-2xl font-bold">assignment_late</span>
+              Requisitos y Recomendaciones
+            </h2>
+            <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-surface-variant/40 dark:border-slate-800 shadow-sm space-y-4 transition-colors duration-300">
+              <div *ngFor="let req of curso.requirements" class="flex items-start gap-4 text-sm text-on-surface-variant dark:text-slate-400">
+                <span class="material-symbols-outlined text-amber-500 text-lg mt-0.5">warning_amber</span>
+                <span class="leading-relaxed">{{ req }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Side: Sidebar -->
+        <div class="space-y-8 order-1 lg:order-2">
+          
+          <!-- Sticky Enrollment Card -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-surface-variant/40 dark:border-slate-800 shadow-2xl p-6 md:p-8 space-y-6 sticky top-28 overflow-hidden transition-colors duration-300">
+            <!-- Image cover inside card -->
+            <div class="relative rounded-2xl overflow-hidden h-48 w-full group shadow-md">
+              <img [src]="curso.image" [alt]="curso.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <span class="absolute bottom-4 left-4 bg-primary text-white text-[10px] font-bold uppercase px-2 py-1 rounded">Clases Online</span>
+            </div>
+
+            <!-- Price and CTA -->
+            <div class="space-y-4">
+              <div class="flex justify-between items-baseline">
+                <span class="text-sm text-on-surface-variant dark:text-slate-400 font-medium">Inversión Total:</span>
+                <div class="text-right">
+                  <span class="text-3xl font-extrabold text-primary dark:text-white block leading-none">{{ curso.price }}</span>
+                  <span class="text-[10px] text-on-surface-variant/75 dark:text-slate-400">Pago único. Sin cargos ocultos.</span>
+                </div>
+              </div>
+
+              <button (click)="inscribir()" class="w-full bg-secondary text-on-secondary py-4 rounded-xl font-bold shadow-lg hover:bg-[#005c18] hover:-translate-y-0.5 hover:shadow-secondary/20 transition-all duration-300 text-center block text-sm tracking-wide">
+                INSCRIBIRME AHORA
+              </button>
+            </div>
+
+            <!-- Course stats/meta list -->
+            <div class="border-t border-surface-variant/30 dark:border-slate-800 pt-6 space-y-4 text-sm text-on-surface-variant dark:text-slate-300">
+              <div class="flex items-center gap-3.5">
+                <span class="material-symbols-outlined text-primary dark:text-slate-300 bg-primary/10 dark:bg-slate-800 p-2 rounded-lg text-lg">schedule</span>
+                <div>
+                  <p class="text-xs text-on-surface-variant/70 dark:text-slate-400 font-medium">Duración</p>
+                  <p class="text-xs font-bold text-primary dark:text-white">{{ curso.duration }} de estudio</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3.5">
+                <span class="material-symbols-outlined text-primary dark:text-slate-300 bg-primary/10 dark:bg-slate-800 p-2 rounded-lg text-lg">language</span>
+                <div>
+                  <p class="text-xs text-on-surface-variant/70 dark:text-slate-400 font-medium">Modalidad</p>
+                  <p class="text-xs font-bold text-primary dark:text-white">{{ curso.mode }}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3.5">
+                <span class="material-symbols-outlined text-primary dark:text-slate-300 bg-primary/10 dark:bg-slate-800 p-2 rounded-lg text-lg">calendar_month</span>
+                <div>
+                  <p class="text-xs text-on-surface-variant/70 dark:text-slate-400 font-medium">Horario</p>
+                  <p class="text-xs font-bold text-primary dark:text-white">{{ curso.schedule }}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3.5">
+                <span class="material-symbols-outlined text-primary dark:text-slate-300 bg-primary/10 dark:bg-slate-800 p-2 rounded-lg text-lg">verified</span>
+                <div>
+                  <p class="text-xs text-on-surface-variant/70 dark:text-slate-400 font-medium">Certificación</p>
+                  <p class="text-xs font-bold text-primary dark:text-white">Doble Certificación digital con código QR</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perks Checklist -->
+            <ul class="border-t border-surface-variant/30 dark:border-slate-800 pt-6 space-y-3.5 text-xs text-on-surface-variant/90 dark:text-slate-400">
+              <li class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary text-lg font-bold">check</span>
+                Acceso ilimitado de por vida al Campus
+              </li>
+              <li class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary text-lg font-bold">check</span>
+                Material de estudio PDF descargable
+              </li>
+              <li class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary text-lg font-bold">check</span>
+                Garantía de reembolso de 7 días
+              </li>
+            </ul>
+          </div>
+
+          <!-- Instructor Profile Card -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-surface-variant/40 dark:border-slate-800 shadow-md p-6 space-y-6 transition-colors duration-300">
+            <h3 class="font-headline-sm text-base text-primary dark:text-white font-bold border-b border-surface-variant/30 dark:border-slate-800 pb-3 flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-xl">person</span>
+              Tu Instructor
+            </h3>
+            <div class="flex items-center gap-4">
+              <img [src]="curso.instructor.avatar" [alt]="curso.instructor.name" class="w-14 h-14 rounded-full object-cover border border-surface-variant/40 dark:border-slate-800 shadow-sm" />
+              <div>
+                <h4 class="font-bold text-primary dark:text-white text-base leading-tight">{{ curso.instructor.name }}</h4>
+                <p class="text-xs text-on-surface-variant dark:text-slate-400 font-medium">{{ curso.instructor.role }}</p>
+              </div>
+            </div>
+            <p class="text-xs text-on-surface-variant dark:text-slate-300 leading-relaxed">
+              {{ curso.instructor.bio }}
+            </p>
+            <div class="bg-surface dark:bg-slate-800 p-3.5 rounded-xl border border-surface-variant/20 dark:border-slate-700 flex items-center gap-3 text-xs text-on-surface-variant dark:text-slate-300 transition-colors">
+              <span class="material-symbols-outlined text-secondary text-lg">verified_user</span>
+              <span>Docente acreditado institucionalmente por Plataforma LMS.</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulated checkout success modal -->
+  <div *ngIf="showModal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl max-w-sm w-full text-center border border-surface-variant dark:border-slate-800 shadow-2xl space-y-6 animate-scale-up transition-colors duration-300">
+      <div class="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto text-secondary">
+        <span class="material-symbols-outlined text-4xl font-bold">verified</span>
+      </div>
+      <h3 class="font-headline-md text-primary dark:text-white font-bold text-xl">¡Inscripción Exitosa!</h3>
+      <p class="font-body-md text-sm text-on-surface-variant dark:text-slate-300">Te hemos enviado un correo de confirmación con las credenciales de acceso al Campus Virtual e instrucciones de pago.</p>
+      <button (click)="closeModal()" class="w-full bg-primary text-on-primary py-3 rounded-lg font-bold shadow-md hover:bg-primary/95 transition-colors">
+        Entendido
+      </button>
+    </div>
+  </div>
+</main>
+
+<app-footer></app-footer>

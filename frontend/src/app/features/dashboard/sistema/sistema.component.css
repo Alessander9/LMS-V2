@@ -1,0 +1,4 @@
+/* Custom system monitoring styles */
+:host {
+  display: block;
+}

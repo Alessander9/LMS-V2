@@ -1,0 +1,162 @@
+﻿/* ==========================================================================
+   SOCIAL SIDEBAR — Plataforma LMS
+   Desktop: sidebar vertical flotante izquierda
+   Mobile:  pill horizontal centrada, abajo del viewport
+   ========================================================================== */
+
+/* ── Contenedor principal (posición base → gestionada por JS) ── */
+.sidebar-container {
+  position: fixed;
+  top: 50%;
+  left: -90px;           /* JS mueve a left:0 en desktop cuando visible */
+  z-index: 50;
+  transform: translateY(-50%);
+  /* Las transiciones las define el style inline del HTML
+     para garantizar que JS no tenga conflictos de especificidad */
+}
+
+/* ── Inner card — Desktop: columna vertical ── */
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(9, 17, 34, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-left: none;
+  border-radius: 0 16px 16px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.50);
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, padding 0.25s ease;
+}
+
+/* Hover: leve desplazamiento derecha en desktop */
+@media (hover: hover) {
+  .sidebar-container:hover .sidebar-inner {
+    transform: translateX(4px);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.60);
+    padding-right: 16px;
+  }
+}
+
+/* ── Enlace de red social ── */
+.sidebar-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.80);
+  text-decoration: none;
+  transition: all 0.25s ease-out;
+  flex-shrink: 0;
+  touch-action: manipulation; /* evita doble-tap zoom en iOS */
+  position: relative;
+}
+
+.sidebar-link:hover,
+.sidebar-link:focus-visible {
+  color: #ffffff;
+  transform: scale(1.10) translateX(2px);
+}
+
+/* ── Ícono SVG ── */
+.sidebar-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Label de red (oculto en desktop, aparece en mobile) ── */
+.sidebar-label {
+  display: none;
+}
+
+/* ==========================================================================
+   MOBILE (≤ 767px) — Pill horizontal centrada en la parte inferior
+   ========================================================================== */
+@media (max-width: 767px) {
+
+  /* ── Contenedor: pill centrada en la parte inferior ── */
+  .sidebar-container {
+    /* Resetear posición vertical del desktop */
+    top: auto;
+    /* El JS setea left:50% y transform:translateX(-50%) translateY(0|120px)
+       para animar entrada/salida. La posición base la marcamos aquí: */
+    bottom: 80px; /* Por encima del chatbot FAB (bottom: 24px + 58px ≈ 82px) */
+    left: 50% !important; /* Base — JS sobreescribirá con 50% también */
+    transform: translateX(-50%) translateY(120px); /* Empieza oculta (bajo viewport) */
+    /* Safe-area para iPhones con home bar */
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ── Inner card: fila horizontal → pill ── */
+  .sidebar-inner {
+    flex-direction: row;
+    gap: 8px;
+    padding: 8px 14px;
+    /* Pill completa: bordes redondeados en todos los lados */
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    /* Sombra más suave en mobile */
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.25);
+    /* Sin hover-expand en mobile */
+    transition: none;
+  }
+
+  /* Quitar el hover de desktop en mobile */
+  .sidebar-container:hover .sidebar-inner {
+    transform: none;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+    padding-right: 14px;
+  }
+
+  /* ── Íconos: área táctil mínima WCAG 44px ── */
+  .sidebar-link {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;  /* Circulares en mobile para look de pill */
+  }
+
+  .sidebar-link:hover,
+  .sidebar-link:focus-visible {
+    /* Sin translateX en mobile (pill es horizontal, no cambia de eje) */
+    transform: scale(1.12);
+  }
+
+  /* ── Ícono SVG: ligeramente más grande para toque ── */
+  .sidebar-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ── Label: oculto también en mobile (pill es compacta) ── */
+  .sidebar-label {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   BREAKPOINT EXTRA PEQUEÑO (< 360px)
+   Reducir un poco si la pill no cabe
+   ========================================================================== */
+@media (max-width: 359px) {
+  .sidebar-inner {
+    gap: 4px;
+    padding: 6px 10px;
+  }
+
+  .sidebar-link {
+    width: 38px;
+    height: 38px;
+  }
+
+  .sidebar-icon {
+    width: 18px;
+    height: 18px;
+  }
+}

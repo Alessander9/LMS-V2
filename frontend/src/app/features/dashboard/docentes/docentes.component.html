@@ -1,0 +1,655 @@
+﻿<div class="space-y-6 font-body">
+  
+  <!-- ==================== HEADER BAR ==================== -->
+  <div class="border border-slate-200 dark:border-slate-800 p-5 md:p-6 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors duration-300">
+    <div class="flex items-center gap-3.5">
+      <div class="w-12 h-12 bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+        <span class="material-symbols-outlined text-2xl font-black">co_present</span>
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight uppercase">Gestión de Docentes</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Control de instructores académicos, asignación de cursos y accesos docentes.</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2.5">
+      <button
+        (click)="openCreateModal()"
+        class="flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors shadow-md hover:shadow-lg cursor-pointer">
+        <span class="material-symbols-outlined text-base">person_add</span>
+        <span>Crear Docente</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== KPI STATS & QUICK FILTER CHIPS ==================== -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <!-- Total Docentes -->
+    <button 
+      type="button"
+      (click)="setFiltroEstado('TODOS')"
+      [class]="filtroEstado === 'TODOS' ? 'border-primary ring-2 ring-primary/20 bg-primary/5 dark:bg-primary/10' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'"
+      class="p-3.5 border text-left transition-all cursor-pointer flex flex-col justify-between shadow-xs">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Total Docentes</span>
+        <span class="material-symbols-outlined text-slate-400 text-base">co_present</span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1">
+        <span class="text-xl font-black text-slate-900 dark:text-white font-mono">{{ totalDocentesCount }}</span>
+        <span class="text-[10px] text-slate-400 font-bold">instructores</span>
+      </div>
+    </button>
+
+    <!-- Activos -->
+    <button 
+      type="button"
+      (click)="setFiltroEstado('ACTIVO')"
+      [class]="filtroEstado === 'ACTIVO' ? 'border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/40 dark:bg-emerald-950/20' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'"
+      class="p-3.5 border text-left transition-all cursor-pointer flex flex-col justify-between shadow-xs">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Activos</span>
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1">
+        <span class="text-xl font-black text-emerald-700 dark:text-emerald-300 font-mono">{{ activosCount }}</span>
+        <span class="text-[10px] text-emerald-600/70 font-bold">habilitados</span>
+      </div>
+    </button>
+
+    <!-- Inactivos -->
+    <button 
+      type="button"
+      (click)="setFiltroEstado('INACTIVO')"
+      [class]="filtroEstado === 'INACTIVO' ? 'border-red-500 ring-2 ring-red-500/20 bg-red-50/40 dark:bg-red-950/20' : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700'"
+      class="p-3.5 border text-left transition-all cursor-pointer flex flex-col justify-between shadow-xs">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-red-600 dark:text-red-400">Inactivos</span>
+        <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1">
+        <span class="text-xl font-black text-red-700 dark:text-red-300 font-mono">{{ inactivosCount }}</span>
+        <span class="text-[10px] text-red-600/70 font-bold">pausados</span>
+      </div>
+    </button>
+
+    <!-- Con Teléfono -->
+    <div class="p-3.5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between shadow-xs">
+      <div class="flex items-center justify-between">
+        <span class="text-[9px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500">Con Teléfono</span>
+        <span class="material-symbols-outlined text-slate-400 text-base">call</span>
+      </div>
+      <div class="mt-2 flex items-baseline gap-1">
+        <span class="text-xl font-black text-slate-800 dark:text-slate-200 font-mono">{{ conTelefonoCount }}</span>
+        <span class="text-[10px] text-slate-400 font-bold">contactos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN CONTENT CONTAINER ==================== -->
+  <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] overflow-hidden transition-colors duration-300">
+    
+    <!-- TOOLBAR DE BÚSQUEDA Y FILTROS -->
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/40 space-y-3 transition-colors duration-300">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        
+        <!-- Input de Búsqueda -->
+        <div class="relative flex-1">
+          <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <span class="material-symbols-outlined text-lg">search</span>
+          </span>
+          <input
+            [(ngModel)]="searchQuery"
+            (input)="applyFilter()"
+            type="text"
+            class="block w-full pl-10 pr-9 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
+            placeholder="Buscar docente por nombre, apellido, correo o teléfono...">
+          <button 
+            *ngIf="searchQuery"
+            (click)="searchQuery = ''; applyFilter()"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+
+        <!-- Filtros Rápidos (Estado + Orden + Vista) -->
+        <div class="flex items-center gap-2 flex-wrap">
+          
+          <!-- Filtro por Estado -->
+          <div class="flex items-center border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-1">
+            <span class="px-2 text-[10px] font-black uppercase tracking-wider text-slate-400 hidden sm:inline">Estado:</span>
+            <select 
+              [ngModel]="filtroEstado" 
+              (ngModelChange)="setFiltroEstado($event)"
+              class="bg-transparent text-slate-800 dark:text-slate-200 text-xs font-bold uppercase tracking-wider px-2 py-1 outline-none cursor-pointer">
+              <option value="TODOS">Todos los Estados</option>
+              <option value="ACTIVO">🟢 Activos</option>
+              <option value="INACTIVO">🔴 Inactivos</option>
+            </select>
+          </div>
+
+          <!-- Orden -->
+          <div class="flex items-center border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-1">
+            <span class="px-2 text-[10px] font-black uppercase tracking-wider text-slate-400 hidden sm:inline">Orden:</span>
+            <select 
+              [ngModel]="selectedSort" 
+              (ngModelChange)="onSortChange($event)" 
+              class="bg-transparent text-slate-800 dark:text-slate-200 text-xs font-bold uppercase tracking-wider px-2 py-1 outline-none cursor-pointer">
+              <option value="fecha_desc">Fecha (Recientes)</option>
+              <option value="fecha_asc">Fecha (Antiguos)</option>
+              <option value="nombre_asc">Nombre (A - Z)</option>
+              <option value="nombre_desc">Nombre (Z - A)</option>
+            </select>
+          </div>
+
+          <!-- Conmutador Vista Tabla / Tarjetas -->
+          <div class="inline-flex items-center border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-1">
+            <button 
+              type="button"
+              (click)="setViewMode('table')" 
+              [class]="viewMode === 'table' ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold shadow-xs' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
+              title="Vista en Tabla"
+              class="p-1.5 transition-colors cursor-pointer flex items-center">
+              <span class="material-symbols-outlined text-base">table_rows</span>
+            </button>
+            <button 
+              type="button"
+              (click)="setViewMode('grid')" 
+              [class]="viewMode === 'grid' ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold shadow-xs' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
+              title="Vista en Cuadrícula"
+              class="p-1.5 transition-colors cursor-pointer flex items-center">
+              <span class="material-symbols-outlined text-base">grid_view</span>
+            </button>
+          </div>
+
+          <!-- Limpiar Filtros -->
+          <button 
+            *ngIf="hayFiltrosActivos"
+            (click)="limpiarFiltros()"
+            class="px-2.5 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 font-bold border border-rose-200 dark:border-rose-900 transition-colors flex items-center gap-1 cursor-pointer"
+            title="Restablecer filtros">
+            <span class="material-symbols-outlined text-sm">restart_alt</span>
+            <span class="text-[10px] uppercase tracking-wider">Limpiar</span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Resumen de Resultados -->
+      <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200/60 dark:border-slate-800/60">
+        <div>
+          Mostrando <span class="font-bold text-slate-800 dark:text-slate-200">{{ paginatedDocentes.length }}</span> de <span class="font-bold text-slate-800 dark:text-slate-200">{{ filteredDocentes.length }}</span> docentes filtrados (Total: {{ totalDocentesCount }})
+        </div>
+        <div *ngIf="hayFiltrosActivos" class="text-primary font-semibold text-[10px] uppercase tracking-wider">
+          Filtros aplicados
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SPINNER CARGANDO ==================== -->
+    <div *ngIf="isLoading" class="p-16 text-center text-slate-500 flex flex-col items-center justify-center gap-3">
+      <span class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></span>
+      <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Cargando docentes...</span>
+    </div>
+
+    <!-- ==================== ESTADO VACÍO ==================== -->
+    <div *ngIf="!isLoading && filteredDocentes.length === 0" class="p-16 text-center space-y-3 bg-white dark:bg-slate-900">
+      <div class="w-14 h-14 mx-auto bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400">
+        <span class="material-symbols-outlined text-3xl">person_search</span>
+      </div>
+      <h3 class="text-sm font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider">No se encontraron docentes</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+        No hay docentes que coincidan con los criterios de búsqueda o filtros seleccionados.
+      </p>
+      <button 
+        *ngIf="hayFiltrosActivos"
+        (click)="limpiarFiltros()"
+        class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer">
+        <span class="material-symbols-outlined text-sm">filter_alt_off</span>
+        <span>Limpiar Filtros</span>
+      </button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- VISTA 1: TABLA MODERNA Y ELEGANTE                           -->
+    <!-- ============================================================ -->
+    <div *ngIf="!isLoading && filteredDocentes.length > 0 && viewMode === 'table'" class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-100/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 font-black uppercase tracking-wider text-[10px] select-none">
+            <th class="py-3.5 px-4">Docente / Instructor</th>
+            <th class="py-3.5 px-4">Contacto / Correo</th>
+            <th class="py-3.5 px-4">Teléfono</th>
+            <th class="py-3.5 px-4">Estado</th>
+            <th class="py-3.5 px-4 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
+          <tr 
+            *ngFor="let docente of paginatedDocentes; trackBy: trackByDocenteId" 
+            class="hover:bg-indigo-50/40 dark:hover:bg-slate-800/40 transition-colors group">
+            
+            <!-- Columna 1: Docente -->
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-3">
+                <!-- Avatar con Iniciales -->
+                <div class="w-10 h-10 border border-primary/20 bg-primary/10 text-primary dark:bg-primary/20 flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                  {{ getInitials(docente.nombres, docente.apellidos) }}
+                </div>
+                <div class="min-w-0">
+                  <div class="font-black text-slate-900 dark:text-white text-xs uppercase tracking-tight truncate group-hover:text-primary transition-colors">
+                    {{ docente.nombres }} {{ docente.apellidos }}
+                  </div>
+                  <div class="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400 font-mono">
+                    <span class="px-1.5 py-0.2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold">ID #{{ docente.id }}</span>
+                    <span *ngIf="docente.fechaRegistro">Reg: {{ docente.fechaRegistro | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Columna 2: Contacto / Correo -->
+            <td class="py-4 px-4 text-slate-600 dark:text-slate-300">
+              <div class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-slate-400 text-sm shrink-0">mail</span>
+                <span class="font-medium truncate max-w-[200px] sm:max-w-xs">{{ docente.correo }}</span>
+                <button 
+                  (click)="copiarCorreo(docente.correo)" 
+                  title="Copiar correo"
+                  class="p-1 text-slate-400 hover:text-primary transition-colors cursor-pointer">
+                  <span class="material-symbols-outlined text-xs block">content_copy</span>
+                </button>
+              </div>
+            </td>
+
+            <!-- Columna 3: Teléfono -->
+            <td class="py-4 px-4 text-slate-600 dark:text-slate-300">
+              <div *ngIf="docente.telefono" class="flex items-center gap-1.5 text-xs font-mono">
+                <span class="material-symbols-outlined text-slate-400 text-sm shrink-0">call</span>
+                <span>{{ docente.telefono }}</span>
+              </div>
+              <span *ngIf="!docente.telefono" class="text-[10px] text-slate-400 italic">No registrado</span>
+            </td>
+
+            <!-- Columna 4: Estado -->
+            <td class="py-4 px-4">
+              <button 
+                (click)="toggleEstado(docente)" 
+                [title]="docente.estado ? 'Clic para desactivar docente' : 'Clic para activar docente'"
+                [ngClass]="docente.estado 
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800/80 hover:bg-emerald-100' 
+                  : 'bg-red-50 text-red-700 border-red-300 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800/80 hover:bg-red-100'" 
+                class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider border flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs">
+                <span class="w-1.5 h-1.5 rounded-full" [ngClass]="docente.estado ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'"></span>
+                <span>{{ docente.estado ? 'ACTIVO' : 'INACTIVO' }}</span>
+              </button>
+            </td>
+
+            <!-- Columna 5: Acciones -->
+            <td class="py-4 px-4 text-right">
+              <div class="inline-flex items-center gap-1.5">
+                <!-- Editar -->
+                <button 
+                  (click)="openEditModal(docente)" 
+                  title="Editar Docente"
+                  class="p-2 border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all cursor-pointer shadow-2xs hover:scale-105"
+                  aria-label="Editar docente">
+                  <span class="material-symbols-outlined text-base block">edit</span>
+                </button>
+
+                <!-- Toggle Estado -->
+                <button 
+                  (click)="toggleEstado(docente)" 
+                  [title]="docente.estado ? 'Desactivar Cuenta' : 'Activar Cuenta'"
+                  [ngClass]="docente.estado ? 'border-red-200 dark:border-red-900/60 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30' : 'border-emerald-200 dark:border-emerald-900/60 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30'"
+                  class="p-2 border bg-white dark:bg-slate-800 transition-all cursor-pointer shadow-2xs hover:scale-105"
+                  aria-label="Cambiar estado">
+                  <span class="material-symbols-outlined text-base block">
+                    {{ docente.estado ? 'block' : 'check_circle' }}
+                  </span>
+                </button>
+
+                <!-- Eliminar -->
+                <button 
+                  (click)="eliminarDocente(docente)" 
+                  title="Eliminar Docente Permanentemente"
+                  class="p-2 border border-red-200 dark:border-red-900/60 text-red-600 dark:text-red-400 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all cursor-pointer shadow-2xs hover:scale-105"
+                  aria-label="Eliminar docente">
+                  <span class="material-symbols-outlined text-base block">delete_forever</span>
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- VISTA 2: CUADRÍCULA DE TARJETAS (GRID VIEW)                  -->
+    <!-- ============================================================ -->
+    <div *ngIf="!isLoading && filteredDocentes.length > 0 && viewMode === 'grid'" class="p-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 bg-slate-50/50 dark:bg-slate-900/50">
+      <div 
+        *ngFor="let docente of paginatedDocentes; trackBy: trackByDocenteId" 
+        class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group">
+        
+        <!-- Top Accent Line -->
+        <div class="h-1.5 w-full bg-gradient-to-r from-primary via-blue-500 to-indigo-600"></div>
+
+        <!-- Card Body -->
+        <div class="p-5 space-y-4">
+          
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <!-- Avatar -->
+              <div class="w-12 h-12 border border-primary/30 bg-primary/10 text-primary dark:bg-primary/20 flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
+                {{ getInitials(docente.nombres, docente.apellidos) }}
+              </div>
+              <div class="min-w-0">
+                <h3 class="font-black text-slate-900 dark:text-white text-sm uppercase tracking-tight truncate group-hover:text-primary transition-colors">
+                  {{ docente.nombres }} {{ docente.apellidos }}
+                </h3>
+                <span class="text-[10px] font-mono font-bold text-slate-400 block mt-0.5">ID #{{ docente.id }}</span>
+              </div>
+            </div>
+
+            <!-- Estado Pill -->
+            <button 
+              (click)="toggleEstado(docente)"
+              [ngClass]="docente.estado ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/30 dark:text-emerald-400' : 'bg-red-50 text-red-700 border-red-300 dark:bg-red-950/30 dark:text-red-400'"
+              class="px-2 py-0.5 text-[8px] font-black uppercase tracking-wider border shrink-0 flex items-center gap-1 cursor-pointer">
+              <span class="w-1.5 h-1.5 rounded-full" [ngClass]="docente.estado ? 'bg-emerald-500' : 'bg-red-500'"></span>
+              <span>{{ docente.estado ? 'ACTIVO' : 'INACTIVO' }}</span>
+            </button>
+          </div>
+
+          <!-- Contact Details -->
+          <div class="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+            <div class="flex items-center justify-between text-slate-600 dark:text-slate-300">
+              <div class="flex items-center gap-2 truncate">
+                <span class="material-symbols-outlined text-slate-400 text-sm">mail</span>
+                <span class="truncate">{{ docente.correo }}</span>
+              </div>
+              <button 
+                (click)="copiarCorreo(docente.correo)" 
+                title="Copiar correo"
+                class="text-slate-400 hover:text-primary cursor-pointer p-0.5">
+                <span class="material-symbols-outlined text-xs block">content_copy</span>
+              </button>
+            </div>
+
+            <div *ngIf="docente.telefono" class="flex items-center gap-2 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+              <span class="material-symbols-outlined text-slate-400 text-sm">call</span>
+              <span>{{ docente.telefono }}</span>
+            </div>
+
+            <div *ngIf="docente.fechaRegistro" class="flex items-center gap-2 text-[10px] text-slate-400 font-mono">
+              <span class="material-symbols-outlined text-xs">calendar_today</span>
+              <span>Registro: {{ docente.fechaRegistro | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Card Action Footer -->
+        <div class="px-5 py-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary">school</span>
+            <span>Docente Titular</span>
+          </span>
+
+          <div class="flex items-center gap-1.5">
+            <button 
+              (click)="openEditModal(docente)" 
+              title="Editar"
+              class="p-1.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary transition-colors cursor-pointer">
+              <span class="material-symbols-outlined text-sm block">edit</span>
+            </button>
+            <button 
+              (click)="eliminarDocente(docente)" 
+              title="Eliminar"
+              class="p-1.5 border border-red-200 dark:border-red-900/60 bg-white dark:bg-slate-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer">
+              <span class="material-symbols-outlined text-sm block">delete</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== PAGINACIÓN MODERNA ==================== -->
+    <div *ngIf="!isLoading && totalPages > 1" class="px-5 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between transition-colors duration-300">
+      <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+        Página <span class="font-black text-slate-800 dark:text-slate-200">{{ currentPage }}</span> de <span class="font-black text-slate-800 dark:text-slate-200">{{ totalPages }}</span>
+      </div>
+
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button
+          type="button"
+          (click)="previousPage()"
+          [disabled]="currentPage === 1"
+          class="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer">
+          <span class="material-symbols-outlined text-xs">chevron_left</span>
+          <span>Anterior</span>
+        </button>
+
+        <button
+          *ngFor="let page of pageNumbers"
+          type="button"
+          (click)="goToPage(page)"
+          [ngClass]="currentPage === page ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-xs' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'"
+          class="w-8 h-8 border font-black text-xs uppercase transition-all cursor-pointer">
+          {{ page }}
+        </button>
+
+        <button
+          type="button"
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          class="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer">
+          <span>Siguiente</span>
+          <span class="material-symbols-outlined text-xs">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Create/Edit Modal -->
+  <div *ngIf="showCreateEditModal" role="dialog" aria-modal="true" class="fixed inset-0 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6" (click)="closeCreateEditModal()">
+    <div class="w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-none relative max-h-[92vh] flex flex-col transition-colors duration-300 overflow-hidden" (click)="$event.stopPropagation()">
+      <!-- Top Color Accent Bar -->
+      <div class="h-1.5 w-full bg-gradient-to-r from-primary via-blue-500 to-indigo-600 shrink-0"></div>
+
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/60 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-primary/10 dark:bg-primary/20 text-primary flex items-center justify-center border border-primary/20">
+            <span class="material-symbols-outlined text-xl">{{ isEditMode ? 'manage_accounts' : 'school' }}</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
+              {{ isEditMode ? 'Editar Datos del Docente' : 'Registrar Nuevo Docente' }}
+            </h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              {{ isEditMode ? 'Modifica los datos del instructor y sus credenciales de acceso' : 'Registra a un nuevo instructor para asignarle cursos en el instituto' }}
+            </p>
+          </div>
+        </div>
+        <button (click)="closeCreateEditModal()" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Form Body (Scrollable) -->
+      <form [formGroup]="docenteForm" (ngSubmit)="onSubmit()" class="flex-1 overflow-y-auto p-6 space-y-6" autocomplete="off">
+        <!-- Error response display -->
+        <div *ngIf="modalErrorMsg" class="flex items-start gap-2.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 p-3.5 text-xs font-semibold">
+          <span class="material-symbols-outlined text-red-600 text-lg shrink-0">warning</span>
+          <span>{{ modalErrorMsg }}</span>
+        </div>
+
+        <!-- 2 Columns Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <!-- Columna 1: Información Personal -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+              <span class="material-symbols-outlined text-primary text-lg">badge</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">Información del Instructor</span>
+            </div>
+
+            <!-- Nombres -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Nombres <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-base pointer-events-none">person</span>
+                <input 
+                  formControlName="nombres" 
+                  type="text" 
+                  autocomplete="off"
+                  placeholder="Ej. Roberto"
+                  class="w-full pl-9 pr-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <p *ngIf="docenteForm.get('nombres')?.hasError('required') && docenteForm.get('nombres')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">El nombre es requerido.</p>
+              <p *ngIf="docenteForm.get('nombres')?.hasError('minlength') && docenteForm.get('nombres')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">Debe tener al menos 2 caracteres.</p>
+            </div>
+
+            <!-- Apellidos -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Apellidos <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-base pointer-events-none">family_restroom</span>
+                <input 
+                  formControlName="apellidos" 
+                  type="text" 
+                  autocomplete="off"
+                  placeholder="Ej. Fernández Ruiz"
+                  class="w-full pl-9 pr-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <p *ngIf="docenteForm.get('apellidos')?.hasError('required') && docenteForm.get('apellidos')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">El apellido es requerido.</p>
+              <p *ngIf="docenteForm.get('apellidos')?.hasError('minlength') && docenteForm.get('apellidos')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">Debe tener al menos 2 caracteres.</p>
+            </div>
+
+            <!-- Telefono -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Teléfono / WhatsApp
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-base pointer-events-none">phone</span>
+                <input 
+                  formControlName="telefono" 
+                  type="text" 
+                  autocomplete="off"
+                  placeholder="Ej. +51 987 654 321"
+                  class="w-full pl-9 pr-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna 2: Acceso y Credenciales -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-800">
+              <span class="material-symbols-outlined text-primary text-lg">shield</span>
+              <span class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">Acceso y Credenciales</span>
+            </div>
+
+            <!-- Correo Electronico -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Correo Electrónico <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-base pointer-events-none">mail</span>
+                <input 
+                  formControlName="correo" 
+                  type="email" 
+                  autocomplete="off"
+                  placeholder="docente@Plataforma LMS.edu.pe"
+                  class="w-full pl-9 pr-3 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors">
+              </div>
+              <p *ngIf="docenteForm.get('correo')?.hasError('required') && docenteForm.get('correo')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">El correo es requerido.</p>
+              <p *ngIf="docenteForm.get('correo')?.hasError('email') && docenteForm.get('correo')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">Ingresa un correo electrónico válido.</p>
+            </div>
+
+            <!-- Contraseña -->
+            <div>
+              <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-widest">
+                Contraseña {{ isEditMode ? '(Opcional)' : '*' }}
+              </label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-base pointer-events-none">lock</span>
+                <input 
+                  formControlName="password" 
+                  [type]="hideFormPassword ? 'password' : 'text'" 
+                  autocomplete="new-password" 
+                  placeholder="Mínimo 6 caracteres"
+                  class="w-full pl-9 pr-10 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-slate-900 dark:text-white text-xs rounded-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors">
+                <button 
+                  type="button" 
+                  (click)="hideFormPassword = !hideFormPassword" 
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                  <span class="material-symbols-outlined text-base block select-none">
+                    {{ hideFormPassword ? 'visibility' : 'visibility_off' }}
+                  </span>
+                </button>
+              </div>
+              <p *ngIf="docenteForm.get('password')?.hasError('minlength') && docenteForm.get('password')?.touched" class="text-[10px] text-red-600 font-semibold mt-1">Mínimo 6 caracteres.</p>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                {{ isEditMode ? 'Déjala en blanco si deseas mantener su contraseña actual.' : 'Define la clave inicial para el acceso del docente al panel.' }}
+              </p>
+            </div>
+
+            <!-- Info box -->
+            <div class="p-3.5 bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 flex items-start gap-2.5">
+              <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-base shrink-0 mt-0.5">verified_user</span>
+              <p class="text-[11px] text-blue-800 dark:text-blue-300 leading-relaxed">
+                El docente tendrá acceso al panel de profesores para crear contenido, subir clases y calificar entregas de sus cursos asignados.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar Footer -->
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0">
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-primary">info</span>
+            <span>Los campos marcados con <strong class="text-red-500">*</strong> son obligatorios</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <button 
+              type="button" 
+              (click)="closeCreateEditModal()" 
+              class="px-5 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors rounded-none flex items-center gap-2">
+              <span class="material-symbols-outlined text-sm">cancel</span>
+              <span>Cancelar</span>
+            </button>
+            <button 
+              type="submit" 
+              [disabled]="docenteForm.invalid || isFormSubmitting" 
+              class="px-6 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-slate-800 dark:hover:bg-slate-200 transition-all rounded-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
+              <span *ngIf="isFormSubmitting" class="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+              <span *ngIf="!isFormSubmitting" class="material-symbols-outlined text-sm">{{ isEditMode ? 'save' : 'school' }}</span>
+              <span>{{ isFormSubmitting ? 'Guardando...' : (isEditMode ? 'Guardar Cambios' : 'Registrar Docente') }}</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <app-confirm-modal
+    [visible]="showConfirmModal"
+    [type]="confirmModalType"
+    [title]="confirmModalTitle"
+    [message]="confirmModalMessage"
+    confirmText="Confirmar"
+    (onConfirm)="confirmAction()"
+    (onCancel)="showConfirmModal = false">
+  </app-confirm-modal>
+</div>

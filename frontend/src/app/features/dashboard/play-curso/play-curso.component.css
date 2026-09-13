@@ -1,0 +1,35 @@
+.completion-modal,
+.next-chapter-modal {
+  animation: modalPop 220ms ease-out;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes seekRipple {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+.seek-ripple {
+  animation: seekRipple 650ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+

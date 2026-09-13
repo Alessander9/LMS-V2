@@ -1,0 +1,197 @@
+﻿<ng-container *ngIf="isPublicRoute">
+<!-- Contenedor FAB Flotante y Menú de Ayuda -->
+<div class="chatbot-fab-container">
+  <!-- Menú flotante expandible -->
+  <div 
+    class="chatbot-fab-menu" 
+    [class.chatbot-fab-menu--open]="isFabMenuOpen && !isOpen"
+    role="dialog"
+    aria-label="Menú de atención">
+    
+    <div class="chatbot-fab-menu__header">
+      <h4 class="chatbot-fab-menu__title">¿Cómo podemos ayudarte?</h4>
+      <p class="chatbot-fab-menu__subtitle">Elige tu canal de atención preferido</p>
+    </div>
+
+    <div class="chatbot-fab-menu__options">
+      <!-- Opción 1: Consultar con el asistente -->
+      <button 
+        type="button" 
+        class="chatbot-fab-item chatbot-fab-item--assistant"
+        (click)="openAssistant()"
+        aria-label="Consultar con el asistente virtual">
+        <div class="chatbot-fab-item__icon chatbot-fab-item__icon--assistant">
+          <span class="material-symbols-outlined">smart_toy</span>
+        </div>
+        <div class="chatbot-fab-item__text">
+          <strong class="chatbot-fab-item__title">Consultar con el asistente</strong>
+          <span class="chatbot-fab-item__desc">Respuestas inmediatas 24/7 con IA</span>
+        </div>
+        <span class="material-symbols-outlined chatbot-fab-item__chevron">chevron_right</span>
+      </button>
+
+      <!-- Opción 2: Hablar por WhatsApp -->
+      <button 
+        type="button" 
+        class="chatbot-fab-item chatbot-fab-item--whatsapp"
+        (click)="openWhatsApp()"
+        aria-label="Hablar por WhatsApp">
+        <div class="chatbot-fab-item__icon chatbot-fab-item__icon--whatsapp">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" class="fab-whatsapp-svg" aria-hidden="true">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.81 13.47 3.81 11.91C3.81 7.37 7.5 3.67 12.05 3.67ZM8.73 7.33C8.55 7.33 8.26 7.4 8.01 7.67C7.76 7.94 7.05 8.61 7.05 9.96C7.05 11.31 8.04 12.61 8.18 12.79C8.32 12.97 10.08 15.68 12.82 16.75C15.1 17.64 15.56 17.46 16.06 17.42C16.56 17.37 17.66 16.76 17.89 16.12C18.12 15.48 18.12 14.93 18.05 14.82C17.98 14.71 17.79 14.65 17.51 14.51C17.23 14.37 15.86 13.69 15.6 13.6C15.34 13.51 15.16 13.46 14.97 13.74C14.78 14.02 14.24 14.65 14.08 14.84C13.92 15.02 13.76 15.04 13.48 14.9C13.2 14.76 12.3 14.47 11.23 13.51C10.4 12.77 9.84 11.85 9.7 11.62C9.56 11.39 9.69 11.26 9.83 11.12C9.95 11 10.1 10.8 10.24 10.64C10.38 10.48 10.43 10.37 10.52 10.19C10.61 10.01 10.56 9.85 10.49 9.71C10.42 9.57 9.87 8.22 9.64 7.67C9.42 7.14 9.19 7.21 9.02 7.21C8.87 7.2 8.73 7.33 8.73 7.33Z"/>
+          </svg>
+        </div>
+        <div class="chatbot-fab-item__text">
+          <strong class="chatbot-fab-item__title">Hablar por WhatsApp</strong>
+          <span class="chatbot-fab-item__desc">Atención directa con un asesor</span>
+        </div>
+        <span class="material-symbols-outlined chatbot-fab-item__chevron">chevron_right</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Botón FAB Principal -->
+  <button 
+    type="button"
+    class="chatbot-fab-btn" 
+    (click)="toggleFabMenu($event)" 
+    [class.chatbot-fab-btn--active]="isFabMenuOpen"
+    [class.chatbot-fab-btn--hidden]="isOpen"
+    title="Centro de ayuda y atención"
+    aria-label="Abrir opciones de ayuda">
+    <div class="chatbot-fab-btn__glow" aria-hidden="true"></div>
+    <div class="chatbot-fab-btn__icon">
+      <span class="material-symbols-outlined fab-icon fab-icon--default">support_agent</span>
+      <span class="material-symbols-outlined fab-icon fab-icon--close">close</span>
+    </div>
+  </button>
+</div>
+
+<!-- Ventana de Chat (Visible cuando el chat está abierto) -->
+<div 
+  class="chatbot-window" 
+  [class.chatbot-window--open]="isOpen"
+  [style.height]="isOpen && keyboardOffset > 0 ? 'calc(100% - ' + keyboardOffset + 'px)' : ''"
+  role="dialog"
+  aria-label="Asistente de chat de Plataforma LMS">
+  
+  <!-- Cabecera -->
+  <header class="chatbot-header">
+    <div class="chatbot-header__brand">
+      <div class="chatbot-header__avatar">
+        <span class="material-symbols-outlined">smart_toy</span>
+        <span class="chatbot-header__status-dot"></span>
+      </div>
+      <div class="chatbot-header__info">
+        <h3>Asistente Plataforma LMS</h3>
+        <span>🟢 En línea · Respuesta inmediata</span>
+      </div>
+    </div>
+    <div class="chatbot-header__actions">
+      <button 
+        class="chatbot-header__btn" 
+        (click)="clearHistory()" 
+        title="Reiniciar conversación"
+        aria-label="Reiniciar conversación">
+        <span class="material-symbols-outlined">refresh</span>
+      </button>
+      <button 
+        class="chatbot-header__btn" 
+        (click)="toggleChat()" 
+        title="Cerrar chat"
+        aria-label="Cerrar chat">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Historial de mensajes -->
+  <div class="chatbot-messages" #messageContainer (click)="handleMessageClick($event)">
+    <div 
+      *ngFor="let msg of messages" 
+      class="chatbot-message" 
+      [class.chatbot-message--user]="msg.role === 'user'"
+      [class.chatbot-message--assistant]="msg.role === 'assistant'">
+      
+      <div class="chatbot-message__avatar" *ngIf="msg.role === 'assistant'">
+        <span class="material-symbols-outlined">smart_toy</span>
+      </div>
+      
+      <div class="chatbot-message__bubble">
+        <div class="chatbot-message__text" [innerHTML]="formatMessage(msg.content)"></div>
+      </div>
+    </div>
+
+    <!-- Indicador de escritura (Cargando) -->
+    <div class="chatbot-message chatbot-message--assistant" *ngIf="isLoading">
+      <div class="chatbot-message__avatar">
+        <span class="material-symbols-outlined">smart_toy</span>
+      </div>
+      <div class="chatbot-message__bubble chatbot-message__bubble--typing">
+        <div class="chatbot-typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sugerencias rápidas (Chips) -->
+  <div class="chatbot-suggestions" *ngIf="suggestions.length > 0 && !isLoading && !showCourseButtons">
+    <button 
+      *ngFor="let suggestion of suggestions" 
+      class="chatbot-suggestion-chip" 
+      (click)="selectSuggestion(suggestion)">
+      {{ suggestion }}
+    </button>
+  </div>
+  <!-- Botones de categoría: Presencial / Virtual -->
+  <div class="chatbot-suggestions" *ngIf="courseButtonsMode === 'category' && !isLoading">
+    <button class="chatbot-suggestion-chip" (click)="selectSuggestion('🏫 Cursos Presenciales')">🏫 Cursos Presenciales</button>
+    <button class="chatbot-suggestion-chip" (click)="selectSuggestion('💻 Cursos Virtuales')">💻 Cursos Virtuales</button>
+    <button class="chatbot-suggestion-chip" (click)="selectSuggestion('🔄 Volver al Inicio')">🔄 Volver al Inicio</button>
+  </div>
+  <!-- Botones de cursos presenciales -->
+  <div class="chatbot-suggestions" *ngIf="courseButtonsMode === 'presencial' && !isLoading">
+    <button 
+      *ngFor="let curso of cursosPresenciales"
+      class="chatbot-suggestion-chip" 
+      (click)="selectSuggestion(curso.emoji + ' ' + curso.name)">{{ curso.emoji }} {{ curso.name }}</button>
+    <button class="chatbot-suggestion-chip" (click)="selectSuggestion('🔄 Volver al Inicio')">🔄 Volver al Inicio</button>
+  </div>
+  <!-- Botones de cursos virtuales -->
+  <div class="chatbot-suggestions" *ngIf="courseButtonsMode === 'virtual' && !isLoading">
+    <button 
+      *ngFor="let curso of cursosVirtuales"
+      class="chatbot-suggestion-chip" 
+      (click)="selectSuggestion(curso.emoji + ' ' + curso.name)">{{ curso.emoji }} {{ curso.name }}</button>
+    <button class="chatbot-suggestion-chip" (click)="selectSuggestion('🔄 Volver al Inicio')">🔄 Volver al Inicio</button>
+  </div>
+
+  <!-- Footer con Input de texto -->
+  <footer class="chatbot-footer">
+    <form (ngSubmit)="sendMessage()" class="chatbot-form">
+      <input 
+        type="text" 
+        [(ngModel)]="userMessage" 
+        name="userMessage" 
+        placeholder="Escribe tu consulta aquí..." 
+        autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
+        inputmode="text"
+        [disabled]="isLoading"
+        class="chatbot-input"
+        aria-label="Escribir mensaje">
+      <button 
+        type="submit" 
+        [disabled]="!userMessage.trim() || isLoading" 
+        class="chatbot-send-btn"
+        aria-label="Enviar mensaje">
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </form>
+  </footer>
+</div>
+</ng-container>

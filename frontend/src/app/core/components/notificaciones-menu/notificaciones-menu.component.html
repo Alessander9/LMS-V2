@@ -1,0 +1,99 @@
+﻿<div class="relative">
+  <!-- Botón Campanita con Badge -->
+  <button 
+    (click)="toggleDropdown()"
+    class="relative p-2.5 text-slate-600 hover:text-primary dark:text-slate-300 dark:hover:text-primary bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 rounded-xl transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary/20"
+    [attr.aria-expanded]="isOpen"
+    title="Notificaciones">
+    <span class="material-symbols-outlined text-[22px]">notifications</span>
+    
+    <!-- Badge Contador -->
+    <span *ngIf="totalNoLeidas > 0" 
+      class="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[11px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-900 animate-pulse">
+      {{ totalNoLeidas > 99 ? '99+' : totalNoLeidas }}
+    </span>
+  </button>
+
+  <!-- Desplegable de Notificaciones -->
+  <div *ngIf="isOpen" 
+    class="absolute right-0 mt-3 w-80 sm:w-96 rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200/80 dark:border-slate-800 z-50 overflow-hidden transform transition-all duration-200 animate-in fade-in slide-in-from-top-2">
+    
+    <!-- Cabecera del Menú -->
+    <div class="flex items-center justify-between px-4 py-3.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary text-xl">notifications</span>
+        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Notificaciones</h3>
+        <span *ngIf="totalNoLeidas > 0" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-500">
+          {{ totalNoLeidas }} nuevas
+        </span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button 
+          *ngIf="totalNoLeidas > 0"
+          (click)="marcarTodasComoLeidas()"
+          class="text-xs text-primary hover:text-primary-dark font-medium transition-colors hover:underline px-2 py-1"
+          title="Marcar todas como leídas">
+          Leídas
+        </button>
+        <button 
+          (click)="recargar()" 
+          [disabled]="cargando"
+          class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <span class="material-symbols-outlined text-lg" [class.animate-spin]="cargando">refresh</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de Notificaciones -->
+    <div class="max-h-[380px] overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60 custom-scrollbar">
+      
+      <!-- Estado Vacío -->
+      <div *ngIf="notificaciones.length === 0" class="py-12 px-4 text-center">
+        <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3">
+          <span class="material-symbols-outlined text-2xl">notifications_off</span>
+        </div>
+        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">No tienes notificaciones</p>
+        <p class="text-xs text-slate-400 mt-1">Aquí te avisaremos sobre nuevas clases, tareas, materiales y notas.</p>
+      </div>
+
+      <!-- Items de Notificación -->
+      <div 
+        *ngFor="let item of notificaciones"
+        (click)="seleccionarNotificacion(item)"
+        class="group relative flex items-start gap-3.5 p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all duration-150 cursor-pointer"
+        [ngClass]="{'bg-primary/5 dark:bg-primary/10': !item.leido}">
+        
+        <!-- Indicador de No Leído -->
+        <span *ngIf="!item.leido" class="absolute left-1.5 top-5 w-2 h-2 rounded-full bg-primary ring-2 ring-white dark:ring-slate-900"></span>
+
+        <!-- Icono Categoría -->
+        <div [ngClass]="getIconClass(item.tipo).bgClass" class="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105">
+          <span class="material-symbols-outlined text-lg">{{ getIconClass(item.tipo).icon }}</span>
+        </div>
+
+        <!-- Contenido de Texto -->
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-bold text-slate-900 dark:text-slate-100 truncate pr-2">
+            {{ item.titulo }}
+          </p>
+          <p class="text-[12px] text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-2 leading-relaxed">
+            {{ item.mensaje }}
+          </p>
+          <div class="flex items-center gap-2 mt-1.5 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+            <span>{{ item.fechaCreacion | date:'d MMM, h:mm a' }}</span>
+            <span *ngIf="item.urlDestino" class="text-primary group-hover:underline flex items-center gap-0.5 font-semibold">
+              Ver detalle <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pie del Menú -->
+    <div class="p-2.5 bg-slate-50/80 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 text-center">
+      <p class="text-[11px] text-slate-400 font-medium">Centro de Novedades Plataforma LMS</p>
+    </div>
+
+  </div>
+</div>

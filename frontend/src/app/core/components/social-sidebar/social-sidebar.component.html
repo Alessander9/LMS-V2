@@ -1,0 +1,27 @@
+﻿<!-- Floating Social Sidebar (Plataforma LMS) -->
+<!-- Desktop: sidebar vertical izquierda | Mobile: pill horizontal centrada abajo -->
+<!-- La visibilidad se controla por JS (updateSidebarVisibility) -->
+<div
+  class="sidebar-container"
+  style="opacity: 0; pointer-events: none;
+         transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), left 0.5s cubic-bezier(0.16, 1, 0.3, 1);">
+
+  <!-- ── Inner card ── -->
+  <div class="sidebar-inner">
+    <a
+      *ngFor="let link of socialLinks"
+      [href]="link.url"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="sidebar-link"
+      [ngClass]="[link.iconClass, link.shadowClass]"
+      [title]="'Visitar ' + link.name + ' de Plataforma LMS'">
+      <svg class="sidebar-icon fill-current" viewBox="0 0 24 24" aria-hidden="true">
+        <path [attr.d]="link.svgPath"/>
+      </svg>
+      <!-- Label visible solo en mobile pill al hacer hover/focus -->
+      <span class="sidebar-label">{{ link.name }}</span>
+    </a>
+  </div>
+
+</div>

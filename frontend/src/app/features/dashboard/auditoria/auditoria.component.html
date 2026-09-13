@@ -1,0 +1,301 @@
+<div class="space-y-6 font-body text-slate-800 dark:text-slate-200 transition-colors duration-300">
+  <div class="border border-slate-200 dark:border-slate-800 p-4 sm:p-6 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+    <div class="flex flex-col gap-4">
+      <div>
+        <h1 class="text-2xl font-black uppercase text-slate-900 dark:text-slate-100">Auditoría de Seguridad</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Login, eventos del sistema y trazabilidad operativa del sprint 12.</p>
+      </div>
+      <!-- Tab buttons: horizontal scroll on mobile -->
+      <div class="overflow-x-auto">
+        <div class="flex min-w-max gap-2">
+          <button type="button" (click)="setTab('login')" class="px-4 py-2 text-[10px] font-black uppercase tracking-widest border rounded-none whitespace-nowrap"
+            [ngClass]="activeTab === 'login' ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'">
+            Login
+          </button>
+          <button type="button" (click)="setTab('eventos')" class="px-4 py-2 text-[10px] font-black uppercase tracking-widest border rounded-none whitespace-nowrap"
+            [ngClass]="activeTab === 'eventos' ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'">
+            Sistema
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards: 2-col on mobile, 4-col on md -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+      <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">check_circle</span>
+        <span>Logins exitosos</span>
+      </p>
+      <h3 class="text-3xl font-black text-slate-900 dark:text-slate-100 mt-2">{{ totalExitosos }}</h3>
+    </div>
+    <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+      <p class="text-[10px] font-black uppercase tracking-widest text-red-600 dark:text-red-400 flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">cancel</span>
+        <span>Logins fallidos</span>
+      </p>
+      <h3 class="text-3xl font-black text-slate-900 dark:text-slate-100 mt-2">{{ totalFallidos }}</h3>
+    </div>
+    <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+      <p class="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">block</span>
+        <span>Usuarios bloqueados</span>
+      </p>
+      <h3 class="text-3xl font-black text-slate-900 dark:text-slate-100 mt-2">{{ usuariosBloqueados }}</h3>
+    </div>
+    <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+      <p class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">event_note</span>
+        <span>Eventos del sistema</span>
+      </p>
+      <h3 class="text-3xl font-black text-slate-900 dark:text-slate-100 mt-2">{{ eventosSistema.length }}</h3>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 text-center transition-colors duration-300">
+    <span class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Cargando auditoría...</span>
+  </div>
+
+  <div *ngIf="errorMsg" class="border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/30 p-4 text-xs text-red-800 dark:text-red-200 font-semibold">
+    {{ errorMsg }}
+  </div>
+
+  <div *ngIf="!isLoading && !errorMsg">
+    <!-- Summary tables: stack on mobile, side-by-side on xl -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+      <!-- Last accesses table -->
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+        <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <h2 class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Últimos accesos</h2>
+          <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500">Usuario / IP / Navegador / Fecha / Resultado</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs min-w-max">
+            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black">
+              <tr>
+                <th class="p-3">Usuario</th>
+                <th class="p-3">IP</th>
+                <th class="p-3">Navegador</th>
+                <th class="p-3">Fecha</th>
+                <th class="p-3">Resultado</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of ultimosAccesos" class="border-t border-slate-100 dark:border-slate-800">
+                <td class="p-3">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">person</span>
+                    <span>{{ item.correo || ('Usuario #' + item.usuarioId) }}</span>
+                  </div>
+                </td>
+                <td class="p-3">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">lan</span>
+                    <span>{{ item.ip || '-' }}</span>
+                  </div>
+                </td>
+                <td class="p-3">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">devices</span>
+                    <span class="truncate max-w-[120px] block">{{ item.userAgent || '-' }}</span>
+                  </div>
+                </td>
+                <td class="p-3 whitespace-nowrap">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">schedule</span>
+                    <span>{{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                </td>
+                <td class="p-3">
+                  <span [ngClass]="item.exitoso ? 'text-emerald-700 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900/40' : 'text-red-700 dark:text-red-200 bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/40'"
+                    class="px-2 py-1 border text-[10px] font-black uppercase tracking-widest">
+                    {{ item.exitoso ? 'Exitoso' : 'Fallido' }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="ultimosAccesos.length === 0">
+                <td colspan="5" class="p-6 text-center text-slate-500 dark:text-slate-400">No hay registros de login.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Last events table -->
+      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+        <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+          <h2 class="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Últimos eventos</h2>
+          <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500">Usuario / Módulo / Acción / Fecha</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs min-w-max">
+            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black">
+              <tr>
+                <th class="p-3">Usuario</th>
+                <th class="p-3">Módulo</th>
+                <th class="p-3">Acción</th>
+                <th class="p-3">Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of ultimosEventos" class="border-t border-slate-100 dark:border-slate-800">
+                <td class="p-3">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">person</span>
+                    <span>{{ item.usuarioId || '-' }}</span>
+                  </div>
+                </td>
+                <td class="p-3 font-bold uppercase">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-indigo-400/60 dark:text-indigo-400/40 text-xs shrink-0">view_module</span>
+                    <span>{{ item.modulo }}</span>
+                  </div>
+                </td>
+                <td class="p-3">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">touch_app</span>
+                    <span>{{ item.accion }}</span>
+                  </div>
+                </td>
+                <td class="p-3 whitespace-nowrap">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">schedule</span>
+                    <span>{{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="ultimosEventos.length === 0">
+                <td colspan="4" class="p-6 text-center text-slate-500 dark:text-slate-400">No hay eventos registrados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Login full table -->
+    <div *ngIf="activeTab === 'login'" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div class="relative w-full md:max-w-sm">
+          <input [(ngModel)]="loginSearch" (input)="onLoginFilterChange()" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs" placeholder="Buscar login...">
+        </div>
+        <select [(ngModel)]="loginSortOrder" (change)="onLoginFilterChange()" class="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold uppercase">
+          <option value="desc">Fecha desc</option>
+          <option value="asc">Fecha asc</option>
+        </select>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs min-w-max">
+          <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black">
+            <tr>
+              <th class="p-3">Fecha</th>
+              <th class="p-3">Correo</th>
+              <th class="p-3">IP</th>
+              <th class="p-3">Estado</th>
+              <th class="p-3">Motivo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pagedLoginAuditoria" class="border-t border-slate-100 dark:border-slate-800">
+              <td class="p-3 whitespace-nowrap">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">schedule</span>
+                  <span>{{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </td>
+              <td class="p-3">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">person</span>
+                  <span>{{ item.correo || ('Usuario #' + item.usuarioId) }}</span>
+                </div>
+              </td>
+              <td class="p-3">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">lan</span>
+                  <span>{{ item.ip || '-' }}</span>
+                </div>
+              </td>
+              <td class="p-3">
+                <span [ngClass]="item.exitoso ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-700 bg-red-50 border-red-200'"
+                  class="px-2 py-1 border text-[10px] font-black uppercase tracking-widest">
+                  {{ item.exitoso ? 'Exitoso' : 'Fallido' }}
+                </span>
+              </td>
+              <td class="p-3">{{ item.motivo || '-' }}</td>
+            </tr>
+            <tr *ngIf="filteredLoginAuditoria.length === 0">
+              <td colspan="5" class="p-6 text-center text-slate-500 dark:text-slate-400">No hay registros de login.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="filteredLoginAuditoria.length > pageSize" class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <button (click)="previousLoginPage()" [disabled]="loginPage===1" class="px-3 py-2 border text-[10px] font-bold uppercase">Anterior</button>
+        <div class="text-[10px] font-bold uppercase">Página {{ loginPage }} de {{ loginTotalPages }}</div>
+        <button (click)="nextLoginPage()" [disabled]="loginPage===loginTotalPages" class="px-3 py-2 border text-[10px] font-bold uppercase">Siguiente</button>
+      </div>
+    </div>
+
+    <!-- Tab: Eventos full table -->
+    <div *ngIf="activeTab === 'eventos'" class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,0.05)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.22)] transition-colors duration-300">
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <input [(ngModel)]="eventosSearch" (input)="onEventosFilterChange()" class="w-full md:max-w-sm px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs" placeholder="Buscar evento...">
+        <select [(ngModel)]="eventosSortOrder" (change)="onEventosFilterChange()" class="px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold uppercase">
+          <option value="desc">Fecha desc</option>
+          <option value="asc">Fecha asc</option>
+        </select>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs min-w-max">
+          <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase tracking-widest font-black">
+            <tr>
+              <th class="p-3">Fecha</th>
+              <th class="p-3">Módulo</th>
+              <th class="p-3">Acción</th>
+              <th class="p-3">Usuario</th>
+              <th class="p-3">Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of pagedEventosSistema" class="border-t border-slate-100 dark:border-slate-800">
+              <td class="p-3 whitespace-nowrap">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">schedule</span>
+                  <span>{{ item.fecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </td>
+              <td class="p-3 font-bold uppercase">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-indigo-400/60 dark:text-indigo-400/40 text-xs shrink-0">view_module</span>
+                  <span>{{ item.modulo }}</span>
+                </div>
+              </td>
+              <td class="p-3">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">touch_app</span>
+                  <span>{{ item.accion }}</span>
+                </div>
+              </td>
+              <td class="p-3">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-xs shrink-0">person</span>
+                  <span>{{ item.usuarioId || '-' }}</span>
+                </div>
+              </td>
+              <td class="p-3">{{ item.descripcion || '-' }}</td>
+            </tr>
+            <tr *ngIf="filteredEventosSistema.length === 0">
+              <td colspan="5" class="p-6 text-center text-slate-500 dark:text-slate-400">No hay eventos registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="filteredEventosSistema.length > pageSize" class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <button (click)="previousEventosPage()" [disabled]="eventosPage===1" class="px-3 py-2 border text-[10px] font-bold uppercase">Anterior</button>
+        <div class="text-[10px] font-bold uppercase">Página {{ eventosPage }} de {{ eventosTotalPages }}</div>
+        <button (click)="nextEventosPage()" [disabled]="eventosPage===eventosTotalPages" class="px-3 py-2 border text-[10px] font-bold uppercase">Siguiente</button>
+      </div>
+    </div>
+  </div>
+</div>

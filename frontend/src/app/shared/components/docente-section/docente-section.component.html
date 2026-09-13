@@ -1,0 +1,38 @@
+<section *ngIf="docente" class="acu-section py-8 md:py-10 bg-slate-50 dark:bg-slate-900/40 border-y border-slate-200 dark:border-slate-900/60">
+  <div class="acu-shell max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+    
+    <!-- Image -->
+    <div class="md:col-span-4 docente-photo-card relative rounded-2xl overflow-hidden aspect-square max-w-xs mx-auto border border-slate-200 dark:border-slate-800 group"
+      [class.docente-photo-card--dual]="docenteSecundario">
+      <ng-container *ngIf="docenteSecundario; else singleDocentePhoto">
+        <img [src]="docente.fotoUrl" [alt]="docente.nombre"
+          class="docente-photo docente-photo--first w-full h-full object-cover filter grayscale group-hover:grayscale-0 hover:grayscale-0 transition-all duration-500 cursor-pointer hover:scale-105" />
+        <span class="docente-photo-card__slash" aria-hidden="true"></span>
+        <img [src]="docenteSecundario.fotoUrl" [alt]="docenteSecundario.nombre"
+          class="docente-photo docente-photo--second w-full h-full object-cover filter grayscale group-hover:grayscale-0 hover:grayscale-0 transition-all duration-500 cursor-pointer hover:scale-105" />
+      </ng-container>
+      <ng-template #singleDocentePhoto>
+        <img [src]="docente.fotoUrl" [alt]="docente.nombre"
+          class="docente-photo w-full h-full object-cover filter grayscale group-hover:grayscale-0 hover:grayscale-0 transition-all duration-500 cursor-pointer hover:scale-105" />
+      </ng-template>
+    </div>
+
+    <!-- Text Bio -->
+    <div class="md:col-span-8 space-y-4">
+      <span class="font-mono text-[9px] uppercase tracking-widest text-[#005299] dark:text-blue-300 font-bold">[{{ docente.kicker }}]</span>
+      <h3 class="text-xl md:text-2xl font-extrabold text-[#06264a] dark:text-white tracking-tight">
+        {{ docente.nombre }}<span *ngIf="docenteSecundario" class="docente-name-separator"> / </span>{{ docenteSecundario?.nombre }}
+      </h3>
+      <p class="text-xs text-slate-650 dark:text-slate-400 leading-relaxed" [innerHTML]="docente.biografia"></p>
+
+      <!-- Specialties / Credentials -->
+      <div class="flex flex-wrap gap-4 text-[10px] text-slate-550 dark:text-slate-400">
+        <div *ngFor="let spec of docente.especialidades" class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm text-[#0088ff] dark:text-cyan-400">{{ spec.icon }}</span>
+          {{ spec.label }}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
