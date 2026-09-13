@@ -1,4 +1,4 @@
-﻿<div class="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-body text-slate-800 dark:text-slate-200 transition-colors duration-350">
+<div class="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-body text-slate-800 dark:text-slate-200 transition-colors duration-350">
 
   <!-- ============================================================ -->
   <!-- MOBILE SIDEBAR DRAWER OVERLAY                                 -->
@@ -54,12 +54,36 @@
             <span>Dashboard</span>
           </a>
           <a
+            routerLink="/dashboard/asistencia-qr"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-cyan-300 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">qr_code_scanner</span>
+            <span>Asistencia QR</span>
+          </a>
+          <a
+            routerLink="/dashboard/gestion-notas"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-amber-300 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">grade</span>
+            <span>Gestión de Notas</span>
+          </a>
+          <a
+            routerLink="/dashboard/estudiantes"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">badge</span>
+            <span>Estudiantes (Legajos)</span>
+          </a>
+          <a
             routerLink="/dashboard/alumnos"
             routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
             (click)="closeSidebar()"
             class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
             <span class="material-symbols-outlined text-lg">school</span>
-            <span>Alumnos</span>
+            <span>Usuarios Alumnos</span>
           </a>
           <a
             routerLink="/dashboard/docentes"
@@ -165,6 +189,22 @@
             class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
             <span class="material-symbols-outlined text-lg">auto_stories</span>
             <span>Mis Cursos</span>
+          </a>
+          <a
+            routerLink="/dashboard/asistencia-qr"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-cyan-300 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">qr_code_scanner</span>
+            <span>Asistencia QR</span>
+          </a>
+          <a
+            routerLink="/dashboard/gestion-notas"
+            routerLinkActive="bg-slate-800 text-white border-l-2 border-primary"
+            (click)="closeSidebar()"
+            class="flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-widest text-amber-300 hover:text-white hover:bg-slate-800/50 transition-all rounded-none">
+            <span class="material-symbols-outlined text-lg">grade</span>
+            <span>Gestión de Notas</span>
           </a>
           <a
             routerLink="/dashboard/docente/tareas"

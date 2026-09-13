@@ -1,0 +1,460 @@
+<div class="gestion-notas-container p-4 md:p-8 max-w-7xl mx-auto space-y-6">
+  <!-- Header con Título, Selector de Modo y Acciones -->
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+    <div>
+      <div class="flex items-center gap-2">
+        <span [ngClass]="tipoEscala === 'LITERAL' ? 'bg-amber-100 text-amber-900 border-amber-200' : 'bg-blue-100 text-blue-900 border-blue-200'" class="px-3 py-1 text-xs font-black rounded-full uppercase tracking-wider border">
+          {{ tipoEscala === 'LITERAL' ? '🏫 Modo Colegio: AD - A - B - C' : '🎓 Modo Instituto: Escala 0 a 20' }}
+        </span>
+        <span class="text-xs text-slate-500 font-medium">Cálculo de Promedios & Auditoría</span>
+      </div>
+      <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">Gestión y Registro de Calificaciones</h1>
+      <p class="text-slate-600 text-sm mt-0.5">Planilla oficial de notas con recálculo dinámico y trazabilidad inmutable de cambios.</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Conmutador Rápido de Modalidad -->
+      <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200 text-xs font-bold">
+        <button
+          (click)="tipoEscala = 'LITERAL'; recalcularPromedioFila(filasTabla[0])"
+          [ngClass]="tipoEscala === 'LITERAL' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+          class="px-3 py-1.5 rounded-lg transition-all">
+          Colegio (AD-A-B-C)
+        </button>
+        <button
+          (click)="tipoEscala = 'VIGESIMAL'; recalcularPromedioFila(filasTabla[0])"
+          [ngClass]="tipoEscala === 'VIGESIMAL' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'"
+          class="px-3 py-1.5 rounded-lg transition-all">
+          Instituto (0-20)
+        </button>
+      </div>
+
+      <button
+        (click)="modalNuevaEvalAbierto = true"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm font-semibold rounded-xl shadow transition-all">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        + Columna Evaluación
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros de Planilla -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+    <div>
+      <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Periodo Académico</label>
+      <select
+        [(ngModel)]="periodoSeleccionadoId"
+        (change)="onCambioPeriodo()"
+        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        <option *ngFor="let p of periodos" [value]="p.id">
+          {{ p.nombre }} ({{ p.tipoInstitucion }})
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Grado / Sección / Ciclo</label>
+      <select
+        [(ngModel)]="seccionSeleccionadaId"
+        (change)="onCambioSeccion()"
+        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-medium text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        <option *ngFor="let s of secciones" [value]="s.id">
+          [{{ s.nivel }}] {{ s.gradoOCiclo }} - Sección {{ s.seccion }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Buscar Estudiante</label>
+      <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="filtroBusqueda"
+          placeholder="Filtrar por apellidos, nombres, DNI..."
+          class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Planilla / Matriz de Calificaciones Interactiva -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-4 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+        <h2 class="text-base font-bold text-slate-900">Acta de Notas y Evaluación Continua</h2>
+        <span class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">
+          {{ filasFiltradas.length }} Estudiantes
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2 text-xs text-slate-600 font-medium">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Aprobado / Logro Esperado
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 ml-2"></span> En Proceso
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-rose-500 ml-2"></span> En Inicio / Desaprobado
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-slate-700">
+        <thead class="bg-slate-100 text-xs font-black text-slate-700 uppercase tracking-wider border-b border-slate-200">
+          <tr>
+            <th class="py-3.5 px-4 min-w-[200px]">Estudiante</th>
+            <th class="py-3.5 px-3 w-28">DNI</th>
+            <!-- Columnas Dinámicas de Evaluaciones -->
+            <th *ngFor="let ev of evaluaciones" class="py-3.5 px-3 text-center min-w-[140px] bg-slate-50/80">
+              <div class="font-bold text-slate-900 truncate" [title]="ev.nombre">{{ ev.nombre }}</div>
+              <div class="text-[10px] text-slate-500 font-semibold lowercase">
+                {{ tipoEscala === 'VIGESIMAL' ? (ev.pesoPorcentual + '%') : 'cualitativo' }}
+              </div>
+            </th>
+            <!-- Columna de Promedio Calculado -->
+            <th class="py-3.5 px-4 text-center w-36 bg-blue-50/80 text-blue-900 font-black border-l border-blue-100">
+              Promedio Final
+            </th>
+            <th class="py-3.5 px-4 text-right w-28">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr *ngFor="let fila of filasFiltradas" class="hover:bg-slate-50/80 transition-colors">
+            <!-- Datos del Estudiante -->
+            <td class="py-3 px-4 font-semibold text-slate-900">
+              <div class="truncate">{{ fila.nombresCompletos }}</div>
+              <div class="text-[11px] font-mono text-slate-500">{{ fila.codigo }}</div>
+            </td>
+            <td class="py-3 px-3 font-mono text-xs text-slate-600 font-medium">
+              {{ fila.dni }}
+            </td>
+
+            <!-- Celdas de Calificaciones -->
+            <td *ngFor="let ev of evaluaciones" class="py-2.5 px-2 text-center">
+              <div class="flex items-center justify-center gap-1">
+                <!-- Escala Literal (Colegio: AD, A, B, C) -->
+                <ng-container *ngIf="tipoEscala === 'LITERAL'">
+                  <select
+                    [(ngModel)]="fila.notas[ev.id].valorLit"
+                    (change)="guardarNotaDirecta(fila, ev.id)"
+                    [ngClass]="{
+                      'bg-purple-100 text-purple-900 border-purple-300': fila.notas[ev.id]?.valorLit === 'AD',
+                      'bg-emerald-100 text-emerald-900 border-emerald-300': fila.notas[ev.id]?.valorLit === 'A',
+                      'bg-amber-100 text-amber-900 border-amber-300': fila.notas[ev.id]?.valorLit === 'B',
+                      'bg-rose-100 text-rose-900 border-rose-300': fila.notas[ev.id]?.valorLit === 'C'
+                    }"
+                    class="w-16 px-2 py-1 text-xs font-black text-center rounded-lg border focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                    <option *ngFor="let opt of opcionesLiterales" [value]="opt">{{ opt }}</option>
+                  </select>
+                </ng-container>
+
+                <!-- Escala Vigesimal (Instituto: 0 a 20) -->
+                <ng-container *ngIf="tipoEscala === 'VIGESIMAL'">
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    step="0.5"
+                    [(ngModel)]="fila.notas[ev.id].valorNum"
+                    (change)="guardarNotaDirecta(fila, ev.id)"
+                    [ngClass]="(fila.notas[ev.id]?.valorNum || 0) >= 13 ? 'text-blue-900 bg-blue-50/50 border-blue-200' : 'text-rose-700 bg-rose-50 border-rose-300'"
+                    class="w-16 px-2 py-1 text-xs font-bold text-center rounded-lg border focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+                </ng-container>
+
+                <!-- Botón de Modificar con Auditoría -->
+                <button
+                  (click)="abrirModalModificar(fila, ev)"
+                  title="Modificar con Justificación de Auditoría"
+                  class="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                </button>
+              </div>
+            </td>
+
+            <!-- Promedio Calculado -->
+            <td class="py-3 px-4 text-center bg-blue-50/30 border-l border-blue-100">
+              <ng-container *ngIf="tipoEscala === 'VIGESIMAL'">
+                <div class="text-sm font-black" [ngClass]="(fila.promedioNum || 0) >= 13 ? 'text-blue-800' : 'text-rose-700'">
+                  {{ fila.promedioNum !== undefined ? fila.promedioNum.toFixed(2) : '--' }}
+                </div>
+                <div class="text-[10px] font-bold" [ngClass]="(fila.promedioNum || 0) >= 13 ? 'text-emerald-700' : 'text-rose-600'">
+                  {{ fila.estadoAprobacion }}
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="tipoEscala === 'LITERAL'">
+                <span
+                  [ngClass]="{
+                    'bg-purple-600 text-white': fila.promedioLit === 'AD',
+                    'bg-emerald-600 text-white': fila.promedioLit === 'A',
+                    'bg-amber-500 text-white': fila.promedioLit === 'B',
+                    'bg-rose-600 text-white': fila.promedioLit === 'C'
+                  }"
+                  class="inline-block px-2.5 py-0.5 rounded-full text-xs font-black shadow-sm">
+                  {{ fila.promedioLit || '-' }}
+                </span>
+                <div class="text-[10px] font-semibold text-slate-600 mt-0.5">
+                  {{ fila.estadoAprobacion }}
+                </div>
+              </ng-container>
+            </td>
+
+            <!-- Acciones (Ver Boleta) -->
+            <td class="py-3 px-4 text-right">
+              <button
+                (click)="verBoletaOficial(fila.matriculaId)"
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-blue-100 text-slate-700 hover:text-blue-800 rounded-lg text-xs font-bold transition-all">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Boleta
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="filasFiltradas.length === 0">
+            <td [attr.colspan]="evaluaciones.length + 4" class="py-12 text-center text-slate-500">
+              <p class="font-bold text-slate-700">No hay estudiantes matriculados en este periodo o sección.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal: Modificar Calificación con Justificación Obligatoria de Auditoría -->
+  <div *ngIf="modalModificarAbierto" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-100 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+        <div>
+          <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider">Auditoría de Calificaciones</span>
+          <h3 class="text-lg font-bold text-slate-900">Modificar Calificación</h3>
+        </div>
+        <button (click)="modalModificarAbierto = false" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+
+      <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-1">
+        <div><span class="text-slate-500 font-semibold">Estudiante:</span> <span class="font-bold text-slate-800">{{ nombreAlumnoModificar }}</span></div>
+        <div><span class="text-slate-500 font-semibold">Evaluación:</span> <span class="font-bold text-slate-800">{{ evaluacionModificarNombre }}</span></div>
+        <div>
+          <span class="text-slate-500 font-semibold">Nota Anterior:</span>
+          <span class="font-mono font-bold text-slate-900 ml-1">
+            {{ tipoEscala === 'VIGESIMAL' ? (notaActualNum || '--') : (notaActualLit || '--') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nueva Calificación</label>
+          <ng-container *ngIf="tipoEscala === 'LITERAL'">
+            <select
+              [(ngModel)]="nuevaNotaLit"
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-bold text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option *ngFor="let opt of opcionesLiterales" [value]="opt">{{ opt }}</option>
+            </select>
+          </ng-container>
+
+          <ng-container *ngIf="tipoEscala === 'VIGESIMAL'">
+            <input
+              type="number"
+              min="0"
+              max="20"
+              step="0.5"
+              [(ngModel)]="nuevaNotaNum"
+              class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 font-bold text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+          </ng-container>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">
+            Motivo / Justificación del Cambio <span class="text-rose-500">*</span>
+          </label>
+          <textarea
+            [(ngModel)]="motivoJustificacion"
+            rows="3"
+            placeholder="Ej: Corrección por revisión de examen complementario o reclamo de nota justificado..."
+            class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+          <p class="text-[11px] text-slate-500 mt-1 italic">
+            🛡️ Este cambio quedará registrado permanentemente en el historial de auditoría académica.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+        <button
+          *ngIf="calificacionSeleccionadaId"
+          (click)="verHistorial(calificacionSeleccionadaId)"
+          type="button"
+          class="text-xs text-blue-600 hover:text-blue-800 font-bold underline">
+          Ver historial de cambios anteriores
+        </button>
+        <span *ngIf="!calificacionSeleccionadaId"></span>
+
+        <div class="flex gap-2">
+          <button
+            (click)="modalModificarAbierto = false"
+            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all">
+            Cancelar
+          </button>
+          <button
+            (click)="confirmarModificacion()"
+            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition-all">
+            Guardar con Auditoría
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Historial de Auditoría de una Calificación -->
+  <div *ngIf="modalHistorialAbierto" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-slate-100 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+        <h3 class="text-base font-bold text-slate-900">Historial de Modificaciones</h3>
+        <button (click)="modalHistorialAbierto = false" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+
+      <div class="space-y-3 max-h-80 overflow-y-auto pr-1">
+        <div *ngFor="let h of historialCambios" class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
+          <div class="flex items-center justify-between text-slate-500 font-medium">
+            <span>{{ h.fechaModificacion | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+            <span class="font-bold text-slate-700">Por: {{ h.modificadoPorNombre }}</span>
+          </div>
+          <div class="flex items-center gap-2 font-mono">
+            <span class="text-rose-700 font-bold line-through">
+              {{ h.notaAnteriorLit || h.notaAnteriorNum }}
+            </span>
+            <span>➔</span>
+            <span class="text-emerald-700 font-bold">
+              {{ h.notaNuevaLit || h.notaNuevaNum }}
+            </span>
+          </div>
+          <p class="text-slate-800 bg-white p-2 rounded-lg border border-slate-100 font-sans italic">
+            "{{ h.motivoJustificacion }}"
+          </p>
+        </div>
+
+        <div *ngIf="historialCambios.length === 0" class="py-6 text-center text-slate-500 text-xs">
+          No hay registros de modificaciones para esta calificación.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Boleta Oficial de Calificaciones / Libreta Escolar -->
+  <div *ngIf="modalBoletaAbierto && boletaSeleccionada" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+    <div class="bg-white rounded-3xl p-6 md:p-8 max-w-2xl w-full shadow-2xl border border-slate-200 space-y-5 print:p-0 print:border-none">
+      <div class="flex items-center justify-between border-b pb-3 border-slate-100 print:hidden">
+        <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Documento Oficial</span>
+        <div class="flex items-center gap-2">
+          <button (click)="imprimirBoleta()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow">
+            🖨️ Imprimir Boleta
+          </button>
+          <button (click)="modalBoletaAbierto = false" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+        </div>
+      </div>
+
+      <!-- Formato de Boleta Impresa -->
+      <div class="border-2 border-slate-800 p-6 rounded-2xl space-y-4">
+        <div class="text-center border-b pb-3 border-slate-300">
+          <h2 class="text-lg font-black text-slate-900 tracking-wide">SISTEMA OFICIAL DE REGISTRO ACADÉMICO</h2>
+          <h3 class="text-xs font-bold text-slate-600 uppercase tracking-widest mt-0.5">
+            {{ boletaSeleccionada.tipoInstitucion.replace('_', ' ') }}
+          </h3>
+          <p class="text-xs text-slate-500 font-semibold mt-1">BOLETA DE CALIFICACIONES - {{ boletaSeleccionada.periodoNombre }}</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs border-b pb-3 border-slate-200">
+          <div><span class="text-slate-500 font-bold">Estudiante:</span> <span class="font-bold text-slate-900">{{ boletaSeleccionada.estudianteNombre }}</span></div>
+          <div><span class="text-slate-500 font-bold">DNI:</span> <span class="font-mono text-slate-900">{{ boletaSeleccionada.dni }}</span></div>
+          <div><span class="text-slate-500 font-bold">Código:</span> <span class="font-mono text-slate-900">{{ boletaSeleccionada.codigoEstudiante }}</span></div>
+          <div><span class="text-slate-500 font-bold">Grado / Sección:</span> <span class="font-bold text-slate-900">{{ boletaSeleccionada.gradoOSeccion }}</span></div>
+        </div>
+
+        <!-- Tabla de Notas en Boleta -->
+        <table class="w-full text-xs text-left border border-slate-300">
+          <thead class="bg-slate-100 font-black text-slate-800">
+            <tr>
+              <th class="p-2 border border-slate-300">Criterio / Evaluación</th>
+              <th class="p-2 border border-slate-300 text-center w-24">Escala</th>
+              <th class="p-2 border border-slate-300 text-center w-24">Calificación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of boletaSeleccionada.calificaciones">
+              <td class="p-2 border border-slate-300 font-medium">{{ c.evaluacionNombre }}</td>
+              <td class="p-2 border border-slate-300 text-center text-slate-500 font-mono">{{ c.tipoEscala }}</td>
+              <td class="p-2 border border-slate-300 text-center font-bold">
+                <span *ngIf="c.tipoEscala === 'LITERAL'" class="px-2 py-0.5 rounded font-black text-xs">
+                  {{ c.valorLiteral || '--' }}
+                </span>
+                <span *ngIf="c.tipoEscala === 'VIGESIMAL'" class="font-mono text-xs">
+                  {{ c.valorNumerico !== undefined ? c.valorNumerico.toFixed(2) : '--' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Conclusión Descriptiva y Promedio Final -->
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-700">Resultado Final del Periodo:</span>
+            <span class="font-black text-sm text-blue-900">
+              {{ boletaSeleccionada.tipoEscala === 'VIGESIMAL' ? (boletaSeleccionada.promedioFinalNumerico?.toFixed(2) + ' / 20.00') : ('Nivel: ' + boletaSeleccionada.promedioFinalLiteral) }}
+            </span>
+          </div>
+          <p class="text-slate-600 font-medium italic mt-1">
+            "{{ boletaSeleccionada.conclusionDescriptiva }}"
+          </p>
+        </div>
+
+        <!-- Firmas -->
+        <div class="grid grid-cols-2 gap-8 pt-8 text-center text-xs">
+          <div class="border-t border-slate-400 pt-1 font-bold text-slate-700">Firma del Docente / Tutor</div>
+          <div class="border-t border-slate-400 pt-1 font-bold text-slate-700">Dirección Académica</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Crear Columna de Evaluación -->
+  <div *ngIf="modalNuevaEvalAbierto" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+        <h3 class="text-lg font-bold text-slate-900">Nueva Columna de Evaluación</h3>
+        <button (click)="modalNuevaEvalAbierto = false" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Nombre de la Evaluación / Competencia</label>
+          <input
+            type="text"
+            [(ngModel)]="nuevoNombreEval"
+            placeholder="Ej: Práctica Calificada 2, Examen Bimestral..."
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+        </div>
+
+        <div *ngIf="tipoEscala === 'VIGESIMAL'">
+          <label class="block text-xs font-bold text-slate-600 mb-1">Peso Porcentual (%)</label>
+          <input
+            type="number"
+            min="1"
+            max="100"
+            [(ngModel)]="nuevoPesoEval"
+            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+        <button
+          (click)="modalNuevaEvalAbierto = false"
+          class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all">
+          Cancelar
+        </button>
+        <button
+          (click)="crearEvaluacion()"
+          class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition-all">
+          Crear Columna
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

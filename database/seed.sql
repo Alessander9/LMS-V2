@@ -521,4 +521,179 @@ INSERT INTO tareas (modulo_id, titulo, descripcion, fecha_limite, permitir_reenv
   CURRENT_TIMESTAMP
 );
 
+-- =========================================================================
+-- 17. SEED: periodos_academicos
+-- =========================================================================
+INSERT INTO periodos_academicos (nombre, tipo_periodo, tipo_institucion, fecha_inicio, fecha_fin, activo) VALUES
+('Año Lectivo 2026 - Bimestre I', 'BIMESTRE', 'COLEGIO_SECUNDARIA', '2026-03-01', '2026-05-15', TRUE),
+('Año Lectivo 2026 - Bimestre II', 'BIMESTRE', 'COLEGIO_SECUNDARIA', '2026-05-20', '2026-07-25', FALSE),
+('Semestre Académico 2026-I', 'SEMESTRE', 'INSTITUTO', '2026-03-15', '2026-07-30', TRUE);
+
+-- =========================================================================
+-- 18. SEED: secciones_grados
+-- =========================================================================
+INSERT INTO secciones_grados (nivel, grado_o_ciclo, seccion, turno, tutor_docente_id, capacidad_maxima, activo) VALUES
+('SECUNDARIA', '5to de Secundaria', 'A', 'MAÑANA', (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com' LIMIT 1), 30, TRUE),
+('PRIMARIA', '6to de Primaria', 'B', 'MAÑANA', (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com' LIMIT 1), 28, TRUE),
+('SUPERIOR', 'Ciclo III - Desarrollo de Software', 'Unica', 'NOCHE', (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com' LIMIT 1), 35, TRUE);
+
+-- =========================================================================
+-- 19. SEED: estudiantes_perfil
+-- =========================================================================
+INSERT INTO estudiantes_perfil (usuario_id, codigo_estudiante, dni, fecha_nacimiento, genero, direccion, nombre_apoderado, telefono_apoderado, parentesco_apoderado, qr_token) VALUES
+(
+  (SELECT id FROM usuarios WHERE correo = 'alumno@plataformalms.com' LIMIT 1),
+  'EST-2026-00101',
+  '74892011',
+  '2008-05-14',
+  'MASCULINO',
+  'Av. Arequipa 2450, Lince',
+  'Carlos Perez Ramirez',
+  '+51 987 654 321',
+  'PADRE',
+  'QR_STUDENT_74892011_EST202600101'
+);
+
+-- =========================================================================
+-- 20. SEED: matriculas_academicas
+-- =========================================================================
+INSERT INTO matriculas_academicas (estudiante_id, seccion_grado_id, periodo_academico_id, estado, observaciones) VALUES
+(
+  (SELECT id FROM estudiantes_perfil WHERE codigo_estudiante = 'EST-2026-00101' LIMIT 1),
+  (SELECT id FROM secciones_grados WHERE grado_o_ciclo = '5to de Secundaria' AND seccion = 'A' LIMIT 1),
+  (SELECT id FROM periodos_academicos WHERE nombre = 'Año Lectivo 2026 - Bimestre I' LIMIT 1),
+  'ACTIVA',
+  'Matrícula regular 2026'
+);
+
+-- =========================================================================
+-- 21. SEED: sesiones_clase
+-- =========================================================================
+INSERT INTO sesiones_clase (curso_id, seccion_grado_id, docente_id, fecha, hora_inicio, hora_fin, tema, qr_sesion_token, estado) VALUES
+(
+  (SELECT id FROM cursos LIMIT 1),
+  (SELECT id FROM secciones_grados WHERE grado_o_ciclo = '5to de Secundaria' LIMIT 1),
+  (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com' LIMIT 1),
+  CURRENT_DATE,
+  '08:00:00',
+  '09:30:00',
+  'Sesión 01: Introducción a la Materia y Diagnóstico',
+  'QR_SESION_CLASE_2026_01',
+  'ABIERTA'
+);
+
+-- =========================================================================
+-- 22. SEED: asistencias
+-- =========================================================================
+INSERT INTO asistencias (sesion_id, estudiante_id, estado, metodo_marcacion, observaciones) VALUES
+(
+  (SELECT id FROM sesiones_clase LIMIT 1),
+  (SELECT id FROM estudiantes_perfil WHERE codigo_estudiante = 'EST-2026-00101' LIMIT 1),
+  'PRESENTE',
+  'QR_SCAN',
+  'Asistencia confirmada puntualmente mediante carnet QR'
+);
+
+-- =========================================================================
+-- 23. SEED: evaluaciones_config
+-- =========================================================================
+-- Evaluaciones de Colegio (Escala Literal AD, A, B, C)
+INSERT INTO evaluaciones_config (curso_id, periodo_academico_id, nombre, tipo_escala, peso_porcentual, orden, activo) VALUES
+(
+  (SELECT id FROM cursos LIMIT 1),
+  (SELECT id FROM periodos_academicos WHERE nombre = 'Año Lectivo 2026 - Bimestre I' LIMIT 1),
+  'C1: Indagación y Razonamiento Crítico',
+  'LITERAL',
+  50.00,
+  1,
+  TRUE
+),
+(
+  (SELECT id FROM cursos LIMIT 1),
+  (SELECT id FROM periodos_academicos WHERE nombre = 'Año Lectivo 2026 - Bimestre I' LIMIT 1),
+  'C2: Expresión y Aplicación Práctica',
+  'LITERAL',
+  50.00,
+  2,
+  TRUE
+);
+
+-- Evaluaciones de Instituto (Escala Vigesimal 0 a 20)
+INSERT INTO evaluaciones_config (curso_id, periodo_academico_id, nombre, tipo_escala, peso_porcentual, orden, activo) VALUES
+(
+  (SELECT id FROM cursos LIMIT 1),
+  (SELECT id FROM periodos_academicos WHERE nombre = 'Semestre Académico 2026-I' LIMIT 1),
+  'Práctica Calificada 1 (PC1)',
+  'VIGESIMAL',
+  20.00,
+  1,
+  TRUE
+),
+(
+  (SELECT id FROM cursos LIMIT 1),
+  (SELECT id FROM periodos_academicos WHERE nombre = 'Semestre Académico 2026-I' LIMIT 1),
+  'Examen Parcial (EP)',
+  'VIGESIMAL',
+  30.00,
+  2,
+  TRUE
+),
+(
+  (SELECT id FROM cursos LIMIT 1),
+  (SELECT id FROM periodos_academicos WHERE nombre = 'Semestre Académico 2026-I' LIMIT 1),
+  'Trabajo Aplicativo (TA)',
+  'VIGESIMAL',
+  20.00,
+  3,
+  TRUE
+),
+(
+  (SELECT id FROM cursos LIMIT 1),
+  (SELECT id FROM periodos_academicos WHERE nombre = 'Semestre Académico 2026-I' LIMIT 1),
+  'Examen Final (EF)',
+  'VIGESIMAL',
+  30.00,
+  4,
+  TRUE
+);
+
+-- =========================================================================
+-- 24. SEED: calificaciones
+-- =========================================================================
+INSERT INTO calificaciones (matricula_academica_id, evaluacion_id, valor_numerico, valor_literal, promedio_calculado, promedio_literal, docente_id, observacion) VALUES
+(
+  (SELECT id FROM matriculas_academicas LIMIT 1),
+  (SELECT id FROM evaluaciones_config WHERE nombre = 'C1: Indagación y Razonamiento Crítico' LIMIT 1),
+  NULL,
+  'AD',
+  NULL,
+  'AD',
+  (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com' LIMIT 1),
+  'Excelente participación y desempeño en las prácticas.'
+),
+(
+  (SELECT id FROM matriculas_academicas LIMIT 1),
+  (SELECT id FROM evaluaciones_config WHERE nombre = 'C2: Expresión y Aplicación Práctica' LIMIT 1),
+  NULL,
+  'A',
+  NULL,
+  'AD',
+  (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com' LIMIT 1),
+  'Logro esperado alcanzado con alta constancia.'
+);
+
+-- =========================================================================
+-- 25. SEED: historial_cambio_notas
+-- =========================================================================
+INSERT INTO historial_cambio_notas (calificacion_id, nota_anterior_num, nota_anterior_lit, nota_nueva_num, nota_nueva_lit, modificado_por, motivo_justificacion) VALUES
+(
+  (SELECT id FROM calificaciones LIMIT 1),
+  NULL,
+  'A',
+  NULL,
+  'AD',
+  (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com' LIMIT 1),
+  'Corrección tras revisión de la rúbrica y entrega de proyecto complementario destacado.'
+);
+
 

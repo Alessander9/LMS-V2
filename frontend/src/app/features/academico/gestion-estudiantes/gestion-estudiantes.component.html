@@ -1,0 +1,277 @@
+<div class="gestion-estudiantes-container p-4 md:p-8 max-w-7xl mx-auto space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full uppercase tracking-wider">
+          Legajos Académicos
+        </span>
+        <span class="text-xs text-slate-500 font-medium">Primaria • Secundaria • Institutos</span>
+      </div>
+      <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">Directorio de Estudiantes</h1>
+      <p class="text-slate-600 text-sm mt-0.5">Gestión de datos escolares, apoderados, matrículas y emisión de Carnets QR.</p>
+    </div>
+
+    <button
+      (click)="modalRegistroAbierto = true"
+      class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-lg transition-all transform active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+      + Registrar Nuevo Estudiante
+    </button>
+  </div>
+
+  <!-- Buscador -->
+  <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-center gap-4">
+    <div class="relative flex-1 w-full">
+      <input
+        type="text"
+        [(ngModel)]="filtroTexto"
+        (keyup.enter)="buscarEstudiantes()"
+        placeholder="Buscar por DNI, Código de estudiante, Apellidos o Nombres..."
+        class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+      <svg class="w-5 h-5 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+
+    <button
+      (click)="buscarEstudiantes()"
+      class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-xl transition-all w-full md:w-auto">
+      Buscar
+    </button>
+  </div>
+
+  <!-- Tabla de Estudiantes -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <h2 class="text-base font-bold text-slate-800">Alumnos Registrados</h2>
+        <span class="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-xs font-black rounded-full">
+          {{ estudiantesFiltrados.length }} Total
+        </span>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm text-slate-700">
+        <thead class="bg-slate-100 text-xs font-bold text-slate-600 uppercase tracking-wider border-b border-slate-200">
+          <tr>
+            <th class="py-3.5 px-4">Estudiante</th>
+            <th class="py-3.5 px-4">DNI / Código</th>
+            <th class="py-3.5 px-4">Grado / Nivel</th>
+            <th class="py-3.5 px-4">Apoderado / Contacto</th>
+            <th class="py-3.5 px-4">Estado</th>
+            <th class="py-3.5 px-4 text-right">Carnet Digital QR</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr *ngFor="let est of estudiantesFiltrados" class="hover:bg-slate-50 transition-colors">
+            <td class="py-3.5 px-4">
+              <div class="font-bold text-slate-900">{{ est.apellidos }}, {{ est.nombres }}</div>
+              <div class="text-xs text-slate-500 font-medium">{{ est.correo }}</div>
+            </td>
+            <td class="py-3.5 px-4 font-mono text-xs text-slate-700 font-semibold">
+              <span class="font-bold text-slate-900">{{ est.dni }}</span> / {{ est.codigoEstudiante }}
+            </td>
+            <td class="py-3.5 px-4 text-xs font-medium text-slate-700">
+              <div class="font-bold text-slate-900">{{ est.gradoOSeccionActual }}</div>
+              <div class="text-[11px] text-slate-500 uppercase">{{ est.nivelActual }}</div>
+            </td>
+            <td class="py-3.5 px-4 text-xs">
+              <div class="font-semibold text-slate-800">{{ est.nombreApoderado || 'No registrado' }}</div>
+              <div class="text-slate-500">{{ est.telefonoApoderado || est.telefono || '--' }}</div>
+            </td>
+            <td class="py-3.5 px-4">
+              <span [ngClass]="est.estadoUsuario ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'" class="px-2.5 py-0.5 rounded-full text-xs font-bold">
+                {{ est.estadoUsuario ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="py-3.5 px-4 text-right">
+              <button
+                (click)="verCarnetQr(est.id)"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cyan-50 hover:bg-cyan-100 text-cyan-800 rounded-xl text-xs font-bold border border-cyan-200 transition-all shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                Ver Carnet QR
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="estudiantesFiltrados.length === 0">
+            <td colspan="6" class="py-12 text-center text-slate-500">
+              <p class="font-bold text-slate-700">No se encontraron estudiantes registrados.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal: Registro de Nuevo Estudiante -->
+  <div *ngIf="modalRegistroAbierto" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+    <div class="bg-white rounded-3xl p-6 md:p-8 max-w-xl w-full shadow-2xl border border-slate-100 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3 border-slate-100">
+        <div>
+          <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Matrícula y Legajo</span>
+          <h3 class="text-xl font-extrabold text-slate-900">Registrar Nuevo Estudiante</h3>
+        </div>
+        <button (click)="modalRegistroAbierto = false" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Nombres <span class="text-rose-500">*</span></label>
+            <input type="text" [(ngModel)]="nuevoEstudiante.nombres" placeholder="Ej: Mateo Alonso" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Apellidos <span class="text-rose-500">*</span></label>
+            <input type="text" [(ngModel)]="nuevoEstudiante.apellidos" placeholder="Ej: Vargas Morales" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">DNI / Documento <span class="text-rose-500">*</span></label>
+            <input type="text" [(ngModel)]="nuevoEstudiante.dni" placeholder="Ej: 74892011" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Género</label>
+            <select [(ngModel)]="nuevoEstudiante.genero" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option value="MASCULINO">Masculino</option>
+              <option value="FEMENINO">Femenino</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Correo Electrónico (Opcional)</label>
+            <input type="email" [(ngModel)]="nuevoEstudiante.correo" placeholder="alumno@colegio.edu.pe" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Teléfono Alumno</label>
+            <input type="text" [(ngModel)]="nuevoEstudiante.telefono" placeholder="+51 987 654 321" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+          </div>
+        </div>
+
+        <!-- Asignación Académica -->
+        <div class="bg-blue-50/60 p-3.5 rounded-2xl border border-blue-100 space-y-3">
+          <span class="block font-bold text-blue-900 text-xs uppercase tracking-wider">Asignación de Grado y Periodo</span>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Periodo Lectivo</label>
+              <select [(ngModel)]="nuevoEstudiante.periodoAcademicoId" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <option *ngFor="let p of periodos" [value]="p.id">{{ p.nombre }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Grado / Sección / Ciclo</label>
+              <select [(ngModel)]="nuevoEstudiante.seccionGradoId" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <option *ngFor="let s of secciones" [value]="s.id">[{{ s.nivel }}] {{ s.gradoOCiclo }} - Sec. {{ s.seccion }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Datos del Apoderado / Tutor -->
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-3">
+          <span class="block font-bold text-slate-800 text-xs uppercase tracking-wider">Datos del Apoderado / Tutor</span>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nombre Completo del Apoderado</label>
+              <input type="text" [(ngModel)]="nuevoEstudiante.nombreApoderado" placeholder="Ej: Carlos Vargas Ruiz" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Teléfono de Emergencia</label>
+              <input type="text" [(ngModel)]="nuevoEstudiante.telefonoApoderado" placeholder="+51 912 345 678" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button (click)="modalRegistroAbierto = false" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">
+          Cancelar
+        </button>
+        <button (click)="guardarEstudiante()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow">
+          Guardar y Generar Carnet QR
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Carnet Digital QR del Estudiante (Para Escaneo / Impresión) -->
+  <div *ngIf="modalCarnetAbierto && carnetSeleccionado" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+    <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full shadow-2xl border border-slate-200 space-y-4 print:p-0 print:border-none">
+      <div class="flex items-center justify-between border-b pb-2 border-slate-100 print:hidden">
+        <span class="text-xs font-bold text-blue-600 uppercase tracking-widest">Carnet Oficial QR</span>
+        <div class="flex gap-2">
+          <button (click)="imprimirCarnet()" class="px-3 py-1 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold">
+            🖨️ Imprimir
+          </button>
+          <button (click)="modalCarnetAbierto = false" class="text-slate-400 hover:text-slate-600 font-bold">✕</button>
+        </div>
+      </div>
+
+      <!-- Tarjeta del Carnet (Diseño Premium) -->
+      <div class="bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-950 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden text-center space-y-4 border-4 border-blue-400/30">
+        <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-400/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div>
+          <div class="text-[10px] uppercase font-black tracking-widest text-cyan-300">CARNET ESTUDIANTIL OFICIAL</div>
+          <div class="text-xs font-black tracking-wide text-white mt-0.5">SISTEMA EDUCATIVO LMS V2</div>
+        </div>
+
+        <!-- Código QR Visual SVG -->
+        <div class="bg-white p-4 rounded-2xl inline-block mx-auto shadow-inner border-2 border-cyan-400">
+          <!-- Generación visual de patrón QR SVG con el token -->
+          <svg class="w-36 h-36 mx-auto" viewBox="0 0 100 100" fill="currentColor">
+            <!-- Esquinas QR estandarizadas -->
+            <rect x="5" y="5" width="25" height="25" fill="#0f172a" rx="4"/>
+            <rect x="9" y="9" width="17" height="17" fill="#ffffff" rx="2"/>
+            <rect x="12" y="12" width="11" height="11" fill="#2563eb" rx="1"/>
+
+            <rect x="70" y="5" width="25" height="25" fill="#0f172a" rx="4"/>
+            <rect x="74" y="9" width="17" height="17" fill="#ffffff" rx="2"/>
+            <rect x="77" y="12" width="11" height="11" fill="#2563eb" rx="1"/>
+
+            <rect x="5" y="70" width="25" height="25" fill="#0f172a" rx="4"/>
+            <rect x="9" y="74" width="17" height="17" fill="#ffffff" rx="2"/>
+            <rect x="12" y="77" width="11" height="11" fill="#2563eb" rx="1"/>
+
+            <!-- Patrones de datos -->
+            <rect x="35" y="10" width="6" height="6" fill="#0f172a"/>
+            <rect x="45" y="15" width="8" height="6" fill="#0f172a"/>
+            <rect x="58" y="10" width="6" height="8" fill="#0f172a"/>
+            <rect x="35" y="25" width="10" height="6" fill="#0f172a"/>
+            <rect x="50" y="25" width="12" height="6" fill="#0f172a"/>
+            <rect x="15" y="35" width="8" height="8" fill="#0f172a"/>
+            <rect x="30" y="38" width="6" height="6" fill="#0f172a"/>
+            <rect x="42" y="35" width="16" height="16" fill="#0f172a" rx="2"/>
+            <rect x="46" y="39" width="8" height="8" fill="#06b6d4"/>
+            <rect x="65" y="38" width="8" height="6" fill="#0f172a"/>
+            <rect x="80" y="35" width="10" height="8" fill="#0f172a"/>
+            <rect x="10" y="50" width="12" height="6" fill="#0f172a"/>
+            <rect x="28" y="52" width="8" height="8" fill="#0f172a"/>
+            <rect x="65" y="50" width="6" height="10" fill="#0f172a"/>
+            <rect x="78" y="52" width="12" height="6" fill="#0f172a"/>
+            <rect x="35" y="68" width="6" height="8" fill="#0f172a"/>
+            <rect x="48" y="70" width="8" height="8" fill="#0f172a"/>
+            <rect x="60" y="65" width="10" height="6" fill="#0f172a"/>
+            <rect x="35" y="82" width="15" height="8" fill="#0f172a"/>
+            <rect x="55" y="80" width="10" height="10" fill="#0f172a"/>
+            <rect x="72" y="78" width="8" height="12" fill="#0f172a"/>
+            <rect x="85" y="85" width="10" height="6" fill="#0f172a"/>
+          </svg>
+          <div class="text-[9px] font-mono text-slate-500 font-bold mt-1">{{ carnetSeleccionado.qrToken }}</div>
+        </div>
+
+        <div>
+          <div class="text-sm font-black text-white">{{ carnetSeleccionado.nombresCompletos }}</div>
+          <div class="text-xs font-mono text-cyan-200 mt-0.5">DNI: {{ carnetSeleccionado.dni }} • {{ carnetSeleccionado.codigoEstudiante }}</div>
+          <div class="inline-block mt-2 px-3 py-1 bg-white/10 rounded-full text-[11px] font-bold text-cyan-300">
+            {{ carnetSeleccionado.gradoOSeccion }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

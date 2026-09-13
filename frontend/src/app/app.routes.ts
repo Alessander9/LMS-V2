@@ -1,4 +1,4 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { authGuard, roleGuard } from './core/guards';
 
 export const routes: Routes = [
@@ -386,6 +386,26 @@ export const routes: Routes = [
       {
         path: 'cursos-play/:id',
         loadComponent: () => import('./features/dashboard/play-curso/play-curso.component').then(m => m.PlayCursoComponent)
+      },
+
+      // ── MÓDULOS ESCOLARES E INSTITUTOS (QR, NOTAS DUALES, ESTUDIANTES) ──
+      {
+        path: 'asistencia-qr',
+        loadComponent: () => import('./features/academico/asistencia-qr/asistencia-qr.component').then(m => m.AsistenciaQrComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMINISTRADOR', 'DOCENTE', 'ALUMNO'] }
+      },
+      {
+        path: 'gestion-notas',
+        loadComponent: () => import('./features/academico/gestion-notas/gestion-notas.component').then(m => m.GestionNotasComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMINISTRADOR', 'DOCENTE', 'ALUMNO'] }
+      },
+      {
+        path: 'estudiantes',
+        loadComponent: () => import('./features/academico/gestion-estudiantes/gestion-estudiantes.component').then(m => m.GestionEstudiantesComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMINISTRADOR', 'DOCENTE'] }
       },
 
       // ── ALUMNO + ADMINISTRADOR ────────────────────────────────

@@ -426,4 +426,262 @@ CREATE TABLE IF NOT EXISTS matricula_modulos_acceso (
 CREATE INDEX idx_matricula_modulos_matricula ON matricula_modulos_acceso(matricula_id);
 CREATE INDEX idx_matricula_modulos_modulo ON matricula_modulos_acceso(modulo_id);
 
+-- =========================================================================
+-- 17. TABLA: periodos_academicos (Años Lectivos, Bimestres, Trimestres, Semestres)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS periodos_academicos (
+    id BIGSERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    tipo_periodo VARCHAR(30) NOT NULL DEFAULT 'BIMESTRE', -- BIMESTRE, TRIMESTRE, SEMESTRE, ANUAL
+    tipo_institucion VARCHAR(30) NOT NULL DEFAULT 'COLEGIO_SECUNDARIA', -- COLEGIO_PRIMARIA, COLEGIO_SECUNDARIA, INSTITUTO
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_periodos_activo ON periodos_academicos(activo);
+
+-- =========================================================================
+-- 18. TABLA: secciones_grados (Grados/Secciones en Colegios o Carreras/Ciclos en Institutos)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS secciones_grados (
+    id BIGSERIAL PRIMARY KEY,
+    nivel VARCHAR(30) NOT NULL, -- PRIMARIA, SECUNDARIA, SUPERIOR
+    grado_o_ciclo VARCHAR(100) NOT NULL, -- Ej: '1° de Primaria', '5° de Secundaria', 'Ciclo III - Desarrollo Web'
+    seccion VARCHAR(20) NOT NULL DEFAULT 'A', -- 'A', 'B', 'Unica'
+    turno VARCHAR(30) DEFAULT 'MAÑANA', -- MAÑANA, TARDE, NOCHE
+    tutor_docente_id BIGINT,
+    capacidad_maxima INTEGER DEFAULT 35,
+    activo BOOLEAN DEFAULT TRUE,
+
+    CONSTRAINT fk_seccion_tutor
+        FOREIGN KEY (tutor_docente_id)
+        REFERENCES usuarios(id)
+        ON DELETE SET NULL
+);
+
+CREATE INDEX idx_secciones_nivel ON secciones_grados(nivel);
+CREATE INDEX idx_secciones_tutor ON secciones_grados(tutor_docente_id);
+
+-- =========================================================================
+-- 19. TABLA: estudiantes_perfil (Datos de Estudiantes, Apoderados y Token QR)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS estudiantes_perfil (
+    id BIGSERIAL PRIMARY KEY,
+    usuario_id BIGINT NOT NULL UNIQUE,
+    codigo_estudiante VARCHAR(50) NOT NULL UNIQUE,
+    dni VARCHAR(20) NOT NULL UNIQUE,
+    fecha_nacimiento DATE,
+    genero VARCHAR(20),
+    direccion TEXT,
+    nombre_apoderado VARCHAR(200),
+    telefono_apoderado VARCHAR(30),
+    parentesco_apoderado VARCHAR(50),
+    qr_token VARCHAR(200) NOT NULL UNIQUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_perfil_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_estudiantes_codigo ON estudiantes_perfil(codigo_estudiante);
+CREATE INDEX idx_estudiantes_dni ON estudiantes_perfil(dni);
+CREATE INDEX idx_estudiantes_qr ON estudiantes_perfil(qr_token);
+
+-- =========================================================================
+-- 20. TABLA: matriculas_academicas (Asignación Estudiante - Grado/Sección - Periodo)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS matriculas_academicas (
+    id BIGSERIAL PRIMARY KEY,
+    estudiante_id BIGINT NOT NULL,
+    seccion_grado_id BIGINT NOT NULL,
+    periodo_academico_id BIGINT NOT NULL,
+    estado VARCHAR(30) DEFAULT 'ACTIVA', -- ACTIVA, RETIRADO, TRASLADADO, CULMINADA
+    fecha_matricula TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    observaciones TEXT,
+
+    CONSTRAINT fk_mat_acad_estudiante
+        FOREIGN KEY (estudiante_id)
+        REFERENCES estudiantes_perfil(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_mat_acad_seccion
+        FOREIGN KEY (seccion_grado_id)
+        REFERENCES secciones_grados(id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_mat_acad_periodo
+        FOREIGN KEY (periodo_academico_id)
+        REFERENCES periodos_academicos(id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT uq_estudiante_periodo
+        UNIQUE (estudiante_id, periodo_academico_id)
+);
+
+CREATE INDEX idx_mat_acad_estudiante ON matriculas_academicas(estudiante_id);
+CREATE INDEX idx_mat_acad_seccion ON matriculas_academicas(seccion_grado_id);
+CREATE INDEX idx_mat_acad_periodo ON matriculas_academicas(periodo_academico_id);
+
+-- =========================================================================
+-- 21. TABLA: sesiones_clase (Sesiones para toma de asistencia QR)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS sesiones_clase (
+    id BIGSERIAL PRIMARY KEY,
+    curso_id BIGINT NOT NULL,
+    seccion_grado_id BIGINT NOT NULL,
+    docente_id BIGINT NOT NULL,
+    fecha DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    tema VARCHAR(250),
+    qr_sesion_token VARCHAR(200) UNIQUE,
+    estado VARCHAR(30) DEFAULT 'ABIERTA', -- ABIERTA, CERRADA, CANCELADA
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_sesion_curso
+        FOREIGN KEY (curso_id)
+        REFERENCES cursos(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_sesion_seccion
+        FOREIGN KEY (seccion_grado_id)
+        REFERENCES secciones_grados(id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_sesion_docente
+        FOREIGN KEY (docente_id)
+        REFERENCES usuarios(id)
+        ON DELETE RESTRICT
+);
+
+CREATE INDEX idx_sesiones_fecha ON sesiones_clase(fecha);
+CREATE INDEX idx_sesiones_curso ON sesiones_clase(curso_id);
+CREATE INDEX idx_sesiones_seccion ON sesiones_clase(seccion_grado_id);
+
+-- =========================================================================
+-- 22. TABLA: asistencias (Marcación de asistencia por QR o Manual)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS asistencias (
+    id BIGSERIAL PRIMARY KEY,
+    sesion_id BIGINT NOT NULL,
+    estudiante_id BIGINT NOT NULL,
+    estado VARCHAR(30) NOT NULL DEFAULT 'PRESENTE', -- PRESENTE, TARDANZA, FALTA_JUSTIFICADA, FALTA_INJUSTIFICADA
+    metodo_marcacion VARCHAR(30) DEFAULT 'QR_SCAN', -- QR_SCAN, QR_SESION, MANUAL
+    fecha_hora_marcacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    observaciones TEXT,
+
+    CONSTRAINT fk_asistencia_sesion
+        FOREIGN KEY (sesion_id)
+        REFERENCES sesiones_clase(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_asistencia_estudiante
+        FOREIGN KEY (estudiante_id)
+        REFERENCES estudiantes_perfil(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT uq_asistencia_sesion_estudiante
+        UNIQUE (sesion_id, estudiante_id)
+);
+
+CREATE INDEX idx_asistencias_sesion ON asistencias(sesion_id);
+CREATE INDEX idx_asistencias_estudiante ON asistencias(estudiante_id);
+CREATE INDEX idx_asistencias_estado ON asistencias(estado);
+
+-- =========================================================================
+-- 23. TABLA: evaluaciones_config (Configuración de Evaluaciones y Escala Dual)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS evaluaciones_config (
+    id BIGSERIAL PRIMARY KEY,
+    curso_id BIGINT NOT NULL,
+    periodo_academico_id BIGINT NOT NULL,
+    nombre VARCHAR(150) NOT NULL, -- Ej: 'Evaluación Diagnóstica', 'Práctica Calificada 1', 'Examen Bimestral'
+    tipo_escala VARCHAR(20) NOT NULL DEFAULT 'LITERAL', -- LITERAL (AD, A, B, C) o VIGESIMAL (0 a 20)
+    peso_porcentual NUMERIC(5,2) DEFAULT 100.00, -- Para cálculo ponderado en Institutos (ej: 20%)
+    orden INTEGER DEFAULT 1,
+    activo BOOLEAN DEFAULT TRUE,
+
+    CONSTRAINT fk_eval_curso
+        FOREIGN KEY (curso_id)
+        REFERENCES cursos(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_eval_periodo
+        FOREIGN KEY (periodo_academico_id)
+        REFERENCES periodos_academicos(id)
+        ON DELETE RESTRICT
+);
+
+CREATE INDEX idx_eval_curso ON evaluaciones_config(curso_id);
+CREATE INDEX idx_eval_periodo ON evaluaciones_config(periodo_academico_id);
+
+-- =========================================================================
+-- 24. TABLA: calificaciones (Registro de Notas y Promedios)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS calificaciones (
+    id BIGSERIAL PRIMARY KEY,
+    matricula_academica_id BIGINT NOT NULL,
+    evaluacion_id BIGINT NOT NULL,
+    valor_numerico NUMERIC(4,2), -- 0.00 a 20.00 (para institutos)
+    valor_literal VARCHAR(5),    -- AD, A, B, C (para colegios)
+    promedio_calculado NUMERIC(4,2), -- Promedio acumulado numérico
+    promedio_literal VARCHAR(5),    -- Promedio acumulado literal
+    docente_id BIGINT NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    observacion TEXT,
+
+    CONSTRAINT fk_calif_matricula
+        FOREIGN KEY (matricula_academica_id)
+        REFERENCES matriculas_academicas(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_calif_evaluacion
+        FOREIGN KEY (evaluacion_id)
+        REFERENCES evaluaciones_config(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_calif_docente
+        FOREIGN KEY (docente_id)
+        REFERENCES usuarios(id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT uq_calificacion_mat_eval
+        UNIQUE (matricula_academica_id, evaluacion_id)
+);
+
+CREATE INDEX idx_calif_matricula ON calificaciones(matricula_academica_id);
+CREATE INDEX idx_calif_evaluacion ON calificaciones(evaluacion_id);
+
+-- =========================================================================
+-- 25. TABLA: historial_cambio_notas (Auditoría Estricta de Modificaciones)
+-- =========================================================================
+CREATE TABLE IF NOT EXISTS historial_cambio_notas (
+    id BIGSERIAL PRIMARY KEY,
+    calificacion_id BIGINT NOT NULL,
+    nota_anterior_num NUMERIC(4,2),
+    nota_anterior_lit VARCHAR(5),
+    nota_nueva_num NUMERIC(4,2),
+    nota_nueva_lit VARCHAR(5),
+    modificado_por BIGINT NOT NULL,
+    fecha_modificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    motivo_justificacion TEXT NOT NULL,
+
+    CONSTRAINT fk_hist_calificacion
+        FOREIGN KEY (calificacion_id)
+        REFERENCES calificaciones(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_hist_usuario
+        FOREIGN KEY (modificado_por)
+        REFERENCES usuarios(id)
+        ON DELETE RESTRICT
+);
+
+CREATE INDEX idx_hist_calificacion ON historial_cambio_notas(calificacion_id);
+CREATE INDEX idx_hist_usuario ON historial_cambio_notas(modificado_por);
+
 
