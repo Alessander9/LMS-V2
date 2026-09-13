@@ -28,4 +28,6 @@ scripts/downloads/*.csv
 scripts/tests/e2e/downloads/
 **/backups/
 .codegraph/
-
+*.log
+*.tmp
+ficha_matricula_test.pdf
