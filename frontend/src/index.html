@@ -79,29 +79,96 @@
 
 </head>
 <body class="bg-surface text-on-surface dark:bg-slate-950 dark:text-slate-100 font-body-md antialiased overflow-x-hidden transition-colors duration-300">
-  <!-- Splash Screen -->
+  <!-- Ultra-Modern Institutional Splash / Loading Screen -->
   <style>
-    @keyframes splash-pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50%      { transform: scale(1.03); opacity: 0.85; }
+    @keyframes lms-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
-    @keyframes spin-slow {
-      to { transform: rotate(360deg); }
+    @keyframes lms-spin-reverse {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
     }
-    @keyframes splash-fade-in {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes lms-pulse-glow {
+      0%, 100% { opacity: 0.6; transform: scale(1); filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.4)); }
+      50% { opacity: 1; transform: scale(1.04); filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.7)); }
     }
-    .splash-logo     { animation: splash-pulse 2s ease-in-out infinite; }
-    .splash-spinner  { animation: spin-slow 0.8s linear infinite; }
-    .splash-text     { animation: splash-fade-in 0.6s ease-out both; animation-delay: 0.2s; }
+    @keyframes lms-shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .lms-loading-ring {
+      position: absolute;
+      border-radius: 9999px;
+      border: 3px solid transparent;
+    }
+    .lms-ring-1 {
+      width: 90px;
+      height: 90px;
+      border-top-color: #2563EB;
+      border-left-color: #06B6D4;
+      animation: lms-spin 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+    .lms-ring-2 {
+      width: 110px;
+      height: 110px;
+      border-bottom-color: #8B5CF6;
+      border-right-color: #10B981;
+      animation: lms-spin-reverse 2s linear infinite;
+    }
+    .lms-badge-pulse {
+      animation: lms-pulse-glow 2.2s ease-in-out infinite;
+    }
+    .lms-progress-bar {
+      position: relative;
+      overflow: hidden;
+    }
+    .lms-progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      animation: lms-shimmer 1.5s infinite;
+    }
   </style>
-  <div id="splash-screen" class="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#020b1a] transition-opacity duration-500" style="opacity: 1;">
-    <div class="flex flex-col items-center gap-6 splash-logo">
-      <img src="assets/plataforma_lms-logo.png" alt="Plataforma LMS Logo" fetchpriority="high" class="h-16 md:h-20 object-contain max-w-[280px] select-none pointer-events-none">
-      <div class="flex flex-col items-center gap-3 splash-text">
-        <div class="w-8 h-8 rounded-full border-4 border-slate-700 border-t-[#06B6D4] splash-spinner"></div>
-        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Cargando campus virtual...</p>
+
+  <div id="splash-screen" class="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-slate-950 text-white transition-all duration-700 select-none">
+    <!-- Ambient glowing backgrounds -->
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative flex flex-col items-center gap-7 z-10">
+      <!-- Animated Dual Orbital Rings and Central Badge -->
+      <div class="relative flex items-center justify-center w-32 h-32">
+        <div class="lms-loading-ring lms-ring-2 opacity-60"></div>
+        <div class="lms-loading-ring lms-ring-1"></div>
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 via-blue-700 to-cyan-500 flex items-center justify-center shadow-xl shadow-blue-500/30 lms-badge-pulse border border-white/20">
+          <span class="text-2xl font-black tracking-tighter text-white font-mono">LMS</span>
+        </div>
+      </div>
+
+      <!-- Institutional Branding Typography -->
+      <div class="text-center space-y-2">
+        <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
+          PLATAFORMA LMS V2
+        </h1>
+        <p class="text-xs font-semibold text-slate-400 tracking-wider uppercase">
+          Sistema de Gestión Académica &bull; Colegios e Institutos
+        </p>
+      </div>
+
+      <!-- Modern Shimmer Progress Indicator -->
+      <div class="w-56 space-y-2 text-center">
+        <div class="h-1.5 w-full bg-slate-800 rounded-full lms-progress-bar overflow-hidden p-0.5">
+          <div class="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full w-full"></div>
+        </div>
+        <div class="flex items-center justify-between text-[10px] font-medium text-slate-500 px-1">
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            Conectando servicios...
+          </span>
+          <span class="font-mono text-cyan-400">v2.0</span>
+        </div>
       </div>
     </div>
   </div>
@@ -112,19 +179,24 @@
       if (splash) {
         const hideSplash = () => {
           splash.style.opacity = '0';
+          splash.style.pointerEvents = 'none';
           setTimeout(() => {
             if (splash.parentNode) {
               splash.parentNode.removeChild(splash);
             }
-          }, 500);
+          }, 700);
         };
         
-        window.addEventListener('load', () => {
-          setTimeout(hideSplash, 400);
-        });
+        if (document.readyState === 'complete') {
+          setTimeout(hideSplash, 300);
+        } else {
+          window.addEventListener('load', () => {
+            setTimeout(hideSplash, 300);
+          });
+        }
 
         // Safety fallback
-        setTimeout(hideSplash, 3500);
+        setTimeout(hideSplash, 3000);
       }
     })();
   </script>
