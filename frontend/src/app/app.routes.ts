@@ -240,6 +240,9 @@ export const routes: Routes = [
   // ================================================================
   { path: 'master-ops', redirectTo: 'dashboard/master-ops', pathMatch: 'full' },
   { path: 'ops-console', redirectTo: 'dashboard/master-ops', pathMatch: 'full' },
+  { path: 'academico/asistencia-qr', redirectTo: 'dashboard/asistencia-qr', pathMatch: 'full' },
+  { path: 'academico/gestion-notas', redirectTo: 'dashboard/gestion-notas', pathMatch: 'full' },
+  { path: 'academico/estudiantes', redirectTo: 'dashboard/estudiantes', pathMatch: 'full' },
 
   // ================================================================
   //  AUTENTICACIÓN & EXPERIENCIA EXP Plataforma LMS
