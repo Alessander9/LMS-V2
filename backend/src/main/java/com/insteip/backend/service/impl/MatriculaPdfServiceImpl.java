@@ -9,12 +9,18 @@ import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.*;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,8 +34,9 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
 
     private final MatriculaRepository matriculaRepository;
     private final UsuarioRepository usuarioRepository;
+    private final EstudiantePerfilRepository estudiantePerfilRepository;
 
-    @Value("${application.frontend.base-url:https://insteip.edu.pe}")
+    @Value("${application.frontend.base-url:http://localhost:4200}")
     private String frontendBaseUrl;
 
     @Override
@@ -380,7 +387,7 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             termsContentCell.setBorderColor(borderSlate);
 
             Paragraph clauseText = new Paragraph(
-                    "El acceso al aula virtual y a los recursos educativos de INSTEIP es de carácter estrictamente personal e intransferible conforme al reglamento interno institucional. El estudiante se compromete al uso ético de sus credenciales y de los materiales académicos proporcionados.",
+                    "El acceso al aula virtual y a los recursos educativos de la institución es de carácter estrictamente personal e intransferible conforme al reglamento interno académico. El estudiante se compromete al uso ético de sus credenciales y de los materiales didácticos proporcionados.",
                     fontLegalText
             );
             clauseText.setLeading(11f);
@@ -391,19 +398,19 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             document.add(new Paragraph(" "));
 
             // =========================================================================
-            // 6. CÓDIGO QR DE VERIFICACIÓN DIGITAL Y FIRMA INSTITUCIONAL
+            // 6. CÓDIGO QR INDIVIDUAL DE ASISTENCIA Y FIRMA INSTITUCIONAL
             // =========================================================================
             PdfPTable validationTable = new PdfPTable(2);
             validationTable.setWidthPercentage(100);
-            validationTable.setWidths(new float[]{1.1f, 0.9f});
+            validationTable.setWidths(new float[]{1.15f, 0.85f});
 
-            // Left Box: Código QR de verificación digital
+            // Left Box: Código QR individual del alumno para lector de asistencia
             PdfPCell qrContainerCell = new PdfPCell();
             qrContainerCell.setBorderColor(borderSlate);
             qrContainerCell.setPadding(5f);
             qrContainerCell.setBackgroundColor(bgLightBlue);
 
-            Paragraph qrHeader = new Paragraph("6. CÓDIGO QR DE VERIFICACIÓN DIGITAL", fontSectionTitle);
+            Paragraph qrHeader = new Paragraph("6. CÓDIGO QR INDIVIDUAL DE ASISTENCIA", fontSectionTitle);
             qrHeader.setSpacingAfter(3f);
             qrContainerCell.addElement(qrHeader);
 
@@ -415,14 +422,27 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             qrImageCell.setBorder(PdfPCell.NO_BORDER);
             qrImageCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
+            // Obtener o generar token QR individual del alumno
+            String studentQrToken = "QR_STU_" + (alumno != null ? alumno.getId() : "001");
+            if (alumno != null && estudiantePerfilRepository != null) {
+                studentQrToken = estudiantePerfilRepository.findByUsuarioId(alumno.getId())
+                        .map(EstudiantePerfil::getQrToken)
+                        .orElse("QR_STU_" + alumno.getId() + "_" + (alumno.getCorreo() != null ? alumno.getCorreo() : alumno.getId()));
+            }
+
             try {
-                String validationUrl = frontendBaseUrl + "/dashboard/mis-cursos";
-                String qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" 
-                        + java.net.URLEncoder.encode(validationUrl, java.nio.charset.StandardCharsets.UTF_8);
-                Image qrImg = Image.getInstance(java.net.URI.create(qrApiUrl).toURL());
-                qrImg.scaleAbsolute(50, 50);
+                QRCodeWriter qrCodeWriter = new QRCodeWriter();
+                BitMatrix bitMatrix = qrCodeWriter.encode(studentQrToken, BarcodeFormat.QR_CODE, 140, 140);
+                BufferedImage qrBufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+                ByteArrayOutputStream qrBaos = new ByteArrayOutputStream();
+                ImageIO.write(qrBufferedImage, "PNG", qrBaos);
+                Image qrImg = Image.getInstance(qrBaos.toByteArray());
+                qrImg.scaleAbsolute(52, 52);
                 qrImageCell.addElement(qrImg);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                Paragraph fallbackText = new Paragraph("QR: " + studentQrToken, fontFooterNote);
+                qrImageCell.addElement(fallbackText);
+            }
 
             qrInnerTable.addCell(qrImageCell);
 
@@ -430,7 +450,7 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             qrDescCell.setBorder(PdfPCell.NO_BORDER);
             qrDescCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             Paragraph qrExplanation = new Paragraph(
-                    "Enlace institucional para validar la autenticidad, validez y vigencia de la matrícula.\nCódigo: " + matriculaCodigo + "\nPortal: insteip.edu.pe",
+                    "CÓDIGO QR INDIVIDUAL DEL ESTUDIANTE\nToken: " + studentQrToken + "\nVálido para escaneo por cámara en el control de asistencia y acceso oficial.",
                     fontFooterNote
             );
             qrExplanation.setLeading(9.5f);
@@ -452,7 +472,7 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             signLine.setAlignment(Element.ALIGN_CENTER);
             Paragraph signTitle = new Paragraph("DIRECCIÓN ACADÉMICA Y REGISTRO", new Font(Font.HELVETICA, 8, Font.BOLD, primaryNavy));
             signTitle.setAlignment(Element.ALIGN_CENTER);
-            Paragraph signSub = new Paragraph("INSTEIP - Formación Continua y Especializada", fontFooterNote);
+            Paragraph signSub = new Paragraph("SISTEMA EDUCATIVO LMS V2", fontFooterNote);
             signSub.setAlignment(Element.ALIGN_CENTER);
 
             signCell.addElement(spaceBeforeSign);

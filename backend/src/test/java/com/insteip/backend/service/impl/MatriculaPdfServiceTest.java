@@ -30,12 +30,15 @@ class MatriculaPdfServiceTest {
     @Mock
     private UsuarioRepository usuarioRepository;
 
+    @Mock
+    private com.insteip.backend.repository.EstudiantePerfilRepository estudiantePerfilRepository;
+
     @InjectMocks
     private MatriculaPdfServiceImpl matriculaPdfService;
 
     @Test
-    void generarPdfMatricula_DebeGenerarArchivoValido() throws Exception {
-        ReflectionTestUtils.setField(matriculaPdfService, "frontendBaseUrl", "https://insteip.edu.pe");
+    void generarPdfMatricula_DebeGenerarArchivoValidoConQrIndividual() throws Exception {
+        ReflectionTestUtils.setField(matriculaPdfService, "frontendBaseUrl", "http://localhost:4200");
 
         Rol rolAlumno = Rol.builder().id(3L).nombre("ALUMNO").build();
         Rol rolDocente = Rol.builder().id(2L).nombre("DOCENTE").build();
@@ -44,8 +47,8 @@ class MatriculaPdfServiceTest {
                 .id(101L)
                 .nombres("Carlos Alberto")
                 .apellidos("Mendoza Quispe")
-                .correo("carlos.mendoza@insteip.edu.pe")
-                .passwordPlain("Insteip2026*")
+                .correo("carlos.mendoza@lmsv2.edu.pe")
+                .passwordPlain("Lms2026*")
                 .telefono("+51 987 654 321")
                 .rol(rolAlumno)
                 .estado(true)
@@ -55,14 +58,14 @@ class MatriculaPdfServiceTest {
                 .id(201L)
                 .nombres("Dra. Elena")
                 .apellidos("Vargas Morales")
-                .correo("elena.vargas@insteip.edu.pe")
+                .correo("elena.vargas@lmsv2.edu.pe")
                 .rol(rolDocente)
                 .estado(true)
                 .build();
 
         Curso curso = Curso.builder()
                 .id(501L)
-                .nombre("Especialización en Fitoterapia y Medicina Integrativa")
+                .nombre("Matemáticas y Ciencias Aplicadas")
                 .docente(docente)
                 .estado(true)
                 .build();
@@ -76,18 +79,27 @@ class MatriculaPdfServiceTest {
                 .estado(true)
                 .build();
 
-        when(matriculaRepository.findById(1001L)).thenReturn(Optional.of(matricula));
+        EstudiantePerfil perfil = EstudiantePerfil.builder()
+                .id(1L)
+                .usuario(alumno)
+                .codigoEstudiante("EST-2026-001")
+                .dni("70809012")
+                .qrToken("QR_STU_101_carlos.mendoza@lmsv2.edu.pe")
+                .build();
 
-        byte[] pdfBytes = matriculaPdfService.generarPdfMatricula(1001L, "carlos.mendoza@insteip.edu.pe");
+        when(matriculaRepository.findById(1001L)).thenReturn(Optional.of(matricula));
+        when(estudiantePerfilRepository.findByUsuarioId(101L)).thenReturn(Optional.of(perfil));
+
+        byte[] pdfBytes = matriculaPdfService.generarPdfMatricula(1001L, "carlos.mendoza@lmsv2.edu.pe");
 
         assertNotNull(pdfBytes);
         assertTrue(pdfBytes.length > 0);
 
-        // Guardar en la raíz del proyecto para que el usuario pueda visualizarlo
+        // Guardar en la raíz del proyecto para verificación
         Path outputPath = Paths.get("..", "ficha_matricula_test.pdf").toAbsolutePath().normalize();
         try (FileOutputStream fos = new FileOutputStream(outputPath.toFile())) {
             fos.write(pdfBytes);
         }
-        System.out.println("PDF de prueba generado con éxito en: " + outputPath);
+        System.out.println("PDF con código QR individual de asistencia generado en: " + outputPath);
     }
 }

@@ -1,4 +1,4 @@
-﻿import {
+import {
   Component,
   ElementRef,
   Input,
@@ -89,7 +89,7 @@ const PALETTE = [
   '#112233', // Deep Ink
 ];
 
-const DEFAULT_Plataforma LMS_BOOKS: NewsletterBookshelfItem[] = [
+const DEFAULT_LMS_BOOKS: NewsletterBookshelfItem[] = [
   {
     id: 'ed-1',
     title: 'Atlas y Tratado Clínico de Acupuntura Tradicional China',
@@ -1131,7 +1131,7 @@ export class NewsletterBookshelfComponent implements OnInit, AfterViewInit, OnDe
   @ViewChild('canvasRef') canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('tooltipRef') tooltipRef!: ElementRef<HTMLDivElement>;
 
-  @Input() items: NewsletterBookshelfItem[] = DEFAULT_Plataforma LMS_BOOKS;
+  @Input() items: NewsletterBookshelfItem[] = DEFAULT_LMS_BOOKS;
   @Input() height: number = 600;
   @Input() brand: string = 'Plataforma LMS · EDICIONES';
 
@@ -1183,7 +1183,7 @@ export class NewsletterBookshelfComponent implements OnInit, AfterViewInit, OnDe
   ) {}
 
   ngOnInit(): void {
-    this.books = this.deriveLayout(this.items.length ? this.items : DEFAULT_Plataforma LMS_BOOKS);
+    this.books = this.deriveLayout(this.items.length ? this.items : DEFAULT_LMS_BOOKS);
   }
 
   ngAfterViewInit(): void {

@@ -81,8 +81,27 @@ public class AsistenciaQrServiceImpl implements AsistenciaQrService {
         EstudiantePerfil estudiante;
         SesionClase sesion;
 
-        // Caso A: Token de carnet de estudiante
+        // Resolver estudiante por múltiples mecanismos de coincidencia
         Optional<EstudiantePerfil> estudianteOpt = estudianteRepository.findByQrToken(token);
+        
+        if (estudianteOpt.isEmpty()) {
+            estudianteOpt = estudianteRepository.findByCodigoEstudiante(token);
+        }
+        if (estudianteOpt.isEmpty()) {
+            estudianteOpt = estudianteRepository.findByDni(token);
+        }
+        if (estudianteOpt.isEmpty() && token.startsWith("QR_STU_")) {
+            String sub = token.substring(7); // Quitar QR_STU_
+            String[] parts = sub.split("_");
+            try {
+                Long id = Long.parseLong(parts[0]);
+                estudianteOpt = estudianteRepository.findByUsuarioId(id);
+                if (estudianteOpt.isEmpty()) {
+                    estudianteOpt = estudianteRepository.findById(id);
+                }
+            } catch (NumberFormatException ignored) {}
+        }
+
         if (estudianteOpt.isPresent()) {
             estudiante = estudianteOpt.get();
             if (request.getSesionId() == null) {
@@ -98,10 +117,9 @@ public class AsistenciaQrServiceImpl implements AsistenciaQrService {
                 if (request.getSesionId() != null && !request.getSesionId().equals(sesion.getId())) {
                     throw new BadRequestException("El código QR no corresponde a la sesión seleccionada.");
                 }
-                // Si el estudiante envía su ID por autenticación o en la petición
                 throw new BadRequestException("Token de sesión recibido. Utilice el escáner del carnet del estudiante.");
             } else {
-                throw new ResourceNotFoundException("Código QR inválido o no reconocido.");
+                throw new ResourceNotFoundException("Código QR '" + token + "' no corresponde a ningún estudiante ni sesión válida.");
             }
         }
 
