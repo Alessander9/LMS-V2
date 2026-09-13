@@ -1,8 +1,8 @@
-# QA Total del Sistema INSTEIP
+# QA Total del Sistema Plataforma LMS
 
 ## Propósito
 
-Este documento define el plan de QA y pruebas integrales para validar el sistema INSTEIP al 100%:
+Este documento define el plan de QA y pruebas integrales para validar el sistema Plataforma LMS al 100%:
 
 - Frontend completo con Selenium.
 - Backend completo con pruebas de API y reglas de negocio.
@@ -27,12 +27,12 @@ Este plan cubre:
 
 ## Fuentes de automatización existentes
 
-- [super-test.js](file:///c:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Insteip/scripts/tests/e2e/super-test.js)
-- [selenium-test.js](file:///c:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Insteip/scripts/tests/e2e/selenium-test.js)
-- [selenium-super-test.js](file:///c:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Insteip/scripts/tests/e2e/selenium-super-test.js)
-- [backend/src/test/java/com/insteip/backend/SystemIntegrationTest.java](/C:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Insteip/backend/src/test/java/com/insteip/backend/SystemIntegrationTest.java)
-- [backend/src/test/java/com/insteip/backend/controller/ContenidosControllerTest.java](/C:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Insteip/backend/src/test/java/com/insteip/backend/controller/ContenidosControllerTest.java)
-- [backend/src/test/java/com/insteip/backend/controller/AdministracionControllerTest.java](/C:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Insteip/backend/src/test/java/com/insteip/backend/controller/AdministracionControllerTest.java)
+- [super-test.js](file:///c:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Plataforma LMS/scripts/tests/e2e/super-test.js)
+- [selenium-test.js](file:///c:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Plataforma LMS/scripts/tests/e2e/selenium-test.js)
+- [selenium-super-test.js](file:///c:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Plataforma LMS/scripts/tests/e2e/selenium-super-test.js)
+- [backend/src/test/java/com/Plataforma LMS/backend/SystemIntegrationTest.java](/C:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Plataforma LMS/backend/src/test/java/com/Plataforma LMS/backend/SystemIntegrationTest.java)
+- [backend/src/test/java/com/Plataforma LMS/backend/controller/ContenidosControllerTest.java](/C:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Plataforma LMS/backend/src/test/java/com/Plataforma LMS/backend/controller/ContenidosControllerTest.java)
+- [backend/src/test/java/com/Plataforma LMS/backend/controller/AdministracionControllerTest.java](/C:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Plataforma LMS/backend/src/test/java/com/Plataforma LMS/backend/controller/AdministracionControllerTest.java)
 
 ## Entornos requeridos
 
@@ -420,4 +420,5 @@ Este plan cubre:
 ## Recomendación de mantenimiento
 
 Cuando cambie una funcionalidad, actualizar este documento en el mismo PR que el código. Si se agrega un nuevo endpoint, ruta o rol, debe entrar a esta matriz antes de considerar el cambio cerrado.
+
 

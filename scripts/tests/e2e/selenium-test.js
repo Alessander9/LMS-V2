@@ -4,7 +4,7 @@ const FRONTEND_BASE_URL = process.env.QA_FRONTEND_BASE_URL || 'http://localhost:
 
 async function runSeleniumTest() {
   console.log('================================================================');
-  console.log('            INSTEIP - INICIANDO TEST CON SELENIUM               ');
+  console.log('            Plataforma LMS - INICIANDO TEST CON SELENIUM               ');
   console.log('================================================================');
 
   let options = new chrome.Options();
@@ -93,3 +93,4 @@ async function runSeleniumTest() {
 }
 
 runSeleniumTest();
+

@@ -90,7 +90,7 @@ class AdministracionControllerTest {
     @Test
     void matricularAlumno_shouldReturnMatricula() throws Exception {
         MatriculaRequestDTO request = new MatriculaRequestDTO(12L, 100L);
-        MatriculaResponseDTO response = new MatriculaResponseDTO(1L, 12L, "Juan", "Perez", "juan@insteip.com", 100L, "Angular", LocalDateTime.now(), LocalDateTime.now().plusMonths(12), true);
+        MatriculaResponseDTO response = new MatriculaResponseDTO(1L, 12L, "Juan", "Perez", "juan@plataformalms.com", 100L, "Angular", LocalDateTime.now(), LocalDateTime.now().plusMonths(12), true);
 
         when(matriculaService.matricularAlumno(any(MatriculaRequestDTO.class))).thenReturn(response);
 
@@ -173,3 +173,4 @@ class AdministracionControllerTest {
                 .andExpect(jsonPath("$.nombreInstitucion").value("Insteip"));
     }
 }
+

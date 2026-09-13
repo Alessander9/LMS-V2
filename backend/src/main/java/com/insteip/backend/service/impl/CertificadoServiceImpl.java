@@ -191,8 +191,8 @@ public class CertificadoServiceImpl implements CertificadoService {
         
         document.open();
 
-        Color primaryColor = new Color(0, 52, 102);     // Brand Navy Blue (#003466)
-        Color secondaryColor = new Color(0, 110, 28);   // Brand Forest Green (#006e1c)
+        Color primaryColor = new Color(37, 99, 235);     // Brand Primary Blue (#2563EB)
+        Color secondaryColor = new Color(6, 182, 212);   // Brand Secondary Cyan (#06B6D4)
         Color grayColor = new Color(75, 85, 99);        // Tailwind Gray 600
         Color lightGrayColor = new Color(156, 163, 175); // Tailwind Gray 400
 
@@ -210,10 +210,10 @@ public class CertificadoServiceImpl implements CertificadoService {
         // 1. Header Section: Brand Logo & Subtitle
         boolean hasLogo = false;
         try {
-            // Load and align insteip-logo.png
-            Path logoPath = Paths.get("..", "frontend", "src", "assets", "insteip-logo.png").toAbsolutePath().normalize();
+            // Load and align logo
+            Path logoPath = Paths.get("..", "frontend", "src", "assets", "plataforma_lms-logo.png").toAbsolutePath().normalize();
             if (!Files.exists(logoPath)) {
-                logoPath = Paths.get(System.getProperty("user.dir"), "frontend", "src", "assets", "insteip-logo.png").toAbsolutePath().normalize();
+                logoPath = Paths.get(System.getProperty("user.dir"), "frontend", "src", "assets", "plataforma_lms-logo.png").toAbsolutePath().normalize();
             }
             if (Files.exists(logoPath)) {
                 Image logoImg = Image.getInstance(logoPath.toString());
@@ -227,17 +227,17 @@ public class CertificadoServiceImpl implements CertificadoService {
         }
 
         if (!hasLogo) {
-            Paragraph fallbackBrand = new Paragraph("INSTEIP", new Font(Font.HELVETICA, 24, Font.BOLD, primaryColor));
+            Paragraph fallbackBrand = new Paragraph("PLATAFORMA LMS", new Font(Font.HELVETICA, 24, Font.BOLD, primaryColor));
             fallbackBrand.setAlignment(Element.ALIGN_CENTER);
             document.add(fallbackBrand);
         }
 
-        Paragraph insteipSubtitle = new Paragraph("INSTITUTO DE TERAPIAS INTEGRALES PERÚ", new Font(Font.HELVETICA, 8, Font.BOLD, grayColor));
-        insteipSubtitle.setAlignment(Element.ALIGN_CENTER);
-        document.add(insteipSubtitle);
+        Paragraph brandSubtitle = new Paragraph("SISTEMA DE GESTIÓN DE APRENDIZAJE Y CERTIFICACIÓN", new Font(Font.HELVETICA, 8, Font.BOLD, grayColor));
+        brandSubtitle.setAlignment(Element.ALIGN_CENTER);
+        document.add(brandSubtitle);
         document.add(spacer);
 
-        // Solid green line divider
+        // Solid cyan line divider
         PdfPTable lineDivider = new PdfPTable(1);
         lineDivider.setWidthPercentage(85);
         PdfPCell lineCell = new PdfPCell();
@@ -423,9 +423,9 @@ class CertificatePageBorder extends com.lowagie.text.pdf.PdfPageEventHelper {
         canvas.setColorFill(new java.awt.Color(214, 221, 231));
         float centerX = document.getPageSize().getWidth() / 2f;
         float centerY = document.getPageSize().getHeight() / 2f;
-        canvas.showTextAligned(com.lowagie.text.Element.ALIGN_CENTER, "INSTEIP", centerX, centerY + 22, 45);
+        canvas.showTextAligned(com.lowagie.text.Element.ALIGN_CENTER, "PLATAFORMA LMS", centerX, centerY + 22, 45);
         canvas.setFontAndSize(watermarkFont, 18);
-        canvas.showTextAligned(com.lowagie.text.Element.ALIGN_CENTER, "INSTITUTO DE TERAPIAS INTEGRALES PERÚ", centerX, centerY - 22, 45);
+        canvas.showTextAligned(com.lowagie.text.Element.ALIGN_CENTER, "SISTEMA DE CERTIFICACIÓN ACADÉMICA", centerX, centerY - 22, 45);
         canvas.endText();
         canvas.restoreState();
     }
@@ -435,14 +435,14 @@ class CertificatePageBorder extends com.lowagie.text.pdf.PdfPageEventHelper {
         com.lowagie.text.pdf.PdfContentByte cb = writer.getDirectContent();
         cb.saveState();
         
-        // Outer border (Navy blue - #003466)
-        cb.setColorStroke(new java.awt.Color(0, 52, 102));
+        // Outer border (Dark blue - #1E3A8A)
+        cb.setColorStroke(new java.awt.Color(30, 58, 138));
         cb.setLineWidth(4f);
         cb.rectangle(20, 20, document.getPageSize().getWidth() - 40, document.getPageSize().getHeight() - 40);
         cb.stroke();
         
-        // Inner border (Forest Green - #006e1c)
-        cb.setColorStroke(new java.awt.Color(0, 110, 28));
+        // Inner border (Secondary cyan - #06B6D4)
+        cb.setColorStroke(new java.awt.Color(6, 182, 212));
         cb.setLineWidth(1.5f);
         cb.rectangle(26, 26, document.getPageSize().getWidth() - 52, document.getPageSize().getHeight() - 52);
         cb.stroke();

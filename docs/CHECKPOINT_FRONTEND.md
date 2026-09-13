@@ -1,4 +1,4 @@
-# Checkpoint Frontend - INSTEIP
+# Checkpoint Frontend - Plataforma LMS
 
 Fecha de corte: 2026-07-06
 
@@ -9,7 +9,7 @@ Dejar el frontend consistente en light mode y dark mode, con aplicacion temprana
 ## Estado actual
 
 - El sistema de tema ya funciona de forma global.
-- La preferencia se guarda en `localStorage` con la clave `insteip-theme`.
+- La preferencia se guarda en `localStorage` con la clave `Plataforma LMS-theme`.
 - Si no hay preferencia guardada, se respeta `prefers-color-scheme`.
 - La clase `dark` se aplica sobre `<html>`.
 - El frontend compila correctamente con `npm run build`.
@@ -91,3 +91,4 @@ rg -n "bg-white|bg-slate-50|bg-slate-100|text-slate-900|text-slate-500|border-sl
 ## Nota importante
 
 `task.md` ya no refleja por completo el estado real del trabajo visual. Este archivo es el checkpoint vigente para continuar con el tema del frontend.
+

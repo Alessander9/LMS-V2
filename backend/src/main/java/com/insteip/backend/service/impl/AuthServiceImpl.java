@@ -49,8 +49,8 @@ public class AuthServiceImpl implements AuthService {
     private final com.insteip.backend.repository.CursoRepository cursoRepository;
     private final com.insteip.backend.repository.MatriculaRepository matriculaRepository;
 
-    public static final String EXP_USER_EMAIL_1 = "ExperianciaInsteip@insteip.com";
-    public static final String EXP_USER_EMAIL_2 = "ExperienciaInsteip@insteip.com";
+    public static final String EXP_USER_EMAIL_1 = "experiencia@plataformalms.com";
+    public static final String EXP_USER_EMAIL_2 = "experiencia@plataformalms.com";
     public static final String EXP_PASSWORD_DEFAULT = "insteip";
     public static final long EXP_DURATION_SECONDS = 1200L; // 20 minutos
     public static final long EXP_DURATION_MILLIS = 1200000L; // 20 minutos
@@ -444,3 +444,4 @@ public class AuthServiceImpl implements AuthService {
         auditoriaService.registrarEvento("AUTENTICACIÓN", "CAMBIAR_PASSWORD", "El usuario " + cleanCorreo + " cambió su contraseña.");
     }
 }
+

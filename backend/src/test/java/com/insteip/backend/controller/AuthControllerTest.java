@@ -48,7 +48,7 @@ class AuthControllerTest {
     @Test
     void login_shouldReturnOkAndResponse() throws Exception {
         LoginRequest request = new LoginRequest();
-        request.setCorreo("test@insteip.com");
+        request.setCorreo("test@plataformalms.com");
         request.setPassword("Password123!");
 
         LoginResponse response = LoginResponse.builder()
@@ -105,33 +105,33 @@ class AuthControllerTest {
     void getProfile_shouldReturnProfileInfo() throws Exception {
         UserProfileResponse response = UserProfileResponse.builder()
                 .id(1L)
-                .correo("test@insteip.com")
+                .correo("test@plataformalms.com")
                 .nombres("Test")
                 .apellidos("User")
                 .rol("ALUMNO")
                 .nivelSuscripcion("BASICO")
                 .build();
 
-        when(authService.getProfile("test@insteip.com")).thenReturn(response);
+        when(authService.getProfile("test@plataformalms.com")).thenReturn(response);
 
         org.springframework.security.authentication.UsernamePasswordAuthenticationToken authToken = 
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        "test@insteip.com", "token", java.util.Collections.emptyList()
+                        "test@plataformalms.com", "token", java.util.Collections.emptyList()
                 );
 
         mockMvc.perform(get("/api/auth/me")
                         .principal(authToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.correo").value("test@insteip.com"))
+                .andExpect(jsonPath("$.correo").value("test@plataformalms.com"))
                 .andExpect(jsonPath("$.rol").value("ALUMNO"));
     }
 
     @Test
     void forgotPassword_shouldReturnOkAndMessage() throws Exception {
         ForgotPasswordRequest request = new ForgotPasswordRequest();
-        request.setCorreo("test@insteip.com");
+        request.setCorreo("test@plataformalms.com");
 
-        doNothing().when(authService).forgotPassword("test@insteip.com");
+        doNothing().when(authService).forgotPassword("test@plataformalms.com");
 
         mockMvc.perform(post("/api/auth/forgot-password")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -155,3 +155,4 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.mensaje").exists());
     }
 }
+

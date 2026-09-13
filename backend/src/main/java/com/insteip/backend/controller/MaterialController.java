@@ -79,7 +79,7 @@ public class MaterialController {
         try {
             if (authentication != null) {
                 String correoAuth = authentication.getName();
-                if (correoAuth != null && (correoAuth.equalsIgnoreCase("ExperianciaInsteip@insteip.com") || correoAuth.equalsIgnoreCase("ExperienciaInsteip@insteip.com"))) {
+                if (correoAuth != null && (correoAuth.equalsIgnoreCase("experiencia@plataformalms.com") || correoAuth.equalsIgnoreCase("experiencia@plataformalms.com"))) {
                     throw new ForbiddenException("Las descargas de materiales están restringidas en el modo EXP INSTEIP.");
                 }
             }
@@ -140,3 +140,4 @@ public class MaterialController {
         }
     }
 }
+

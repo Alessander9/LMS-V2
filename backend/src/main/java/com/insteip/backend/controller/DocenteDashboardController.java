@@ -21,7 +21,7 @@ public class DocenteDashboardController {
 
     private String getCorreo(Authentication authentication) {
         if (authentication == null) {
-            return "profesor@insteip.com"; // Fallback para desarrollo/pruebas
+            return "profesor@plataformalms.com"; // Fallback para desarrollo/pruebas
         }
         return authentication.getName();
     }
@@ -40,3 +40,4 @@ public class DocenteDashboardController {
         return ResponseEntity.ok(docenteDashboardService.getAlumnosCurso(correo, id));
     }
 }
+

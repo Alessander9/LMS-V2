@@ -1,4 +1,4 @@
-# QA Unificado del Sistema INSTEIP
+# QA Unificado del Sistema Plataforma LMS
 
 Este documento unifica y detalla el plan de pruebas masivas para el backend (pruebas unitarias e integración) y la validación integral del frontend usando **Selenium WebDriver**, cubriendo el 100% de la funcionalidad de la plataforma estructurada por roles.
 
@@ -6,7 +6,7 @@ Este documento unifica y detalla el plan de pruebas masivas para el backend (pru
 
 ## 1. Pruebas de Integración y Unitarias del Backend (API REST)
 
-El backend de INSTEIP incluye 60 casos de prueba automatizados en Java (ejecutables con MockMvc). Cada caso valida las respuestas HTTP, el control de acceso y las reglas de negocio críticas.
+El backend de Plataforma LMS incluye 60 casos de prueba automatizados en Java (ejecutables con MockMvc). Cada caso valida las respuestas HTTP, el control de acceso y las reglas de negocio críticas.
 
 | ID | Módulo | Descripción de la Funcionalidad | Método | Endpoint / Ruta | Código Esperado |
 |---|---|---|---|---|---|
@@ -116,7 +116,7 @@ La cuenta QA se obtiene de `QA_ADMIN_EMAIL` y `QA_ADMIN_PASSWORD`; no se documen
   * Disparo manual de copia de seguridad (Backup del sistema).
   * Consulta del estado de salud de servicios.
 
-### 2.3 Flujo del Docente (`docente@insteip.com` o el docente dinámico creado)
+### 2.3 Flujo del Docente (`docente@plataformalms.com` o el docente dinámico creado)
 * **Mis Cursos**: Listado de los programas asignados al docente autenticado.
 * **Seguimiento Académico**: Acceso a la vista "Mis Alumnos" para comprobar el avance de matriculados.
 * **Gestión de Contenidos**: Carga de videos y materiales en el temario de sus cursos asignados.
@@ -170,3 +170,4 @@ Para garantizar que todos los componentes interactúen de forma limpia y transpa
    ```bash
    node scripts/selenium-super-test.js
    ```
+

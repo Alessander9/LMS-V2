@@ -1,4 +1,4 @@
-# REPORTE DE PRUEBAS MASIVAS DE INTEGRACIÓN Y QA - INSTEIP
+# REPORTE DE PRUEBAS MASIVAS DE INTEGRACIÓN Y QA - Plataforma LMS
 
 Este reporte contiene los resultados detallados de la ejecución automática de **todas** las rutas y funcionalidades críticas del sistema.
 
@@ -77,3 +77,4 @@ Este reporte contiene los resultados detallados de la ejecución automática de 
 ### Detalles de Errores Encontrados
 
 ¡Todas las pruebas pasaron exitosamente! Ningún error reportado.
+

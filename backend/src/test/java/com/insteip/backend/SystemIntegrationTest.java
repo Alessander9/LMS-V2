@@ -178,7 +178,7 @@ public class SystemIntegrationTest {
         try {
             MvcResult res = mockMvc.perform(post("/api/auth/login")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"correo\":\"incorrecto@insteip.com\",\"password\":\"clave123\"}"))
+                    .content("{\"correo\":\"incorrecto@plataformalms.com\",\"password\":\"clave123\"}"))
                     .andReturn();
             t1.actualStatus = res.getResponse().getStatus();
             if (t1.actualStatus == 400 || t1.actualStatus == 401) {
@@ -300,7 +300,7 @@ public class SystemIntegrationTest {
         try {
             MvcResult res = mockMvc.perform(post("/api/auth/forgot-password")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"correo\":\"admin@insteip.com\"}"))
+                    .content("{\"correo\":\"admin@plataformalms.com\"}"))
                     .andReturn();
             t7.actualStatus = res.getResponse().getStatus();
             if (t7.actualStatus == 200) {
@@ -440,7 +440,7 @@ public class SystemIntegrationTest {
         // T14: Crear alumno
         TestItem t14 = new TestItem(idx++, "USUARIOS", "Crear un nuevo alumno", "POST", "/api/usuarios", 201);
         try {
-            String uniqueEmail = "maria.lopez_" + System.currentTimeMillis() + "@insteip.com";
+            String uniqueEmail = "maria.lopez_" + System.currentTimeMillis() + "@plataformalms.com";
             MvcResult res = mockMvc.perform(post("/api/usuarios")
                     .header("Authorization", "Bearer " + adminToken)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -468,7 +468,7 @@ public class SystemIntegrationTest {
             MvcResult res = mockMvc.perform(put("/api/usuarios/" + testAlumnoId)
                     .header("Authorization", "Bearer " + adminToken)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(String.format("{\"nombres\":\"Juan Modificado\",\"apellidos\":\"Pérez\",\"correo\":\"juan.perez@insteip.com\",\"telefono\":\"999999999\",\"nivelSuscripcionId\":%d}", testSubId)))
+                    .content(String.format("{\"nombres\":\"Juan Modificado\",\"apellidos\":\"Pérez\",\"correo\":\"juan.perez@plataformalms.com\",\"telefono\":\"999999999\",\"nivelSuscripcionId\":%d}", testSubId)))
                     .andReturn();
             t15.actualStatus = res.getResponse().getStatus();
             if (t15.actualStatus == 200) {
@@ -942,7 +942,7 @@ public class SystemIntegrationTest {
         // T37: Descargar material (Como Alumno con matrícula activa)
         TestItem t37 = new TestItem(idx++, "MATERIALES", "Descargar archivo binario de un material", "GET", "/api/materiales/1/download", 200);
         try {
-            // El alumno 'juan.perez@insteip.com' está matriculado en el curso 1, así que usamos alumnoToken para evadir ForbiddenException
+            // El alumno 'juan.perez@plataformalms.com' está matriculado en el curso 1, así que usamos alumnoToken para evadir ForbiddenException
             MvcResult res = mockMvc.perform(get("/api/materiales/" + (createdMaterialId > 0 ? createdMaterialId : testMaterialId) + "/download")
                     .header("Authorization", "Bearer " + alumnoToken))
                     .andReturn();
@@ -1346,7 +1346,7 @@ public class SystemIntegrationTest {
             MvcResult res = mockMvc.perform(put("/api/configuracion")
                     .header("Authorization", "Bearer " + adminToken)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"nombreInstitucion\":\"INSTEIP Corporativo QA\",\"logoUrl\":\"https://url.com\",\"correo\":\"info@insteip.com\",\"telefono\":\"955666777\",\"direccion\":\"Av. Central 789\",\"qrYape\":\"https://url-yape.com\",\"qrPlin\":\"https://url-plin.com\",\"paypalUrl\":\"https://url-paypal.com\",\"colorPrincipal\":\"#0d6efd\",\"colorSecundario\":\"#6c757d\"}"))
+                    .content("{\"nombreInstitucion\":\"INSTEIP Corporativo QA\",\"logoUrl\":\"https://url.com\",\"correo\":\"info@plataformalms.com\",\"telefono\":\"955666777\",\"direccion\":\"Av. Central 789\",\"qrYape\":\"https://url-yape.com\",\"qrPlin\":\"https://url-plin.com\",\"paypalUrl\":\"https://url-paypal.com\",\"colorPrincipal\":\"#0d6efd\",\"colorSecundario\":\"#6c757d\"}"))
                     .andReturn();
             t56.actualStatus = res.getResponse().getStatus();
             if (t56.actualStatus == 200) {
@@ -1522,3 +1522,4 @@ public class SystemIntegrationTest {
         System.out.println("======================================================================");
     }
 }
+

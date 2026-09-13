@@ -1,4 +1,4 @@
-# Testeo previo al deploy - INSTEIP
+# Testeo previo al deploy - Plataforma LMS
 
 **Fecha de ejecución:** 2026-07-24  
 **Entorno:** local  
@@ -437,4 +437,5 @@ El documento podrá marcarse como **APTO PARA DEPLOY** únicamente cuando las co
 
 ## 12. Nota sobre el PDF adjunto
 
-El archivo `docs/Manual_de_Usuario_INSTEIP.pdf` está incluido en la documentación del proyecto. En esta sesión el lector disponible no pudo extraer su contenido, por lo que el contraste detallado se realizó con `docs/manual.html` y los documentos Markdown. El PDF debe revisarse manualmente o convertirse a texto en una herramienta compatible antes del cierre documental definitivo.
+El archivo `docs/Manual_de_Usuario_Plataforma LMS.pdf` está incluido en la documentación del proyecto. En esta sesión el lector disponible no pudo extraer su contenido, por lo que el contraste detallado se realizó con `docs/manual.html` y los documentos Markdown. El PDF debe revisarse manualmente o convertirse a texto en una herramienta compatible antes del cierre documental definitivo.
+

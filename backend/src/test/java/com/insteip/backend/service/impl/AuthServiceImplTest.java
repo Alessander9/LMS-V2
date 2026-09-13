@@ -83,7 +83,7 @@ class AuthServiceImplTest {
         Rol rol = Rol.builder().id(1L).nombre("ADMINISTRADOR").estado(true).build();
         usuario = Usuario.builder()
                 .id(10L)
-                .correo("admin@insteip.com")
+                .correo("admin@plataformalms.com")
                 .nombres("Admin")
                 .apellidos("Test")
                 .passwordHash("$2a$10$hash")
@@ -233,3 +233,4 @@ class AuthServiceImplTest {
         verify(usuarioRepository, never()).save(any(Usuario.class));
     }
 }
+

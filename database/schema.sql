@@ -1,4 +1,4 @@
--- Base de datos INSTEIP (Versión Mejorada)
+-- Base de datos Plataforma LMS (Versión Mejorada)
 -- Motor: PostgreSQL
 
 -- =========================================================================
@@ -425,4 +425,5 @@ CREATE TABLE IF NOT EXISTS matricula_modulos_acceso (
 
 CREATE INDEX idx_matricula_modulos_matricula ON matricula_modulos_acceso(matricula_id);
 CREATE INDEX idx_matricula_modulos_modulo ON matricula_modulos_acceso(modulo_id);
+
 

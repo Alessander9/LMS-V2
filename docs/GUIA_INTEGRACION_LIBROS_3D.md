@@ -1,6 +1,6 @@
-# 📚 Guía Oficial: Integración de Libros 3D y Catálogo Editorial en INSTEIP
+# 📚 Guía Oficial: Integración de Libros 3D y Catálogo Editorial en Plataforma LMS
 
-Esta guía documenta el estándar y procedimiento técnico para incorporar nuevos libros en la subpágina **`/libros`** de INSTEIP, logrando el mismo acabado fotorrealista 3D (Three.js WebGL) y galería interactiva en el catálogo que se implementó para el libro de **Acupuntura Estética Facial**.
+Esta guía documenta el estándar y procedimiento técnico para incorporar nuevos libros en la subpágina **`/libros`** de Plataforma LMS, logrando el mismo acabado fotorrealista 3D (Three.js WebGL) y galería interactiva en el catálogo que se implementó para el libro de **Acupuntura Estética Facial**.
 
 ---
 
@@ -66,14 +66,14 @@ print(f"Spine:       {{ sx: {720/w:.5f}, sy: {55/h:.5f}, sw: {96/w:.5f}, sh: {91
 ### Paso A: Registrar el Libro en la Estantería 3D
 Archivo: `frontend/src/app/shared/components/newsletter-bookshelf/newsletter-bookshelf.component.ts`
 
-1. **Añadir el elemento en `DEFAULT_INSTEIP_BOOKS`:**
+1. **Añadir el elemento en `DEFAULT_Plataforma LMS_BOOKS`:**
 ```typescript
 {
   id: 'ed-nuevo-libro',
   title: 'Título del Libro',
   date: 'EDICIÓN 2026',
   subtitle: 'Descripción breve para el archivador 3D.',
-  author: 'Cuerpo Docente INSTEIP',
+  author: 'Cuerpo Docente Plataforma LMS',
   price: 55,
   category: 'Acupuntura & MTC',
   color: '#002244', // Color base del lomo/cubierta (hex)
@@ -99,7 +99,7 @@ Archivo: `frontend/src/app/features/libros/libros.component.ts`
   id: 'slug-del-libro',
   titulo: 'Título Completo del Libro',
   subtitulo: 'Subtítulo descriptivo y enfoque clínico.',
-  autor: 'Nombre del Autor o Área Docente INSTEIP',
+  autor: 'Nombre del Autor o Área Docente Plataforma LMS',
   categoria: 'Acupuntura & MTC',
   categoriaSlug: 'acupuntura',
   precioSoles: 55,
@@ -116,7 +116,7 @@ Archivo: `frontend/src/app/features/libros/libros.component.ts`
     {
       url: 'assets/<nombre_carpeta>/2.png',
       label: 'Contraportada & Sinopsis',
-      descripcion: 'Resumen clínico, código de barras ISBN y sello oficial editorial INSTEIP.'
+      descripcion: 'Resumen clínico, código de barras ISBN y sello oficial editorial Plataforma LMS.'
     },
     {
       url: 'assets/<nombre_carpeta>/3.png',
@@ -177,3 +177,4 @@ El libro 3D utiliza la siguiente cinemática y mapeo de materiales:
 - [ ] Al hacer clic en el libro 3D, se abre el modal con la galería de 4 vistas HD.
 - [ ] Los enlaces a WhatsApp generan el mensaje con el título y precio correspondiente.
 - [ ] La compilación `npm run build` en el frontend finaliza con **cero errores**.
+

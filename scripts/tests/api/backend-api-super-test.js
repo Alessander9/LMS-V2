@@ -73,7 +73,7 @@ async function apiRequest(endpoint, method = 'GET', body = null, isFormData = fa
 }
 
 async function runApiSuperTest() {
-    printTitle('INSTEIP - INICIANDO SUPER TEST DE API BACKEND (100% ENDPOINTS)');
+    printTitle('Plataforma LMS - INICIANDO SUPER TEST DE API BACKEND (100% ENDPOINTS)');
 
     if (!QA_ADMIN_EMAIL || !QA_ADMIN_PASSWORD) {
         throw new Error('Define QA_ADMIN_EMAIL y QA_ADMIN_PASSWORD antes de ejecutar la prueba API.');
@@ -105,7 +105,7 @@ async function runApiSuperTest() {
         const nuevoUsuario = {
             nombres: "Test API",
             apellidos: "Backend",
-            correo: `test.api.${Date.now()}@insteip.com`,
+            correo: `test.api.${Date.now()}@plataformalms.com`,
             password: "Password123!",
             telefono: "123456789",
             rolId: 2, // Asumiendo 2 es Alumno/Usuario
@@ -239,7 +239,7 @@ async function runApiSuperTest() {
         printSuccess('Eventos de auditoría obtenidos.');
 
         printTitle('✅ API SUPER TEST COMPLETADO CON ÉXITO');
-        printInfo('Se han probado todos los módulos principales del backend INSTEIP.');
+        printInfo('Se han probado todos los módulos principales del backend Plataforma LMS.');
 
     } catch (error) {
         printError('EL TEST SE DETUVO DEBIDO A UN ERROR CRÍTICO.');
@@ -269,3 +269,4 @@ async function runApiSuperTest() {
 }
 
 runApiSuperTest();
+

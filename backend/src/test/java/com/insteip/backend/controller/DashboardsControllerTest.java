@@ -78,11 +78,11 @@ class DashboardsControllerTest {
     @Test
     void getMetrics_shouldReturnMetrics() throws Exception {
         AlumnoDashboardMetrics response = new AlumnoDashboardMetrics(1, 0, 0);
-        when(alumnoDashboardService.getMetrics("test@insteip.com")).thenReturn(response);
+        when(alumnoDashboardService.getMetrics("test@plataformalms.com")).thenReturn(response);
 
         org.springframework.security.authentication.UsernamePasswordAuthenticationToken auth = 
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        "test@insteip.com", "token", Collections.emptyList()
+                        "test@plataformalms.com", "token", Collections.emptyList()
                 );
 
         mockMvc.perform(get("/api/alumno/dashboard").principal(auth))
@@ -93,11 +93,11 @@ class DashboardsControllerTest {
     @Test
     void getEnrolledCursos_shouldReturnCursos() throws Exception {
         AlumnoCursoResponse response = new AlumnoCursoResponse(1L, "Curso", "Desc", "img", "BASICO", java.math.BigDecimal.valueOf(45.0), false, java.time.LocalDateTime.now(), java.time.LocalDateTime.now());
-        when(alumnoDashboardService.getEnrolledCursos("test@insteip.com")).thenReturn(List.of(response));
+        when(alumnoDashboardService.getEnrolledCursos("test@plataformalms.com")).thenReturn(List.of(response));
 
         org.springframework.security.authentication.UsernamePasswordAuthenticationToken auth = 
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        "test@insteip.com", "token", Collections.emptyList()
+                        "test@plataformalms.com", "token", Collections.emptyList()
                 );
 
         mockMvc.perform(get("/api/alumno/cursos").principal(auth))
@@ -110,11 +110,11 @@ class DashboardsControllerTest {
     @Test
     void getCursosAsignados_shouldReturnCursos() throws Exception {
         CursoResponseDTO response = new CursoResponseDTO(1L, "Curso Docente", "Desc", "img", List.of("BASICO"), true, 11L, "Docente", java.time.LocalDateTime.now());
-        when(docenteDashboardService.getCursosAsignados("docente@insteip.com")).thenReturn(List.of(response));
+        when(docenteDashboardService.getCursosAsignados("docente@plataformalms.com")).thenReturn(List.of(response));
 
         org.springframework.security.authentication.UsernamePasswordAuthenticationToken auth = 
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        "docente@insteip.com", "token", Collections.emptyList()
+                        "docente@plataformalms.com", "token", Collections.emptyList()
                 );
 
         mockMvc.perform(get("/api/docente/cursos").principal(auth))
@@ -124,12 +124,12 @@ class DashboardsControllerTest {
 
     @Test
     void getAlumnosCurso_shouldReturnAlumnos() throws Exception {
-        DocenteEstudianteProgressResponse response = new DocenteEstudianteProgressResponse(2L, "Juan", "Perez", "juan@insteip.com", 70.0, false, LocalDateTime.now());
-        when(docenteDashboardService.getAlumnosCurso("docente@insteip.com", 1L)).thenReturn(List.of(response));
+        DocenteEstudianteProgressResponse response = new DocenteEstudianteProgressResponse(2L, "Juan", "Perez", "juan@plataformalms.com", 70.0, false, LocalDateTime.now());
+        when(docenteDashboardService.getAlumnosCurso("docente@plataformalms.com", 1L)).thenReturn(List.of(response));
 
         org.springframework.security.authentication.UsernamePasswordAuthenticationToken auth = 
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        "docente@insteip.com", "token", Collections.emptyList()
+                        "docente@plataformalms.com", "token", Collections.emptyList()
                 );
 
         mockMvc.perform(get("/api/docente/cursos/1/alumnos").principal(auth))
@@ -147,3 +147,4 @@ class DashboardsControllerTest {
                 .andExpect(jsonPath("$.timestamp").value("2026-07-06_12-00-00"));
     }
 }
+

@@ -222,10 +222,10 @@ class ContenidosControllerTest {
         // Security Authentication stub
         org.springframework.security.authentication.UsernamePasswordAuthenticationToken authToken = 
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        "test@insteip.com", "token", Collections.emptyList()
+                        "test@plataformalms.com", "token", Collections.emptyList()
                 );
-        when(usuarioRepository.findByCorreo("test@insteip.com")).thenReturn(Optional.of(
-                com.insteip.backend.domain.entity.Usuario.builder().id(2L).correo("test@insteip.com").build()
+        when(usuarioRepository.findByCorreo("test@plataformalms.com")).thenReturn(Optional.of(
+                com.insteip.backend.domain.entity.Usuario.builder().id(2L).correo("test@plataformalms.com").build()
         ));
         when(avanceService.guardarProgreso(eq(2L), any(AvanceProgressRequest.class))).thenReturn(response);
 
@@ -237,3 +237,4 @@ class ContenidosControllerTest {
                 .andExpect(jsonPath("$.ultimoSegundo").value(120));
     }
 }
+

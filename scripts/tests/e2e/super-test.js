@@ -32,7 +32,7 @@ async function confirmModalAction(page, timeout = 15000) {
 
 async function runSuperTest() {
   console.log('================================================================');
-  console.log('            INSTEIP - INICIANDO SUPER TEST AUTOMATIZADO          ');
+  console.log('            Plataforma LMS - INICIANDO SUPER TEST AUTOMATIZADO          ');
   console.log('================================================================');
   
   // Launch Chrome locally using the user's installed Google Chrome channel
@@ -70,13 +70,13 @@ async function runSuperTest() {
     // ------------------------------------------------------------------
     console.log('\n[1/12] Iniciando sesión como Administrador...');
     await page.goto('http://localhost:4200/login');
-    await page.fill('input[type="email"]', 'admin@insteip.com');
+    await page.fill('input[type="email"]', 'admin@plataformalms.com');
     await page.fill('input[type="password"]', process.env.QA_ADMIN_PASSWORD);
     await page.click('button[type="submit"]');
 
     // Wait for dashboard load
     await page.waitForURL('**/dashboard');
-    await page.waitForSelector('h1:has-text("Campus Virtual INSTEIP")');
+    await page.waitForSelector('h1:has-text("Campus Virtual Plataforma LMS")');
     console.log('✔ Sesión de Administrador iniciada correctamente.');
 
     // ------------------------------------------------------------------
@@ -98,7 +98,7 @@ async function runSuperTest() {
     // Go back to Dashboard Home
     console.log('   - Regresando a Dashboard...');
     await page.click('a[routerLink="/dashboard"]:has-text("Dashboard"):visible');
-    await page.waitForSelector('h1:has-text("Campus Virtual INSTEIP")');
+    await page.waitForSelector('h1:has-text("Campus Virtual Plataforma LMS")');
 
     // Click "Alumnos" (Matricular) rapid access link
     console.log('   - Click en Acceso Rápido: Matricular...');
@@ -108,7 +108,7 @@ async function runSuperTest() {
     // Go back to Dashboard Home
     console.log('   - Regresando a Dashboard...');
     await page.click('a[routerLink="/dashboard"]:has-text("Dashboard"):visible');
-    await page.waitForSelector('h1:has-text("Campus Virtual INSTEIP")');
+    await page.waitForSelector('h1:has-text("Campus Virtual Plataforma LMS")');
 
     // Click "Auditoría" (Seguridad) rapid access link
     console.log('   - Click en Acceso Rápido: Seguridad...');
@@ -118,7 +118,7 @@ async function runSuperTest() {
     // Go back to Dashboard Home
     console.log('   - Regresando a Dashboard...');
     await page.click('a[routerLink="/dashboard"]:has-text("Dashboard"):visible');
-    await page.waitForSelector('h1:has-text("Campus Virtual INSTEIP")');
+    await page.waitForSelector('h1:has-text("Campus Virtual Plataforma LMS")');
 
     // Click "Sistema" (Monitoreo) rapid access link
     console.log('   - Click en Acceso Rápido: Monitoreo...');
@@ -150,7 +150,7 @@ async function runSuperTest() {
     await page.waitForSelector('h3:has-text("Registrar Nuevo Alumno")');
 
     // Fill new student details
-    createdAlumnoEmail = `test.e2e.${Date.now()}@insteip.com`;
+    createdAlumnoEmail = `test.e2e.${Date.now()}@plataformalms.com`;
     console.log(`   - Creando alumno de prueba con correo: ${createdAlumnoEmail}`);
     await page.fill('input[formControlName="nombres"]', 'Alumno');
     await page.fill('input[formControlName="apellidos"]', 'Prueba Automatizada');
@@ -482,7 +482,7 @@ async function runSuperTest() {
     // STEP 10: LOGIN AS STUDENT (JUAN PÉREZ)
     // ------------------------------------------------------------------
     console.log('\n[10/12] Iniciando sesión como Estudiante (Juan Pérez)...');
-    await page.fill('input[type="email"]', 'juan.perez@insteip.com');
+    await page.fill('input[type="email"]', 'juan.perez@plataformalms.com');
       await page.fill('input[type="password"]', process.env.QA_ALUMNO_PASSWORD);
     await page.click('button[type="submit"]');
 
@@ -648,7 +648,7 @@ async function runSuperTest() {
       console.log('     ⚠ Aviso: no se pudo confirmar visualmente alguno de los campos esperados en la pasarela pública, pero la firma sí fue verificada.');
     }
 
-    console.log('   ✔ Pasarela pública del campus INSTEIP respondió y validó la firma del diploma.');
+    console.log('   ✔ Pasarela pública del campus Plataforma LMS respondió y validó la firma del diploma.');
 
     console.log('\n================================================================');
     console.log('       ★ SUPER TEST COMPLETADO CON ÉXITO: 100% FUNCIONAL ★      ');
@@ -662,3 +662,4 @@ async function runSuperTest() {
 }
 
 runSuperTest();
+

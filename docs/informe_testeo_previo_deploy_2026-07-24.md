@@ -295,7 +295,7 @@ run-logs/qa-selenium-super-fixed-3.log
 ## Archivos modificados
 
 ```text
-backend/src/main/java/com/insteip/backend/domain/exception/GlobalExceptionHandler.java
+backend/src/main/java/com/Plataforma LMS/backend/domain/exception/GlobalExceptionHandler.java
 frontend/angular.json
 frontend/package.json
 frontend/package-lock.json
@@ -355,3 +355,4 @@ La decisión se basa en que las pruebas automatizadas críticas ejecutadas en es
 - Limpieza de datos de prueba: PASS.
 
 Las observaciones restantes son de endurecimiento, cobertura adicional y operación de producción; no bloquearon los flujos principales probados.
+

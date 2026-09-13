@@ -2,7 +2,7 @@
 
 ## Alcance
 
-Este sprint valida los flujos críticos del sistema INSTEIP después de cerrar seguridad empresarial en sprint 12.
+Este sprint valida los flujos críticos del sistema Plataforma LMS después de cerrar seguridad empresarial en sprint 12.
 
 ## Cobertura mínima
 
@@ -46,15 +46,16 @@ Este sprint valida los flujos críticos del sistema INSTEIP después de cerrar s
 
 ## Automatización agregada
 
-- Pruebas unitarias de autenticación y seguridad de sesiones en [AuthServiceImplTest.java](backend/src/test/java/com/insteip/backend/service/impl/AuthServiceImplTest.java).
-- Pruebas unitarias de validación de archivos y descarga segura en [MaterialServiceImplTest.java](backend/src/test/java/com/insteip/backend/service/impl/MaterialServiceImplTest.java).
+- Pruebas unitarias de autenticación y seguridad de sesiones en [AuthServiceImplTest.java](backend/src/test/java/com/Plataforma LMS/backend/service/impl/AuthServiceImplTest.java).
+- Pruebas unitarias de validación de archivos y descarga segura en [MaterialServiceImplTest.java](backend/src/test/java/com/Plataforma LMS/backend/service/impl/MaterialServiceImplTest.java).
 
 ## Estado
 
 - Backend: validado con `mvn test`.
-- Frontend: validado con la suite de pruebas E2E automatizada con Playwright en [scripts/super-test.js](/c:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Insteip/scripts/super-test.js).
+- Frontend: validado con la suite de pruebas E2E automatizada con Playwright en [scripts/super-test.js](/c:/Users/Alessander/Desktop/TRABAJOS/ACTUALES/Plataforma LMS/scripts/super-test.js).
 
 ## Observaciones
 
 - El backend ya cubre bloqueo temporal por intentos fallidos, refresh token, auditoría y descarga segura.
 - El dashboard de auditoría del admin queda disponible para verificar trazabilidad operativa.
+

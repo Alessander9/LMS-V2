@@ -4,7 +4,7 @@ const fs = require('fs');
 
 async function main() {
   console.log('================================================================');
-  console.log('         INSTEIP - GENERADOR AUTOMÁTICO DE MANUAL VISUAL        ');
+  console.log('         Plataforma LMS - GENERADOR AUTOMÁTICO DE MANUAL VISUAL        ');
   console.log('================================================================');
 
   const assetsDir = path.join(__dirname, 'manual-assets');
@@ -43,11 +43,11 @@ async function main() {
     // 2. ADMIN FLOW
     // ------------------------------------------------------------------
     console.log('\n[Paso 2] Iniciando sesión de Administrador y capturando paneles...');
-    await page.fill('input[type="email"]', 'admin@insteip.com');
+    await page.fill('input[type="email"]', 'admin@plataformalms.com');
     await page.fill('input[type="password"]', process.env.QA_ADMIN_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL('**/dashboard');
-    await page.waitForSelector('h1:has-text("Campus Virtual INSTEIP")');
+    await page.waitForSelector('h1:has-text("Campus Virtual Plataforma LMS")');
     await takeScreenshot('02_admin_dashboard');
 
     // Cursos Management
@@ -105,7 +105,7 @@ async function main() {
     // 3. STUDENT FLOW
     // ------------------------------------------------------------------
     console.log('\n[Paso 3] Iniciando sesión de Estudiante (Juan Pérez)...');
-    await page.fill('input[type="email"]', 'juan.perez@insteip.com');
+    await page.fill('input[type="email"]', 'juan.perez@plataformalms.com');
     await page.fill('input[type="password"]', process.env.QA_ALUMNO_PASSWORD);
     await page.click('button[type="submit"]');
     await page.waitForURL('**/dashboard');
@@ -198,7 +198,7 @@ async function main() {
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Manual de Usuario Visual INSTEIP</title>
+  <title>Manual de Usuario Visual Plataforma LMS</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@800;900&family=Fira+Code:wght@500&display=swap');
 
@@ -520,7 +520,7 @@ async function main() {
     <div class="cover-header">
       <div class="cover-logo">I</div>
       <h1 class="cover-title">Manual de Usuario Visual<br>y Operación del Campus</h1>
-      <div class="cover-subtitle">Plataforma Educativa INSTEIP</div>
+      <div class="cover-subtitle">Plataforma Educativa Plataforma LMS</div>
     </div>
     
     <div class="card" style="margin-bottom: 0;">
@@ -546,7 +546,7 @@ async function main() {
     <div class="badge">Capítulo 1</div>
     <h2>1. Introducción y Acceso</h2>
     <p>
-      La plataforma virtual de **INSTEIP** ofrece control total del ciclo académico. El acceso se realiza mediante correo y contraseña validados contra el backend de Spring Boot (JWT).
+      La plataforma virtual de **Plataforma LMS** ofrece control total del ciclo académico. El acceso se realiza mediante correo y contraseña validados contra el backend de Spring Boot (JWT).
     </p>
 
     <div class="screenshot-container">
@@ -979,7 +979,7 @@ async function main() {
     <div class="badge">Infografía III</div>
     <h2>Flujo de Creación de Contenido Académico</h2>
     <p>
-      La jerarquía y orden en el almacenamiento de recursos del backend de INSTEIP se organiza según el siguiente pipeline secuencial:
+      La jerarquía y orden en el almacenamiento de recursos del backend de Plataforma LMS se organiza según el siguiente pipeline secuencial:
     </p>
 
     <div class="infografia-container" style="grid-template-columns: repeat(4, 1fr); margin-top: 40px; margin-bottom: 40px;">
@@ -1326,7 +1326,7 @@ async function main() {
     await page.waitForLoadState('networkidle');
 
     // Generate the PDF
-    const pdfPath = path.join(__dirname, 'Manual_de_Usuario_INSTEIP.pdf');
+    const pdfPath = path.join(__dirname, 'Manual_de_Usuario_Plataforma LMS.pdf');
     await page.pdf({
       path: pdfPath,
       format: 'A4',
@@ -1353,3 +1353,4 @@ async function main() {
 }
 
 main();
+

@@ -21,7 +21,7 @@ async function runSeleniumSuperTest() {
     throw new Error('Define las credenciales QA antes de ejecutar Selenium.');
   }
   console.log('================================================================');
-  console.log('         INSTEIP - INICIANDO SÚPER TEST E2E CON SELENIUM        ');
+  console.log('         Plataforma LMS - INICIANDO SÚPER TEST E2E CON SELENIUM        ');
   console.log('================================================================');
 
   let options = new chromeDriver.Options();
@@ -130,8 +130,8 @@ async function runSeleniumSuperTest() {
   }
 
   const timestamp = Date.now();
-  const testAlumnoEmail = `alumno.selenium.${timestamp}@insteip.com`;
-  const testDocenteEmail = `docente.selenium.${timestamp}@insteip.com`;
+  const testAlumnoEmail = `alumno.selenium.${timestamp}@plataformalms.com`;
+  const testDocenteEmail = `docente.selenium.${timestamp}@plataformalms.com`;
   const testCourseName = `Curso Selenium ${timestamp}`;
   let cleanCertCode = '';
 
@@ -727,3 +727,4 @@ async function runSeleniumSuperTest() {
 }
 
 runSeleniumSuperTest();
+

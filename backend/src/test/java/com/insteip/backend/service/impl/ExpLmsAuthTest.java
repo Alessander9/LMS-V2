@@ -95,7 +95,7 @@ class ExpLmsAuthTest {
     @Test
     void loginExp_ConCredencialesCorrectas_DebeRetornarToken20MinutosSinRefreshToken() {
         LoginRequest request = new LoginRequest();
-        request.setCorreo("ExperianciaInsteip@insteip.com");
+        request.setCorreo("experiencia@plataformalms.com");
         request.setPassword("insteip");
 
         Rol rolAlumno = Rol.builder().id(3L).nombre("ALUMNO").build();
@@ -103,16 +103,16 @@ class ExpLmsAuthTest {
                 .id(999L)
                 .nombres("Experiencia")
                 .apellidos("INSTEIP")
-                .correo("ExperianciaInsteip@insteip.com")
+                .correo("experiencia@plataformalms.com")
                 .rol(rolAlumno)
                 .estado(true)
                 .build();
 
-        when(usuarioRepository.findByCorreo("ExperianciaInsteip@insteip.com")).thenReturn(Optional.of(usuarioMock));
+        when(usuarioRepository.findByCorreo("experiencia@plataformalms.com")).thenReturn(Optional.of(usuarioMock));
         when(passwordEncoder.encode("insteip")).thenReturn("hashed_insteip");
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioMock);
         when(cursoRepository.findAll()).thenReturn(List.of());
-        when(jwtService.generateExpToken(eq(999L), eq("ExperianciaInsteip@insteip.com"), eq("ALUMNO"), eq(1200000L)))
+        when(jwtService.generateExpToken(eq(999L), eq("experiencia@plataformalms.com"), eq("ALUMNO"), eq(1200000L)))
                 .thenReturn("mock_jwt_exp_token_20_minutes");
 
         LoginResponse response = authService.login(request);
@@ -127,7 +127,7 @@ class ExpLmsAuthTest {
     @Test
     void loginExp_ConClaveIncorrecta_DebeLanzarExcepcion() {
         LoginRequest request = new LoginRequest();
-        request.setCorreo("ExperianciaInsteip@insteip.com");
+        request.setCorreo("experiencia@plataformalms.com");
         request.setPassword("clave_erronea");
 
         assertThrows(BadRequestException.class, () -> authService.login(request));
@@ -140,13 +140,13 @@ class ExpLmsAuthTest {
                 .id(999L)
                 .nombres("Experiencia")
                 .apellidos("INSTEIP")
-                .correo("ExperianciaInsteip@insteip.com")
+                .correo("experiencia@plataformalms.com")
                 .rol(rolAlumno)
                 .build();
 
-        when(usuarioRepository.findByCorreo("ExperianciaInsteip@insteip.com")).thenReturn(Optional.of(usuarioMock));
+        when(usuarioRepository.findByCorreo("experiencia@plataformalms.com")).thenReturn(Optional.of(usuarioMock));
 
-        UserProfileResponse profile = authService.getProfile("ExperianciaInsteip@insteip.com");
+        UserProfileResponse profile = authService.getProfile("experiencia@plataformalms.com");
 
         assertNotNull(profile);
         assertTrue(profile.getIsExpUser());
@@ -156,7 +156,7 @@ class ExpLmsAuthTest {
     @Test
     void descargarMaterial_ComoUsuarioExp_DebeRetornarForbidden() {
         Authentication authExp = new UsernamePasswordAuthenticationToken(
-                "ExperianciaInsteip@insteip.com",
+                "experiencia@plataformalms.com",
                 "insteip"
         );
 
@@ -165,3 +165,4 @@ class ExpLmsAuthTest {
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "Debe retornar 403 Forbidden para usuario EXP");
     }
 }
+

@@ -1,6 +1,6 @@
-# Guía histórica de despliegue — INSTEIP en IONOS VPS
+# Guía histórica de despliegue — Plataforma LMS en IONOS VPS
 
-> Documento obsoleto para la infraestructura actual. INSTEIP está desplegado en Contabo con el dominio gestionado en DonWeb. Para el estado vigente consultar `docs/estado_deploy_contabo_donweb.md`.
+> Documento obsoleto para la infraestructura actual. Plataforma LMS está desplegado en Servidor VPS con el dominio gestionado en DNS Provider. Para el estado vigente consultar `docs/estado_deploy_Servidor VPS_DNS Provider.md`.
 
 > **Versión:** 1.0 — Julio 2026  
 > **Stack:** Angular 18 + Spring Boot 3.4 + PostgreSQL 15 + Nginx  
@@ -15,7 +15,7 @@
 1. Ir a [IONOS VPS](https://www.ionos.com/servers/vps)
 2. Seleccionar plan **VPS M+** (4 vCPU, 4 GB RAM, 120 GB NVMe)
 3. Elegir **Ubuntu 24.04 LTS** como sistema operativo
-4. Configurar nombre de dominio (ej. `insteip.com`) — IONOS incluye .COM
+4. Configurar nombre de dominio (ej. `plataformalms.com`) — IONOS incluye .COM
 5. Completar compra y esperar credenciales SSH
 
 ### 2. Herramientas locales necesarias
@@ -86,7 +86,7 @@ ufw status
 ## 📁 Estructura de Archivos en el Servidor
 
 ```
-/opt/insteip/
+/opt/Plataforma LMS/
 ├── backend.jar              ← App Spring Boot compilada
 ├── database/
 │   ├── schema.sql           ← Esquema SQL
@@ -105,8 +105,8 @@ ufw status
 ### 5.1 Crear estructura de directorios
 
 ```bash
-mkdir -p /opt/insteip/database
-cd /opt/insteip
+mkdir -p /opt/Plataforma LMS/database
+cd /opt/Plataforma LMS
 ```
 
 ### 5.2 Crear `docker-compose.yml`
@@ -123,7 +123,7 @@ version: '3.8'
 services:
   postgres-db:
     image: postgres:15-alpine
-    container_name: insteip-postgres
+    container_name: Plataforma LMS-postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -169,11 +169,11 @@ cd backend
 
 ```bash
 # Desde tu máquina local
-scp backend/target/backend-0.0.1-SNAPSHOT.jar root@<IP_DEL_VPS>:/opt/insteip/backend.jar
+scp backend/target/backend-0.0.1-SNAPSHOT.jar root@<IP_DEL_VPS>:/opt/Plataforma LMS/backend.jar
 
 # Subir scripts SQL (soporte para seed manual)
-scp database/schema.sql root@<IP_DEL_VPS>:/opt/insteip/database/
-scp database/seed.sql root@<IP_DEL_VPS>:/opt/insteip/database/
+scp database/schema.sql root@<IP_DEL_VPS>:/opt/Plataforma LMS/database/
+scp database/seed.sql root@<IP_DEL_VPS>:/opt/Plataforma LMS/database/
 ```
 
 ---
@@ -215,7 +215,7 @@ npm run build
 
 ```bash
 # Desde tu máquina local
-scp -r frontend/dist/frontend/browser/* root@<IP_DEL_VPS>:/opt/insteip/frontend/
+scp -r frontend/dist/frontend/browser/* root@<IP_DEL_VPS>:/opt/Plataforma LMS/frontend/
 ```
 
 ---
@@ -225,7 +225,7 @@ scp -r frontend/dist/frontend/browser/* root@<IP_DEL_VPS>:/opt/insteip/frontend/
 ### 8.1 Crear configuración de Nginx
 
 ```bash
-nano /etc/nginx/sites-available/insteip
+nano /etc/nginx/sites-available/Plataforma LMS
 ```
 
 Pegar este contenido (reemplaza `tudominio.com`):
@@ -236,7 +236,7 @@ server {
     server_name tudominio.com www.tudominio.com;
 
     # Frontend Angular (archivos estáticos)
-    root /opt/insteip/frontend;
+    root /opt/Plataforma LMS/frontend;
     index index.html;
 
     # Gzip
@@ -280,7 +280,7 @@ server {
 ### 8.2 Activar sitio
 
 ```bash
-ln -s /etc/nginx/sites-available/insteip /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/Plataforma LMS /etc/nginx/sites-enabled/
 rm /etc/nginx/sites-enabled/default  # Eliminar default
 
 nginx -t  # Verificar configuración
@@ -318,29 +318,29 @@ certbot renew --dry-run
 Para que el backend se inicie automáticamente al encender el servidor:
 
 ```bash
-nano /etc/systemd/system/insteip-backend.service
+nano /etc/systemd/system/Plataforma LMS-backend.service
 ```
 
 Pegar:
 
 ```ini
 [Unit]
-Description=INSTEIP Backend Service
+Description=Plataforma LMS Backend Service
 After=network.target docker.service
 Requires=docker.service
 
 [Service]
 Type=simple
-User=insteip
-Group=insteip
-WorkingDirectory=/opt/insteip
-Environment="DB_URL=jdbc:postgresql://localhost:5455/insteip_db"
-Environment="DB_USERNAME=insteip_user"
-EnvironmentFile=/etc/insteip/backend.env
-Environment="STORAGE_PATH=/opt/insteip/data"
+User=Plataforma LMS
+Group=Plataforma LMS
+WorkingDirectory=/opt/Plataforma LMS
+Environment="DB_URL=jdbc:postgresql://localhost:5455/Plataforma LMS_db"
+Environment="DB_USERNAME=Plataforma LMS_user"
+EnvironmentFile=/etc/Plataforma LMS/backend.env
+Environment="STORAGE_PATH=/opt/Plataforma LMS/data"
 Environment="API_BASE_URL=https://tudominio.com"
 Environment="FRONTEND_BASE_URL=https://tudominio.com"
-ExecStart=/usr/bin/java -jar /opt/insteip/backend.jar
+ExecStart=/usr/bin/java -jar /opt/Plataforma LMS/backend.jar
 Restart=always
 RestartSec=10
 
@@ -352,15 +352,15 @@ Registrar e iniciar:
 
 ```bash
 systemctl daemon-reload
-systemctl enable insteip-backend
-systemctl start insteip-backend
+systemctl enable Plataforma LMS-backend
+systemctl start Plataforma LMS-backend
 ```
 
 Verificar:
 
 ```bash
-systemctl status insteip-backend
-journalctl -u insteip-backend -f  # Ver logs en tiempo real
+systemctl status Plataforma LMS-backend
+journalctl -u Plataforma LMS-backend -f  # Ver logs en tiempo real
 ```
 
 ---
@@ -391,7 +391,7 @@ Abrir en el navegador: `https://tudominio.com`
 ### 11.3 Verificar archivos subidos
 
 ```bash
-ls -la /opt/insteip/data/materiales/
+ls -la /opt/Plataforma LMS/data/materiales/
 ```
 
 ---
@@ -401,19 +401,19 @@ ls -la /opt/insteip/data/materiales/
 ### Gestión del Backend
 
 ```bash
-systemctl start insteip-backend      # Iniciar
-systemctl stop insteip-backend       # Detener
-systemctl restart insteip-backend   # Reiniciar
-systemctl status insteip-backend    # Estado
-journalctl -u insteip-backend -f    # Logs en vivo
+systemctl start Plataforma LMS-backend      # Iniciar
+systemctl stop Plataforma LMS-backend       # Detener
+systemctl restart Plataforma LMS-backend   # Reiniciar
+systemctl status Plataforma LMS-backend    # Estado
+journalctl -u Plataforma LMS-backend -f    # Logs en vivo
 ```
 
 ### Gestión de PostgreSQL
 
 ```bash
-docker-compose -f /opt/insteip/docker-compose.yml up -d   # Iniciar
-docker-compose -f /opt/insteip/docker-compose.yml down    # Detener
-docker logs insteip-postgres -f                           # Logs
+docker-compose -f /opt/Plataforma LMS/docker-compose.yml up -d   # Iniciar
+docker-compose -f /opt/Plataforma LMS/docker-compose.yml down    # Detener
+docker logs Plataforma LMS-postgres -f                           # Logs
 ```
 
 ### Gestión de Nginx
@@ -435,10 +435,10 @@ nginx -t                        # Validar configuración
 cd backend && ./mvnw clean package -DskipTests
 
 # 2. Subir al servidor
-scp backend/target/backend-0.0.1-SNAPSHOT.jar root@<IP>:/opt/insteip/backend.jar
+scp backend/target/backend-0.0.1-SNAPSHOT.jar root@<IP>:/opt/Plataforma LMS/backend.jar
 
 # 3. En el servidor: reiniciar
-systemctl restart insteip-backend
+systemctl restart Plataforma LMS-backend
 ```
 
 ### Actualizar Frontend
@@ -448,7 +448,7 @@ systemctl restart insteip-backend
 cd frontend && npm run build
 
 # 2. Subir al servidor
-scp -r frontend/dist/frontend/browser/* root@<IP>:/opt/insteip/frontend/
+scp -r frontend/dist/frontend/browser/* root@<IP>:/opt/Plataforma LMS/frontend/
 
 # 3. No necesita reinicio — Nginx sirve los archivos nuevos inmediatamente
 ```
@@ -461,20 +461,20 @@ scp -r frontend/dist/frontend/browser/* root@<IP>:/opt/insteip/frontend/
 
 ```bash
 # Crear script de backup
-nano /opt/insteip/backup.sh
+nano /opt/Plataforma LMS/backup.sh
 ```
 
 ```bash
 #!/bin/bash
-BACKUP_DIR="/backups/insteip"
+BACKUP_DIR="/backups/Plataforma LMS"
 DATE=$(date +%Y%m%d_%H%M%S)
 mkdir -p $BACKUP_DIR
 
 # Backup de PostgreSQL
-docker exec insteip-postgres pg_dump -U insteip_user insteip_db > $BACKUP_DIR/db_$DATE.sql
+docker exec Plataforma LMS-postgres pg_dump -U Plataforma LMS_user Plataforma LMS_db > $BACKUP_DIR/db_$DATE.sql
 
 # Backup de archivos subidos
-tar -czf $BACKUP_DIR/files_$DATE.tar.gz /opt/insteip/data/
+tar -czf $BACKUP_DIR/files_$DATE.tar.gz /opt/Plataforma LMS/data/
 
 # Eliminar backups mayores a 30 días
 find $BACKUP_DIR -type f -mtime +30 -delete
@@ -483,20 +483,20 @@ echo "Backup completado: $DATE"
 ```
 
 ```bash
-chmod +x /opt/insteip/backup.sh
+chmod +x /opt/Plataforma LMS/backup.sh
 
 # Agregar al crontab (se ejecuta a las 3 AM)
-echo "0 3 * * * /opt/insteip/backup.sh" | crontab -
+echo "0 3 * * * /opt/Plataforma LMS/backup.sh" | crontab -
 ```
 
 ### Restaurar desde backup
 
 ```bash
 # Restaurar BD
-cat /backups/insteip/db_20260701_030000.sql | docker exec -i insteip-postgres psql -U insteip_user insteip_db
+cat /backups/Plataforma LMS/db_20260701_030000.sql | docker exec -i Plataforma LMS-postgres psql -U Plataforma LMS_user Plataforma LMS_db
 
 # Restaurar archivos
-tar -xzf /backups/insteip/files_20260701_030000.tar.gz -C /
+tar -xzf /backups/Plataforma LMS/files_20260701_030000.tar.gz -C /
 ```
 
 ---
@@ -515,14 +515,14 @@ docker stats            # Estado de contenedores
 
 ```bash
 # Backend
-journalctl -u insteip-backend -n 100 --no-pager
+journalctl -u Plataforma LMS-backend -n 100 --no-pager
 
 # Nginx
 tail -f /var/log/nginx/access.log
 tail -f /var/log/nginx/error.log
 
 # PostgreSQL
-docker logs insteip-postgres --tail 50
+docker logs Plataforma LMS-postgres --tail 50
 ```
 
 ---
@@ -533,13 +533,13 @@ docker logs insteip-postgres --tail 50
 ```bash
 netstat -tlnp | grep 8081
 kill <PID>
-systemctl restart insteip-backend
+systemctl restart Plataforma LMS-backend
 ```
 
 ### "Connection refused" a PostgreSQL
 ```bash
 docker ps                    # ¿El contenedor está running?
-docker logs insteip-postgres # ¿Hay errores?
+docker logs Plataforma LMS-postgres # ¿Hay errores?
 systemctl restart docker     # Reiniciar Docker si es necesario
 docker-compose up -d        # Recrear contenedor
 ```
@@ -547,7 +547,7 @@ docker-compose up -d        # Recrear contenedor
 ### Nginx no sirve el frontend
 ```bash
 nginx -t                    # Validar configuración
-ls -la /opt/insteip/frontend/  # ¿Existen los archivos?
+ls -la /opt/Plataforma LMS/frontend/  # ¿Existen los archivos?
 systemctl reload nginx      # Recargar configuración
 ```
 
@@ -580,3 +580,4 @@ certbot renew --dry-run     # Probar renovación automática
 
 > 📝 **Nota:** Todas las contraseñas en esta guía son de ejemplo.  
 > **En producción, usa contraseñas seguras y variables de entorno diferentes.**
+

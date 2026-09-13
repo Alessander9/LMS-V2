@@ -1,4 +1,4 @@
--- Datos iniciales y de prueba para INSTEIP (Versión Mejorada)
+-- Datos iniciales y de prueba para Plataforma LMS (Versión Mejorada)
 -- Motor: PostgreSQL
 
 -- =========================================================================
@@ -27,8 +27,8 @@ INSERT INTO usuarios (rol_id, nivel_suscripcion_id, nombres, apellidos, correo, 
   (SELECT id FROM roles WHERE nombre = 'ADMINISTRADOR'),
   NULL,
   'Admin',
-  'Insteip',
-  'admin@insteip.com',
+  'Plataforma LMS',
+  'admin@plataformalms.com',
   '$2b$12$bri6YkCKP0IdTNWppx5RwO/5rqlH4gDftHHuLqSAxApcal9akw5yq',
   '+51 987654321'
 ),
@@ -37,7 +37,7 @@ INSERT INTO usuarios (rol_id, nivel_suscripcion_id, nombres, apellidos, correo, 
   NULL,
   'Carlos Alberto',
   'Docente Prado',
-  'docente@insteip.com',
+  'docente@plataformalms.com',
   '$2b$12$itDYwja7vYFphrRYO37rpulZi2AlRyLH97eoofNNeQOOftzZznSEO',
   '+51 999111222'
 ),
@@ -46,7 +46,7 @@ INSERT INTO usuarios (rol_id, nivel_suscripcion_id, nombres, apellidos, correo, 
   (SELECT id FROM niveles_suscripcion WHERE nombre = 'BASICO'),
   'Juan Carlos',
   'Pérez Gómez',
-  'juan.perez@insteip.com',
+  'juan.perez@plataformalms.com',
   '$2b$12$tdNEq3dmIAzzoWaJNz3TG.9QcbxVJSPWAvQi8hjCgMM53rVdhAAQO',
   '+51 912345678'
 )
@@ -58,7 +58,7 @@ ON CONFLICT (correo) DO NOTHING;
 -- Pago 1: Pendiente de aprobación (Juan Pérez solicita Intermedio)
 INSERT INTO pagos (usuario_id, nivel_suscripcion_id, monto, metodo_pago, numero_operacion, observaciones, aprobado, fecha_pago) VALUES
 (
-  (SELECT id FROM usuarios WHERE correo = 'juan.perez@insteip.com'),
+  (SELECT id FROM usuarios WHERE correo = 'juan.perez@plataformalms.com'),
   (SELECT id FROM niveles_suscripcion WHERE nombre = 'INTERMEDIO'),
   49.90,
   'YAPE',
@@ -73,8 +73,8 @@ INSERT INTO pagos (usuario_id, nivel_suscripcion_id, monto, metodo_pago, numero_
 -- =========================================================================
 INSERT INTO login_auditoria (usuario_id, correo, ip, user_agent, exitoso, motivo) VALUES
 (
-  (SELECT id FROM usuarios WHERE correo = 'juan.perez@insteip.com'),
-  'juan.perez@insteip.com',
+  (SELECT id FROM usuarios WHERE correo = 'juan.perez@plataformalms.com'),
+  'juan.perez@plataformalms.com',
   '192.168.1.15',
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125.0.0.0',
   TRUE,
@@ -82,7 +82,7 @@ INSERT INTO login_auditoria (usuario_id, correo, ip, user_agent, exitoso, motivo
 ),
 (
   NULL,
-  'usuario.inexistente@insteip.com',
+  'usuario.inexistente@plataformalms.com',
   '192.168.1.50',
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Firefox/126.0',
   FALSE,
@@ -97,7 +97,7 @@ INSERT INTO cursos (nombre, descripcion, imagen_portada, docente_id) VALUES
   'Desarrollo Web Moderno con Angular',
   'Aprende a construir aplicaciones SPA escalables, rápidas y profesionales usando Angular 17+, TypeScript, RxJS y standalone components.',
   'https://images.unsplash.com/photo-1517694712202-14dd9538aa97',
-  (SELECT id FROM usuarios WHERE correo = 'docente@insteip.com')
+  (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com')
 ),
 (
   'Backend Robusto con Spring Boot y JPA',
@@ -115,7 +115,7 @@ INSERT INTO cursos (nombre, descripcion, imagen_portada, docente_id) VALUES
   'Curso de Auriculoterapia',
   'Aprende auriculoterapia paso a paso, desde los fundamentos y cartografía auricular hasta tratamientos prácticos y casos reales.',
   'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b',
-  (SELECT id FROM usuarios WHERE correo = 'docente@insteip.com')
+  (SELECT id FROM usuarios WHERE correo = 'docente@plataformalms.com')
 );
 
 INSERT INTO curso_niveles_suscripcion (curso_id, nivel_suscripcion_id) VALUES
@@ -419,7 +419,7 @@ INSERT INTO materiales (modulo_id, nombre, archivo_url, archivo_interno, tipo_ar
 (
   (SELECT id FROM modulos WHERE nombre = 'Módulo 1: Iniciando con Spring Boot'),
   'Código Fuente del Hola Mundo (GitHub)',
-  'https://github.com/insteip-cursos/spring-boot-hello-world',
+  'https://github.com/Plataforma LMS-cursos/spring-boot-hello-world',
   'hello-world-link',
   'url',
   NULL
@@ -430,11 +430,11 @@ INSERT INTO materiales (modulo_id, nombre, archivo_url, archivo_interno, tipo_ar
 -- =========================================================================
 INSERT INTO matriculas (usuario_id, curso_id) VALUES
 (
-  (SELECT id FROM usuarios WHERE correo = 'juan.perez@insteip.com'),
+  (SELECT id FROM usuarios WHERE correo = 'juan.perez@plataformalms.com'),
   (SELECT id FROM cursos WHERE nombre = 'Desarrollo Web Moderno con Angular')
 ),
 (
-  (SELECT id FROM usuarios WHERE correo = 'juan.perez@insteip.com'),
+  (SELECT id FROM usuarios WHERE correo = 'juan.perez@plataformalms.com'),
   (SELECT id FROM cursos WHERE nombre = 'Curso de Auriculoterapia')
 );
 
@@ -443,14 +443,14 @@ INSERT INTO matriculas (usuario_id, curso_id) VALUES
 -- =========================================================================
 INSERT INTO avance_videos (usuario_id, video_id, ultimo_segundo, porcentaje_visto, completado) VALUES
 (
-  (SELECT id FROM usuarios WHERE correo = 'juan.perez@insteip.com'),
+  (SELECT id FROM usuarios WHERE correo = 'juan.perez@plataformalms.com'),
   (SELECT id FROM videos WHERE titulo = '1.1. Introducción e Instalación del Entorno'),
   720,
   100.00,
   TRUE
 ),
 (
-  (SELECT id FROM usuarios WHERE correo = 'juan.perez@insteip.com'),
+  (SELECT id FROM usuarios WHERE correo = 'juan.perez@plataformalms.com'),
   (SELECT id FROM videos WHERE titulo = '1.2. Arquitectura de un Proyecto Angular'),
   450,
   50.00,
@@ -462,7 +462,7 @@ INSERT INTO avance_videos (usuario_id, video_id, ultimo_segundo, porcentaje_vist
 -- =========================================================================
 INSERT INTO avance_cursos (usuario_id, curso_id, porcentaje_avance, completado) VALUES
 (
-  (SELECT id FROM usuarios WHERE correo = 'juan.perez@insteip.com'),
+  (SELECT id FROM usuarios WHERE correo = 'juan.perez@plataformalms.com'),
   (SELECT id FROM cursos WHERE nombre = 'Desarrollo Web Moderno con Angular'),
   50.00,
   FALSE
@@ -473,7 +473,7 @@ INSERT INTO avance_cursos (usuario_id, curso_id, porcentaje_avance, completado) 
 -- =========================================================================
 INSERT INTO certificados (usuario_id, curso_id, codigo, archivo_pdf, url_validacion, numero_registro) VALUES
 (
-  (SELECT id FROM usuarios WHERE correo = 'juan.perez@insteip.com'),
+  (SELECT id FROM usuarios WHERE correo = 'juan.perez@plataformalms.com'),
   (SELECT id FROM cursos WHERE nombre = 'Desarrollo Web Moderno con Angular'),
   'INS-2026-ABX9F2K8',
   'http://localhost:8081/api/certificados/1/download',
@@ -486,7 +486,7 @@ INSERT INTO certificados (usuario_id, curso_id, codigo, archivo_pdf, url_validac
 -- =========================================================================
 INSERT INTO plantilla_certificado (nombre, imagen_fondo, firma_director, cargo_director, activo) VALUES
 (
-  'Plantilla Oficial INSTEIP v1',
+  'Plantilla Oficial Plataforma LMS v1',
   '',
   'Director Académico',
   'Director de Asuntos Académicos',
@@ -498,13 +498,13 @@ INSERT INTO plantilla_certificado (nombre, imagen_fondo, firma_director, cargo_d
 -- =========================================================================
 INSERT INTO configuracion_institucion (nombre_institucion, logo_url, correo_contacto, telefono, qr_yape, qr_plin, paypal_url) VALUES
 (
-  'INSTEIP - Instituto de Terapias Integrales',
-  'http://localhost:4200/assets/insteip-logo.png',
-  'contacto@insteip.com',
+  'Plataforma LMS - Instituto de Terapias Integrales',
+  'http://localhost:4200/assets/plataforma_lms-logo.png',
+  'contacto@plataformalms.com',
   '+51 999 888 777',
   '',
   '',
-  'https://paypal.me/insteip'
+  'https://paypal.me/Plataforma LMS'
 );
 
 -- =========================================================================
@@ -520,4 +520,5 @@ INSERT INTO tareas (modulo_id, titulo, descripcion, fecha_limite, permitir_reenv
   TRUE,
   CURRENT_TIMESTAMP
 );
+
 

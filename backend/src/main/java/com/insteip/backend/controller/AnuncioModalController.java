@@ -38,7 +38,7 @@ public class AnuncioModalController {
     public ResponseEntity<AnuncioModalResponseDTO> crear(
             @Valid @RequestBody AnuncioModalRequestDTO request,
             Authentication authentication) {
-        String correoAdmin = authentication != null ? authentication.getName() : "admin@insteip.com";
+        String correoAdmin = authentication != null ? authentication.getName() : "admin@plataformalms.com";
         return new ResponseEntity<>(anuncioModalService.crear(request, correoAdmin), HttpStatus.CREATED);
     }
 
@@ -48,7 +48,7 @@ public class AnuncioModalController {
             @PathVariable Long id,
             @Valid @RequestBody AnuncioModalRequestDTO request,
             Authentication authentication) {
-        String correoAdmin = authentication != null ? authentication.getName() : "admin@insteip.com";
+        String correoAdmin = authentication != null ? authentication.getName() : "admin@plataformalms.com";
         return ResponseEntity.ok(anuncioModalService.actualizar(id, request, correoAdmin));
     }
 
@@ -58,7 +58,7 @@ public class AnuncioModalController {
             @PathVariable Long id,
             @RequestParam Boolean estado,
             Authentication authentication) {
-        String correoAdmin = authentication != null ? authentication.getName() : "admin@insteip.com";
+        String correoAdmin = authentication != null ? authentication.getName() : "admin@plataformalms.com";
         anuncioModalService.cambiarEstado(id, estado, correoAdmin);
         return ResponseEntity.noContent().build();
     }
@@ -68,8 +68,9 @@ public class AnuncioModalController {
     public ResponseEntity<Void> eliminar(
             @PathVariable Long id,
             Authentication authentication) {
-        String correoAdmin = authentication != null ? authentication.getName() : "admin@insteip.com";
+        String correoAdmin = authentication != null ? authentication.getName() : "admin@plataformalms.com";
         anuncioModalService.eliminar(id, correoAdmin);
         return ResponseEntity.noContent().build();
     }
 }
+

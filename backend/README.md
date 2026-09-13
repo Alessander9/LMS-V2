@@ -1,4 +1,4 @@
-# Backend - INSTEIP
+# Backend - Plataforma LMS
 
 ## Arquitectura por Capas
 
@@ -41,7 +41,7 @@ flowchart TB
 ### Estructura de Paquetes
 
 ```
-com.insteip.backend
+com.Plataforma LMS.backend
 ├── controller/               ← CAPA DE PRESENTACIÓN
 ├── service/interfaces/       ← CAPA DE NEGOCIO
 ├── service/impl/
@@ -113,9 +113,10 @@ docker compose up -d
 
 | Variable | Default | Descripción |
 |----------|---------|-------------|
-| `DB_URL` | `jdbc:postgresql://localhost:5432/insteip_db` | URL de BD |
+| `DB_URL` | `jdbc:postgresql://localhost:5432/Plataforma LMS_db` | URL de BD |
 | `DB_USERNAME` | `postgres` | Usuario BD |
 | `DB_PASSWORD` | (vacío) | Contraseña BD |
 | `API_BASE_URL` | `http://localhost:8081` | URL base API |
 | `FRONTEND_BASE_URL` | `http://localhost:4200` | URL base frontend |
 | `STORAGE_PATH` | `uploads` | Ruta de almacenamiento |
+

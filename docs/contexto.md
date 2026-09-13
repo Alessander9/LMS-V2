@@ -1,10 +1,10 @@
-# Contexto General del Sistema - INSTEIP
+# Contexto General del Sistema - Plataforma LMS
 
-Este documento resume el estado funcional y técnico actual del sistema **INSTEIP**, para que cualquier persona del equipo pueda entender de forma rápida la arquitectura, los roles, el alcance de la API y el flujo del frontend.
+Este documento resume el estado funcional y técnico actual del sistema **Plataforma LMS**, para que cualquier persona del equipo pueda entender de forma rápida la arquitectura, los roles, el alcance de la API y el flujo del frontend.
 
 ## 1. Resumen
 
-INSTEIP es una plataforma académica para gestionar cursos, módulos, videos, materiales, matrículas, avance de alumnos, certificados, auditoría y configuración institucional.
+Plataforma LMS es una plataforma académica para gestionar cursos, módulos, videos, materiales, matrículas, avance de alumnos, certificados, auditoría y configuración institucional.
 
 El sistema maneja tres perfiles principales:
 
@@ -258,26 +258,26 @@ Documento maestro de QA:
 
 La infraestructura de producción activa y configurada es:
 
-- **Proveedor VPS:** Contabo.
+- **Proveedor VPS:** Servidor VPS.
 - **Plan:** Cloud VPS Core 6.
 - **Recursos:** 6 vCPU, 12 GB RAM, 200 GB SSD, 2 snapshots y puerto de 300 Mbit/s.
 - **Sistema operativo:** Ubuntu 24.04.
-- **IPv4 pública:** `62.146.226.81`.
+- **IPv4 pública:** `<IP_DEL_VPS>`.
 - **Puerto SSH:** `22` (acceso restringido y asegurado).
-- **Dominio:** `insteip.com` (y `www.insteip.com`), registrado en DonWeb resolviendo al VPS.
+- **Dominio:** `plataformalms.com` (y `www.plataformalms.com`), registrado en DNS Provider resolviendo al VPS.
 
 Estado actual:
 
 - **Despliegue Completo:** El frontend Angular y el backend Spring Boot están instalados, activos y sirviendo tráfico productivo a través de Nginx.
-- **HTTPS Let's Encrypt:** Configurado y funcionando de forma segura en [https://insteip.com](https://insteip.com).
-- **Base de Datos Productiva:** PostgreSQL 15 en contenedor Docker privado (`insteip-postgres`) con puerto `5455` mapeado internamente.
+- **HTTPS Let's Encrypt:** Configurado y funcionando de forma segura en [https://plataformalms.com](https://plataformalms.com).
+- **Base de Datos Productiva:** PostgreSQL 15 en contenedor Docker privado (`Plataforma LMS-postgres`) con puerto `5455` mapeado internamente.
 - **Carga de Datos:** Totalmente completada con datos reales (5 cursos con toda su estructura de módulos y videos, más la cuenta Administrador y 20 cuentas de estudiantes matriculados).
-- El despliegue detallado y el mantenimiento se documentan en [docs/estado_deploy_contabo_donweb.md](./estado_deploy_contabo_donweb.md).
+- El despliegue detallado y el mantenimiento se documentan en [docs/estado_deploy_Servidor VPS_DNS Provider.md](./estado_deploy_Servidor VPS_DNS Provider.md).
 
 Arquitectura de producción activa:
 
 ```text
-https://insteip.com
+https://plataformalms.com
         |
         v
 Nginx :443
@@ -286,7 +286,7 @@ Nginx :443
    |
    `-- Frontend Angular estático (compilado en producción)
 
-PostgreSQL productivo: insteip_db, privado/local (contenedor Docker)
+PostgreSQL productivo: Plataforma LMS_db, privado/local (contenedor Docker)
 ```
 
 Puertos públicos habilitados:
@@ -385,3 +385,4 @@ npm start
 - Los CSVs y PDFs de prueba generados por los scripts de testing se almacenan en `scripts/downloads/`.
 - Los path aliases `@core/*`, `@features/*`, `@env/*` están configurados en `tsconfig.json` para imports más limpios.
 - Este documento sirve como contexto operativo para desarrollo, pruebas y mantenimiento.
+

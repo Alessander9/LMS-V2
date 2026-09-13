@@ -59,7 +59,7 @@ class NotificacionYAnuncioControllerTest {
 
     @Test
     @DisplayName("GET /api/notificaciones/mis-notificaciones - Debe retornar resumen de notificaciones y conteo")
-    @WithMockUser(username = "alumno@insteip.com", roles = {"ALUMNO"})
+    @WithMockUser(username = "alumno@plataformalms.com", roles = {"ALUMNO"})
     void testObtenerMisNotificaciones() throws Exception {
         NotificacionResponseDTO item = NotificacionResponseDTO.builder()
                 .id(1L)
@@ -89,7 +89,7 @@ class NotificacionYAnuncioControllerTest {
 
     @Test
     @DisplayName("PATCH /api/notificaciones/1/leer - Debe marcar la notificación como leída")
-    @WithMockUser(username = "alumno@insteip.com", roles = {"ALUMNO"})
+    @WithMockUser(username = "alumno@plataformalms.com", roles = {"ALUMNO"})
     void testMarcarComoLeida() throws Exception {
         doNothing().when(notificacionService).marcarComoLeida(eq(1L), anyString());
 
@@ -101,7 +101,7 @@ class NotificacionYAnuncioControllerTest {
 
     @Test
     @DisplayName("PATCH /api/notificaciones/leer-todas - Debe marcar todas las notificaciones como leídas")
-    @WithMockUser(username = "alumno@insteip.com", roles = {"ALUMNO"})
+    @WithMockUser(username = "alumno@plataformalms.com", roles = {"ALUMNO"})
     void testMarcarTodasComoLeidas() throws Exception {
         doNothing().when(notificacionService).marcarTodasComoLeidas(anyString());
 
@@ -113,7 +113,7 @@ class NotificacionYAnuncioControllerTest {
 
     @Test
     @DisplayName("POST /api/notificaciones/comunicado - Admin debe enviar comunicado segmentado")
-    @WithMockUser(username = "admin@insteip.com", roles = {"ADMINISTRADOR"})
+    @WithMockUser(username = "admin@plataformalms.com", roles = {"ADMINISTRADOR"})
     void testEnviarComunicadoSegmentado() throws Exception {
         ComunicadoRequestDTO request = ComunicadoRequestDTO.builder()
                 .titulo("Aviso General")
@@ -135,7 +135,7 @@ class NotificacionYAnuncioControllerTest {
 
     @Test
     @DisplayName("GET /api/anuncios-modal/activo - Debe retornar el anuncio modal vigente para el usuario")
-    @WithMockUser(username = "alumno@insteip.com", roles = {"ALUMNO"})
+    @WithMockUser(username = "alumno@plataformalms.com", roles = {"ALUMNO"})
     void testObtenerAnuncioActivo() throws Exception {
         AnuncioModalResponseDTO anuncio = AnuncioModalResponseDTO.builder()
                 .id(10L)
@@ -158,7 +158,7 @@ class NotificacionYAnuncioControllerTest {
 
     @Test
     @DisplayName("POST /api/anuncios-modal - Admin debe crear nuevo anuncio modal")
-    @WithMockUser(username = "admin@insteip.com", roles = {"ADMINISTRADOR"})
+    @WithMockUser(username = "admin@plataformalms.com", roles = {"ADMINISTRADOR"})
     void testCrearAnuncioModal() throws Exception {
         AnuncioModalRequestDTO request = AnuncioModalRequestDTO.builder()
                 .titulo("Nuevo Curso Online")
@@ -191,7 +191,7 @@ class NotificacionYAnuncioControllerTest {
 
     @Test
     @DisplayName("PATCH /api/anuncios-modal/15/estado - Admin debe cambiar estado de anuncio")
-    @WithMockUser(username = "admin@insteip.com", roles = {"ADMINISTRADOR"})
+    @WithMockUser(username = "admin@plataformalms.com", roles = {"ADMINISTRADOR"})
     void testCambiarEstadoAnuncio() throws Exception {
         doNothing().when(anuncioModalService).cambiarEstado(eq(15L), eq(false), anyString());
 
@@ -202,3 +202,4 @@ class NotificacionYAnuncioControllerTest {
         verify(anuncioModalService, times(1)).cambiarEstado(eq(15L), eq(false), anyString());
     }
 }
+

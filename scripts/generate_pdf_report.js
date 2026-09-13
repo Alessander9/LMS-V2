@@ -7,7 +7,7 @@ async function generatePDF() {
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Informe Completo del Sistema INSTEIP</title>
+  <title>Informe Completo del Sistema Plataforma LMS</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
@@ -346,7 +346,7 @@ async function generatePDF() {
   <!-- ENCABEZADO / COVER -->
   <div class="header-banner">
     <div class="brand-title">
-      🌿 INSTEIP — Campus Virtual & Gestión Académica
+      🌿 Plataforma LMS — Campus Virtual & Gestión Académica
     </div>
     <div class="brand-subtitle">
       Informe Técnico Integral: Funcionalidades, Flujos, Roles, Restricciones, Avance y Roadmap
@@ -506,7 +506,7 @@ async function generatePDF() {
 
   <!-- 2. FLUJOS DE TRABAJO -->
   <div class="section-title">2. Flujos de Trabajo Principales</div>
-  <p class="section-desc">Ciclos operativos de los actores dentro del ecosistema INSTEIP.</p>
+  <p class="section-desc">Ciclos operativos de los actores dentro del ecosistema Plataforma LMS.</p>
 
   <div class="grid-3">
     <!-- Flujo 1 -->
@@ -805,7 +805,7 @@ async function generatePDF() {
   </div>
 
   <div class="footer-note">
-    <strong>INSTEIP — Instituto Superior de Terapias Integrales</strong> · Documento Técnico Oficial emitido por el equipo de Desarrollo de Software.
+    <strong>Plataforma LMS — Instituto Superior de Terapias Integrales</strong> · Documento Técnico Oficial emitido por el equipo de Desarrollo de Software.
   </div>
 
 </body>
@@ -820,8 +820,8 @@ async function generatePDF() {
   const page = await browser.newPage();
   await page.setContent(htmlContent, { waitUntil: 'networkidle' });
 
-  const outputPath1 = path.resolve(__dirname, '../../docs/Informe_Completo_Sistema_INSTEIP.pdf');
-  const outputPath2 = path.resolve(__dirname, '../../Informe_Completo_Sistema_INSTEIP.pdf');
+  const outputPath1 = path.resolve(__dirname, '../../docs/Informe_Completo_Sistema_Plataforma LMS.pdf');
+  const outputPath2 = path.resolve(__dirname, '../../Informe_Completo_Sistema_Plataforma LMS.pdf');
 
   console.log('Generando archivo PDF...');
   await page.pdf({
@@ -846,3 +846,4 @@ generatePDF().catch(err => {
   console.error('Error generando PDF:', err);
   process.exit(1);
 });
+

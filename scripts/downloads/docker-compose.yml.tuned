@@ -1,7 +1,7 @@
 services:
   postgres-db:
     image: postgres:15-alpine
-    container_name: insteip-postgres
+    container_name: lms-postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -26,3 +26,4 @@ services:
 
 volumes:
   postgres_data:
+

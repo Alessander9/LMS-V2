@@ -91,12 +91,12 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             document.open();
 
             // Institutional Color Palette
-            Color primaryNavy = new Color(0, 52, 102);     // #003466
-            Color secondaryGreen = new Color(0, 110, 28);  // #006e1c
-            Color accentGold = new Color(180, 83, 9);      // Amber 700 #b45309
-            Color darkText = new Color(30, 41, 59);        // Slate 800 #1e293b
+            Color primaryNavy = new Color(37, 99, 235);     // Primary Blue #2563EB
+            Color secondaryGreen = new Color(6, 182, 212);  // Secondary Cyan #06B6D4
+            Color accentGold = new Color(245, 158, 11);     // Reward Amber #F59E0B
+            Color darkText = new Color(15, 23, 42);         // Text Slate #0F172A
             Color mutedGray = new Color(100, 116, 139);    // Slate 500 #64748b
-            Color bgLightBlue = new Color(241, 245, 249);  // Slate 100 #f1f5f9
+            Color bgLightBlue = new Color(248, 250, 252);  // Background Slate 50 #F8FAFC
             Color bgGreenLight = new Color(240, 253, 244); // Emerald 50 #f0fdf4
             Color borderSlate = new Color(203, 213, 225);  // Slate 300 #cbd5e1
 
@@ -118,7 +118,7 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             Color bgRedLight = new Color(254, 242, 242);  // Red 50
             Color borderRed = new Color(252, 165, 165);   // Red 300
 
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             Usuario alumno = matricula.getUsuario();
@@ -142,20 +142,20 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             logoCell.setBorder(PdfPCell.NO_BORDER);
             logoCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             try {
-                Path logoPath = Paths.get("..", "frontend", "src", "assets", "insteip-logo.png").toAbsolutePath().normalize();
+                Path logoPath = Paths.get("..", "frontend", "src", "assets", "plataforma_lms-logo.png").toAbsolutePath().normalize();
                 if (!Files.exists(logoPath)) {
-                    logoPath = Paths.get(System.getProperty("user.dir"), "frontend", "src", "assets", "insteip-logo.png").toAbsolutePath().normalize();
+                    logoPath = Paths.get(System.getProperty("user.dir"), "frontend", "src", "assets", "plataforma_lms-logo.png").toAbsolutePath().normalize();
                 }
                 if (Files.exists(logoPath)) {
                     Image logoImg = Image.getInstance(logoPath.toString());
                     logoImg.scaleToFit(105, 42);
                     logoCell.addElement(logoImg);
                 } else {
-                    Paragraph logoText = new Paragraph("INSTEIP", new Font(Font.HELVETICA, 17, Font.BOLD, primaryNavy));
+                    Paragraph logoText = new Paragraph("PLATAFORMA LMS", new Font(Font.HELVETICA, 17, Font.BOLD, primaryNavy));
                     logoCell.addElement(logoText);
                 }
             } catch (Exception e) {
-                Paragraph logoText = new Paragraph("INSTEIP", new Font(Font.HELVETICA, 17, Font.BOLD, primaryNavy));
+                Paragraph logoText = new Paragraph("PLATAFORMA LMS", new Font(Font.HELVETICA, 17, Font.BOLD, primaryNavy));
                 logoCell.addElement(logoText);
             }
             headerTable.addCell(logoCell);
@@ -164,7 +164,7 @@ public class MatriculaPdfServiceImpl implements MatriculaPdfService {
             PdfPCell titleCell = new PdfPCell();
             titleCell.setBorder(PdfPCell.NO_BORDER);
             titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            Paragraph instName = new Paragraph("INSTITUTO DE TERAPIAS INTEGRALES PERÚ", fontHeaderTitle);
+            Paragraph instName = new Paragraph("PLATAFORMA LMS", fontHeaderTitle);
             Paragraph instSubtitle = new Paragraph("SISTEMA OFICIAL DE REGISTRO Y CONTROL ACADÉMICO", fontHeaderSubtitle);
             titleCell.addElement(instName);
             titleCell.addElement(instSubtitle);
@@ -496,13 +496,13 @@ class MatriculaPdfPageBorder extends PdfPageEventHelper {
         cb.saveState();
 
         // Outer institutional border
-        cb.setColorStroke(new java.awt.Color(0, 52, 102));
+        cb.setColorStroke(new java.awt.Color(37, 99, 235));
         cb.setLineWidth(1.8f);
         cb.rectangle(18, 18, document.getPageSize().getWidth() - 36, document.getPageSize().getHeight() - 36);
         cb.stroke();
 
-        // Inner emerald accent line
-        cb.setColorStroke(new java.awt.Color(0, 110, 28));
+        // Inner cyan accent line
+        cb.setColorStroke(new java.awt.Color(6, 182, 212));
         cb.setLineWidth(0.75f);
         cb.rectangle(22, 22, document.getPageSize().getWidth() - 44, document.getPageSize().getHeight() - 44);
         cb.stroke();

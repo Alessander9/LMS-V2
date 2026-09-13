@@ -78,7 +78,7 @@ public class CertificadoController {
             @PathVariable Long cursoId) {
         if (authentication != null) {
             String correoAuth = authentication.getName();
-            if (correoAuth != null && (correoAuth.equalsIgnoreCase("ExperianciaInsteip@insteip.com") || correoAuth.equalsIgnoreCase("ExperienciaInsteip@insteip.com"))) {
+            if (correoAuth != null && (correoAuth.equalsIgnoreCase("experiencia@plataformalms.com") || correoAuth.equalsIgnoreCase("experiencia@plataformalms.com"))) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
@@ -109,7 +109,7 @@ public class CertificadoController {
     public ResponseEntity<byte[]> descargarCertificado(@PathVariable Long id, Authentication authentication) {
         if (authentication != null) {
             String correoAuth = authentication.getName();
-            if (correoAuth != null && (correoAuth.equalsIgnoreCase("ExperianciaInsteip@insteip.com") || correoAuth.equalsIgnoreCase("ExperienciaInsteip@insteip.com"))) {
+            if (correoAuth != null && (correoAuth.equalsIgnoreCase("experiencia@plataformalms.com") || correoAuth.equalsIgnoreCase("experiencia@plataformalms.com"))) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
@@ -146,3 +146,4 @@ public class CertificadoController {
         return ResponseEntity.ok(response);
     }
 }
+

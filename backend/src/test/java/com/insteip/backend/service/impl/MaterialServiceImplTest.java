@@ -152,7 +152,7 @@ class MaterialServiceImplTest {
         Rol rol = Rol.builder().id(1L).nombre(rolNombre).estado(true).build();
         return Usuario.builder()
                 .id(7L)
-                .correo(rolNombre.toLowerCase() + "@insteip.com")
+                .correo(rolNombre.toLowerCase() + "@plataformalms.com")
                 .nombres("Test")
                 .apellidos("User")
                 .passwordHash("hash")
@@ -176,3 +176,4 @@ class MaterialServiceImplTest {
                 .build();
     }
 }
+

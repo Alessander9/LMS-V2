@@ -194,7 +194,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     .build();
             video = videoRepository.save(video);
 
-            Usuario juan = usuarioRepository.findByCorreo("juan.perez@insteip.com").orElse(null);
+            Usuario juan = usuarioRepository.findByCorreo("juan.perez@plataformalms.com").orElse(null);
             if (juan != null) {
                 AvanceVideo avance = AvanceVideo.builder()
                         .usuario(juan)
@@ -210,7 +210,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         // 5. Seedar Matrícula de prueba (Juan -> Excel Avanzado)
         if (matriculaRepository.count() == 0) {
-            Usuario juan = usuarioRepository.findByCorreo("juan.perez@insteip.com").orElse(null);
+            Usuario juan = usuarioRepository.findByCorreo("juan.perez@plataformalms.com").orElse(null);
             if (juan != null && excel != null) {
                 Matricula matricula = Matricula.builder()
                         .usuario(juan)
@@ -223,7 +223,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         // 6. Seedar Certificado de prueba
         if (certificadoRepository.count() == 0) {
-            Usuario juan = usuarioRepository.findByCorreo("juan.perez@insteip.com").orElse(null);
+            Usuario juan = usuarioRepository.findByCorreo("juan.perez@plataformalms.com").orElse(null);
             if (juan != null && excel != null) {
                 Certificado cert = Certificado.builder()
                         .usuario(juan)
@@ -239,3 +239,4 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
     }
 }
+

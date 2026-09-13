@@ -1,4 +1,4 @@
-# Frontend - INSTEIP
+# Frontend - Plataforma LMS
 
 ## Arquitectura
 
@@ -120,3 +120,4 @@ import { CursoRequest, CursoResponse } from './core/models/curso.model';
 import { AuthService, CursoService } from './core/services';
 import { CursoRequest, CursoResponse } from './core/models';
 ```
+

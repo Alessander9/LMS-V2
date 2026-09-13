@@ -1,9 +1,9 @@
-# Plan previo al deploy de INSTEIP
+# Plan previo al deploy de Plataforma LMS
 
 ## Estado de ejecución
 
 **Actualizado:** 2026-07-24  
-**Estado:** Documento histórico de preparación. La infraestructura actual es Contabo + DonWeb y el despliegue productivo está documentado en `docs/estado_deploy_contabo_donweb.md`.
+**Estado:** Documento histórico de preparación. La infraestructura actual es Servidor VPS y el despliegue productivo está documentado en `docs/estado_deploy_Servidor VPS_DNS Provider.md`.
 
 > No usar este documento como guía operativa actual. Conserva el historial de decisiones y validaciones previas a la compra del VPS.
 
@@ -14,9 +14,9 @@ Estos son los únicos pendientes locales que deben cerrarse antes de contratar e
 ### Bloqueadores antes de comprar
 
 - [x] Revisar `database/local_data`: es un directorio de datos PostgreSQL local versionado; no se copiará al VPS.
-- [x] Respaldar la base local actual y verificar restauración en `insteip_restore_test`.
+- [x] Respaldar la base local actual y verificar restauración en `Plataforma LMS_restore_test`.
 - [ ] Definir qué datos iniciales tendrá producción: administrador, docentes, cursos, configuraciones y catálogos.
-- [x] Definir el método de inicialización productiva: base nueva `insteip_prod` y carga mediante migraciones/SQL controlado; no se copiará `database/local_data`.
+- [x] Definir el método de inicialización productiva: base nueva `Plataforma LMS_prod` y carga mediante migraciones/SQL controlado; no se copiará `database/local_data`.
 - [x] Ejecutar búsqueda final de secretos en código, documentación, SQL y scripts: no quedan coincidencias de las credenciales QA conocidas ni claves fallback.
 - [x] Retirar del repositorio las contraseñas QA de documentación, SQL y scripts auxiliares; las pruebas reciben credenciales por variables de entorno.
 - [ ] Rotar las cuentas de prueba antes del primer uso productivo y confirmar que no se reutilizarán en producción.
@@ -37,11 +37,11 @@ Estos son los únicos pendientes locales que deben cerrarse antes de contratar e
 Estas tareas requieren la IP, el sistema operativo o el dominio real de IONOS:
 
 - Configurar Ubuntu y actualizar el VPS.
-- Crear el usuario Linux `insteip`.
+- Crear el usuario Linux `Plataforma LMS`.
 - Configurar SSH y firewall.
 - Instalar Java, Docker, Nginx y Certbot.
 - Crear PostgreSQL productivo.
-- Configurar los secretos reales en `/etc/insteip/backend.env`.
+- Configurar los secretos reales en `/etc/Plataforma LMS/backend.env`.
 - Configurar DNS.
 - Activar HTTPS.
 - Configurar systemd y Nginx en el servidor.
@@ -72,7 +72,7 @@ La compra puede realizarse cuando los **bloqueadores antes de comprar** estén m
 - [x] Clave JWT, credenciales de seeder y credenciales QA fuera del código productivo.
 - [x] CORS y URLs productivas definidos mediante variables sin fallback en `backend/src/main`.
 - [x] Docker Compose parametrizado para recibir secretos externos.
-- [x] Backup y restauración local verificados en base temporal `insteip_restore_test`.
+- [x] Backup y restauración local verificados en base temporal `Plataforma LMS_restore_test`.
 - [x] `database/local_data` identificado como directorio de datos PostgreSQL local y excluido de futuros cambios mediante `.gitignore`.
 - [x] Retirar del índice los 1,391 archivos locales versionados; `git ls-files database/local_data` devuelve 0.
 - [x] QA completo repetido con PostgreSQL disponible: 53 pruebas Maven, build/unit frontend y suites API/roles/Selenium aprobadas.
@@ -149,7 +149,7 @@ apiUrl: 'https://tudominio.com/api'
 No utilizar inicialmente:
 
 ```text
-https://api.insteip.com/api
+https://api.plataformalms.com/api
 ```
 
 salvo que se decida trabajar con un subdominio independiente.
@@ -212,9 +212,9 @@ Las credenciales que aparecen en documentación y scripts deben considerarse pú
 Cambiar las cuentas de prueba:
 
 ```text
-admin@insteip.com
-juan.perez@insteip.com
-docente@insteip.com
+admin@plataformalms.com
+juan.perez@plataformalms.com
+docente@plataformalms.com
 ```
 
 Acciones:
@@ -377,9 +377,9 @@ porque expondría PostgreSQL a Internet.
 Usar bases diferentes:
 
 ```text
-insteip_dev
-insteip_qa
-insteip_prod
+Plataforma LMS_dev
+Plataforma LMS_qa
+Plataforma LMS_prod
 ```
 
 Nunca ejecutar Selenium o pruebas API contra producción.
@@ -790,10 +790,10 @@ No ejecutar Spring Boot como `root`.
 Usar:
 
 ```ini
-User=insteip
-Group=insteip
-EnvironmentFile=/etc/insteip/backend.env
-ExecStart=/usr/bin/java -Xms256m -Xmx1024m -jar /opt/insteip/backend.jar
+User=Plataforma LMS
+Group=Plataforma LMS
+EnvironmentFile=/etc/Plataforma LMS/backend.env
+ExecStart=/usr/bin/java -Xms256m -Xmx1024m -jar /opt/Plataforma LMS/backend.jar
 Restart=always
 ```
 
@@ -802,14 +802,14 @@ Restart=always
 Ejemplo conceptual:
 
 ```env
-DB_URL=jdbc:postgresql://localhost:5432/insteip_prod
-DB_USERNAME=insteip_prod
+DB_URL=jdbc:postgresql://localhost:5432/Plataforma LMS_prod
+DB_USERNAME=Plataforma LMS_prod
 DB_PASSWORD=CAMBIAR_EN_SERVIDOR
 JWT_SECRET=GENERAR_EN_SERVIDOR
 JWT_EXPIRATION=900000
 API_BASE_URL=https://tudominio.com
 FRONTEND_BASE_URL=https://tudominio.com
-STORAGE_PATH=/opt/insteip/data
+STORAGE_PATH=/opt/Plataforma LMS/data
 CORS_ALLOWED_ORIGINS=https://tudominio.com
 ```
 
@@ -886,7 +886,7 @@ Después de comprarlo:
 
 - [ ] Conectar mediante SSH.
 - [ ] Actualizar Ubuntu.
-- [ ] Crear usuario `insteip`.
+- [ ] Crear usuario `Plataforma LMS`.
 - [ ] Deshabilitar acceso root directo.
 - [ ] Configurar SSH seguro.
 - [ ] Instalar Java 21.
@@ -917,7 +917,7 @@ Antes de comprar IONOS VPS M+ y dominio debe cumplirse:
 - [x] Las URLs están parametrizadas en backend y environment productivo.
 - [x] CORS está parametrizado.
 - [ ] PostgreSQL está separado por entorno.
-- [x] Backup y restauración funcionan en local. Se restauró una copia en `insteip_restore_test`, se verificaron 18 tablas, usuarios, cursos, matrículas, avances y certificados, y se eliminó la base temporal.
+- [x] Backup y restauración funcionan en local. Se restauró una copia en `Plataforma LMS_restore_test`, se verificaron 18 tablas, usuarios, cursos, matrículas, avances y certificados, y se eliminó la base temporal.
 - [x] Dependencias sin vulnerabilidades altas/críticas en producción tras actualizar Angular a `20.3.25`.
 - [ ] Dependencias de desarrollo auditadas y reducidas. El audit completo reporta vulnerabilidades en tooling; no llegan al bundle productivo, pero deben revisarse antes de un pipeline CI/CD público.
 - [ ] Build backend correcto en la última ejecución: `SystemIntegrationTest` falló por servicio no disponible (`Connection refused`); repetir con PostgreSQL/backend de integración activo.
@@ -941,3 +941,4 @@ Después de completar esta lista:
 4. Subir la aplicación.
 5. Activar HTTPS.
 6. Ejecutar el smoke test post-deploy.
+
