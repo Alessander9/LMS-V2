@@ -1,7 +1,7 @@
 @echo off
-if "%DB_URL%"=="" set DB_URL=jdbc:postgresql://localhost:5455/nuevo_proyecto_db
-if "%DB_USERNAME%"=="" set DB_USERNAME=nuevo_proyecto_user
-if "%DB_PASSWORD%"=="" set DB_PASSWORD=nuevo_proyecto_password
+if "%DB_URL%"=="" set DB_URL=jdbc:postgresql://localhost:5455/lms_v2_db
+if "%DB_USERNAME%"=="" set DB_USERNAME=lms_v2_user
+if "%DB_PASSWORD%"=="" set DB_PASSWORD=lms_v2_password
 if "%JWT_SECRET%"=="" set JWT_SECRET=N82p03maxv8rOuuQA+LhqlztHymFQ3PtBsAJi+xxsok=
 if "%JWT_EXPIRATION%"=="" set JWT_EXPIRATION=1800000
 if "%API_BASE_URL%"=="" set API_BASE_URL=http://localhost:8081

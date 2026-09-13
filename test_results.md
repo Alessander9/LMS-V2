@@ -1,4 +1,4 @@
-# REPORTE DE PRUEBAS MASIVAS DE INTEGRACIÓN Y QA - INSTEIP
+# REPORTE DE PRUEBAS MASIVAS DE INTEGRACIÓN Y QA - PLATAFORMA LMS V2
 
 Este reporte contiene los resultados detallados de la ejecución automática de **todas** las rutas y funcionalidades críticas del sistema.
 

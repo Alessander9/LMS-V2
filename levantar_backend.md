@@ -1,4 +1,4 @@
-# 🚀 Cómo Levantar el Backend de INSTEIP en Local
+# 🚀 Cómo Levantar el Backend de LMS V2 en Local
 
 Guía rápida para iniciar la base de datos y el servidor de desarrollo local del backend en Windows.
 
@@ -19,17 +19,17 @@ El archivo `.env` en la raíz del proyecto define las credenciales locales. Los 
 
 ```ini
 # Configuración de Base de Datos local
-DB_URL=jdbc:postgresql://localhost:5455/insteip_db
-DB_USERNAME=insteip_user
-DB_PASSWORD=insteip_password
+DB_URL=jdbc:postgresql://localhost:5455/lms_v2_db
+DB_USERNAME=lms_v2_user
+DB_PASSWORD=lms_v2_password
 
 # Credenciales para levantar el contenedor PostgreSQL
-POSTGRES_USER=insteip_user
-POSTGRES_PASSWORD=insteip_password
-POSTGRES_DB=insteip_db
+POSTGRES_USER=lms_v2_user
+POSTGRES_PASSWORD=lms_v2_password
+POSTGRES_DB=lms_v2_db
 
 # Clave y expiración de JWT
-JWT_SECRET=VGhpcy1pcy1hLXRlc3Qta2V5LW9ubHktZm9yLWxvY2FsLXRlc3Rz
+JWT_SECRET=N82p03maxv8rOuuQA+LhqlztHymFQ3PtBsAJi+xxsok=
 JWT_EXPIRATION=1800000
 
 # Parámetros de URLs y almacenamiento
@@ -40,6 +40,12 @@ CORS_ALLOWED_ORIGINS=http://localhost:4200,http://127.0.0.1:4200
 
 # Seeder automático de usuarios de prueba (Admin, Docente, Alumno)
 SEED_DEFAULT_USERS=true
+SEED_ADMIN_EMAIL=admin@plataformalms.com
+SEED_ADMIN_PASSWORD=admin_password
+SEED_ALUMNO_EMAIL=alumno@plataformalms.com
+SEED_ALUMNO_PASSWORD=alumno_password
+SEED_DOCENTE_EMAIL=docente@plataformalms.com
+SEED_DOCENTE_PASSWORD=docente_password
 ```
 
 ---
@@ -53,7 +59,7 @@ SEED_DEFAULT_USERS=true
    ```powershell
    docker-compose up -d
    ```
-3. Verifica que el contenedor `insteip-postgres` esté corriendo en el puerto `5455` ejecutando `docker ps`.
+3. Verifica que el contenedor `lms-v2-postgres` esté corriendo en el puerto `5455` ejecutando `docker ps`.
 
 ### Paso B: Iniciar el Backend (Spring Boot)
 
@@ -71,16 +77,22 @@ El script `start-backend.bat` localizado en la carpeta `backend` cargará autom�
 Si deseas ver los logs de arranque en tiempo real directamente en tu terminal actual:
 ```powershell
 # Cargar variables en la sesión
-$env:DB_URL="jdbc:postgresql://localhost:5455/insteip_db"
-$env:DB_USERNAME="insteip_user"
-$env:DB_PASSWORD="insteip_password"
-$env:JWT_SECRET="VGhpcy1pcy1hLXRlc3Qta2V5LW9ubHktZm9yLWxvY2FsLXRlc3Rz"
+$env:DB_URL="jdbc:postgresql://localhost:5455/lms_v2_db"
+$env:DB_USERNAME="lms_v2_user"
+$env:DB_PASSWORD="lms_v2_password"
+$env:JWT_SECRET="N82p03maxv8rOuuQA+LhqlztHymFQ3PtBsAJi+xxsok="
 $env:JWT_EXPIRATION="1800000"
 $env:API_BASE_URL="http://localhost:8081"
 $env:FRONTEND_BASE_URL="http://localhost:4200"
 $env:STORAGE_PATH="uploads"
 $env:CORS_ALLOWED_ORIGINS="http://localhost:4200,http://127.0.0.1:4200"
 $env:SEED_DEFAULT_USERS="true"
+$env:SEED_ADMIN_EMAIL="admin@plataformalms.com"
+$env:SEED_ADMIN_PASSWORD="admin_password"
+$env:SEED_ALUMNO_EMAIL="alumno@plataformalms.com"
+$env:SEED_ALUMNO_PASSWORD="alumno_password"
+$env:SEED_DOCENTE_EMAIL="docente@plataformalms.com"
+$env:SEED_DOCENTE_PASSWORD="docente_password"
 
 # Levantar el servidor
 cd backend
