@@ -9,11 +9,11 @@
         <version>3.4.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.insteip</groupId>
+    <groupId>com.lms</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>plataforma-lms-backend</name>
-    <description>Plataforma LMS - Backend Service</description>
+    <name>lms-v2-backend</name>
+    <description>LMS V2 - Backend Service</description>
     <properties>
         <java.version>17</java.version>
         <jjwt.version>0.12.5</jjwt.version>

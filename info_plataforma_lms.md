@@ -1,4 +1,4 @@
-﻿# 🌿 Plataforma LMS - Información Oficial y Académica
+# 🌿 Plataforma LMS - Información Oficial y Académica
 
 ## 📚 1. Oferta Académica y Cursos Activos
 
@@ -54,16 +54,16 @@ De momento, los ÚNICOS 4 cursos que cuentan con temario en PDF descargable dire
 ---
 
 ## 📞 3. Canales de Contacto Oficiales
-* **WhatsApp Central (Admisiones/Virtuales)**: [button:💬 Hablar por WhatsApp Central](https://wa.me/51939371250?text=Hola%20Plataforma LMS%2C%20deseo%20m%C3%A1s%20informaci%C3%B3n)
-* **Sede Huánuco (Coordinación)**: Alessandro Ner Esteban Valladares – [button:💬 Contactar vía WhatsApp](https://wa.me/51935354183?text=Hola%20Plataforma LMS%2C%20deseo%20contactar%20con%20la%20Coordinaci%C3%B3n%20de%20la%20Sede%20Hu%C3%A1nuco%20para%20m%C3%A1s%20informaci%C3%B3n)
+* **WhatsApp Central (Admisiones/Virtuales)**: [button:💬 Hablar por WhatsApp Central](https://wa.me/51939371250?text=Hola%2C%20deseo%20m%C3%A1s%20informaci%C3%B3n)
+* **Sede Huánuco (Coordinación)**: Alessandro Ner Esteban Valladares – [button:💬 Contactar vía WhatsApp](https://wa.me/51935354183?text=Hola%2C%20deseo%20contactar%20con%20la%20Coordinaci%C3%B3n%20de%20la%20Sede%20Hu%C3%A1nuco%20para%20m%C3%A1s%20informaci%C3%B3n)
 * **Sede Lima (Lince)**: [button:📍 Ver Sede Lince](/sedes)
-* **Correos electrónicos**: `TerapiasintegralesPlataforma LMS@gmail.com`
+* **Correos electrónicos**: `contacto@plataformalms.com`
 
 ---
 
 ## 📍 4. Direcciones Físicas y Sedes
 * **Sede Principal (Lima)**: [Av. Julio C. Tello 438, Lince, Lima, Perú](https://maps.google.com/?q=Av.+Julio+C.+Tello+438,+Lince,+Lima,+Perú). Dictado de clases presenciales y oficinas administrativas.
-* **Sede Huánuco**: Prácticas clínicas presenciales y eventos intensivos. Contacto: [button:💬 Contactar vía WhatsApp](https://wa.me/51935354183?text=Hola%20Plataforma LMS%2C%20deseo%20contactar%20con%20la%20Coordinaci%C3%B3n%20de%20la%20Sede%20Hu%C3%A1nuco%20para%20m%C3%A1s%20informaci%C3%B3n)
+* **Sede Huánuco**: Prácticas clínicas presenciales y eventos intensivos. Contacto: [button:💬 Contactar vía WhatsApp](https://wa.me/51935354183?text=Hola%2C%20deseo%20contactar%20con%20la%20Coordinaci%C3%B3n%20de%20la%20Sede%20Hu%C3%A1nuco%20para%20m%C3%A1s%20informaci%C3%B3n)
 * **Sede Piura**: Talleres itinerantes e intensivos descentralizados.
 
 ---
@@ -118,8 +118,8 @@ De momento, los ÚNICOS 4 cursos que cuentan con temario en PDF descargable dire
 ---
 
 ## 📱 11. Redes Sociales Oficiales
-* **TikTok**: [@terapias.integrales](https://www.tiktok.com/@terapias.integrales)
-* **Instagram**: [@institutodeterapias](https://www.instagram.com/institutodeterapias/?hl=es%20Plataforma LMS)
-* **Facebook**: [/Plataforma LMS](https://www.facebook.com/Plataforma LMS)
-* **YouTube**: [@Plataforma LMSperucursosterapiasc4318](https://www.youtube.com/@Plataforma LMSperucursosterapiasc4318)
+* **TikTok**: [@plataforma.lms](https://www.tiktok.com/@plataforma.lms)
+* **Instagram**: [@plataformalms](https://www.instagram.com/plataformalms/)
+* **Facebook**: [/PlataformaLMS](https://www.facebook.com/PlataformaLMS)
+* **YouTube**: [@PlataformaLMSTerapias](https://www.youtube.com/@PlataformaLMSTerapias)
 
